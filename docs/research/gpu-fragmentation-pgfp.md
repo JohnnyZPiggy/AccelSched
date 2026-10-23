@@ -2,7 +2,7 @@
 
 **Project:** AccelSched · **Research track:** Price-Guided Fragmentation-Aware Placement (PGFP)  
 **Status:** Mathematical baseline **RESEARCH_READY**; performance, general approximation guarantees, and GPU implementation **UNVERIFIED**  
-**Date:** 2026-10-23 · **SAE reference:** V3.3, commit \`cc96b803466a5d2848d8eeedd9e6fac37a3016ba\`  
+**Date:** 2026-10-23 · **SAE reference:** V3.3, commit `cc96b803466a5d2848d8eeedd9e6fac37a3016ba`  
 **Scope:** mathematical formulation, proofs/counterexamples, algorithmic hypotheses, numerical oracle, and experimental plan. No implementation, device benchmarks, or empirical speedup claims.
 
 ## 1. Research question and boundaries
@@ -254,10 +254,10 @@ Fragmentation-only objectives can also trade off against present job acceptance:
 
 ## 11. Source / reuse map and provenance limits
 
-- CvxCluster: O. Nnorom Jr., S. Boyd, P. Levis, *CvxCluster: Solving Large, Complex, Granular Resource Allocation Problems 100–1000x Faster* (2026), https://arxiv.org/abs/2605.01614 ; owner-supplied PDF \`literature/CvxCluster.pdf\`. Mathematical inspiration: aggregate LP, dual shadow prices, price-guided feasible greedy placement. The fragmentation objective, its exact local marginal formula, and counterexamples here are **our analysis**, not claims from the paper.
+- CvxCluster: O. Nnorom Jr., S. Boyd, P. Levis, *CvxCluster: Solving Large, Complex, Granular Resource Allocation Problems 100–1000x Faster* (2026), https://arxiv.org/abs/2605.01614 ; owner-supplied PDF `literature/CvxCluster.pdf`. Mathematical inspiration: aggregate LP, dual shadow prices, price-guided feasible greedy placement. The fragmentation objective, its exact local marginal formula, and counterexamples here are **our analysis**, not claims from the paper.
 - FGD: *Beware of Fragmentation: Scheduling GPU-Sharing Workloads with Fragmentation Gradient Descent*, USENIX ATC 2023, https://www.usenix.org/conference/atc23/presentation/weng . Motivation for workload-demand-aware fragmentation. Verify actual baseline implementation, semantics and license before reuse.
 - Open-source reference MILP/LP: HiGHS, https://highs.dev/ . Package version, exact dependency pin, and empirical compatibility are **TO VERIFY** during implementation.
-- GPU LP solvers: investigate the source PDFs already in \`literature/\` (cuPDLP, H-PDLP, PDNQP), actual implementations, dual support and licensing before suggesting production integration. **No GPU acceleration is claimed here.**
+- GPU LP solvers: investigate the source PDFs already in `literature/` (cuPDLP, H-PDLP, PDNQP), actual implementations, dual support and licensing before suggesting production integration. **No GPU acceleration is claimed here.**
 
 ## 12. Next bounded SAE handoff
 
