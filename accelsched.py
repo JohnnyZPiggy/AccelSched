@@ -9,9 +9,42 @@ from time import perf_counter_ns
 import numpy as np
 from scipy.optimize import Bounds, LinearConstraint, milp
 
-from m0_oracle import Instance, greedy, placed_value, residual, validate
-from bench_cpu import first_fit
-from bench_cpu_v2 import pack, lp_order
+from m0_oracle import Instance, greedy, shape_lp, placed_value, residual, validate
+
+def first_fit(a):
+    """Input-order First-Fit without LP; follows the established benchmark contract."""
+    left = a.capacity.astype(float).copy()
+    placement = [-1] * len(a.value)
+    for j, demand in enumerate(a.demand):
+        for i in range(len(left)):
+            if a.eligible[i, j] and np.all(left[i] + 1e-10 >= demand):
+                placement[j] = i
+                left[i] -= demand
+                break
+    return placement
+
+
+def pack(a, order):
+    """Global physical-node Best-Fit, with deterministic tie-breaking."""
+    remaining = a.capacity.astype(float).copy()
+    placement = [-1] * len(a.value)
+    for j in order:
+        candidates = [i for i in range(len(remaining)) if a.eligible[i, j]
+                      and np.all(remaining[i] + 1e-10 >= a.demand[j])]
+        if not candidates:
+            continue
+        i = min(candidates, key=lambda i: (float(np.sum(remaining[i] - a.demand[j])), i))
+        placement[j] = i
+        remaining[i] -= a.demand[j]
+    return placement
+
+
+def lp_order(a):
+    """Order by shape-LP reduced utility, then stable original job index."""
+    lp = shape_lp(a)
+    utility = a.value[None, :] - lp['prices'] @ a.demand.T
+    return sorted(range(len(a.value)), key=lambda j: (-max(utility[:, j]), j))
+
 
 METHODS = ('first_fit', 'classic_best_fit', 'lp_order_best_fit',
            'lp_best_fit', 'pgfp', 'highs_mip')
