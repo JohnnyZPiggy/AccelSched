@@ -262,3 +262,43 @@ Fragmentation-only objectives can also trade off against present job acceptance:
 ## 12. Next bounded SAE handoff
 
 Engineer should begin with **read-only source/package confirmation**, then implement *only* the tiny CPU oracle and three placement variants in a subsequent authorized development cycle. Keep the study as the single mathematical source of truth, avoid redundant reports/Issues, use exact GitHub SHA and one PR per focused implementation batch; no default GitHub Actions. Architect independently reviews mathematical correctness, actual tests, residuals and clean-install evidence before merging. Any significant change of the mathematical objective updates this study with an explicit proof obligation rather than silently altering the claimed bounds.
+
+
+## 13. Local exchange criterion (M2 extension, NOT YET BENCHMARKED)
+
+**Purpose.** Improve a *completed* batch-only placement by rearranging **newly admitted** jobs while keeping all pre-existing jobs fixed. Do not conflate this local search with migration/repacking of running jobs. Preserve Random/Best-Fit/PGFP greedy baselines without exchange as controls.
+
+Let \(\pi:J\to N\cup\{-1\}\) denote a complete placement, with \(-1\) for rejected jobs. Define verified objective values \(V(\pi)\) and \(F(\pi)\) on actual physical residual capacities. Let \(\mathcal N(\pi)\) include the following legal moves, all checked against **all** physical resource capacities, GPU models, eligibility, and any anti-affinity constraints:
+
+1. **Relocate (1-opt):** move one *accepted, newly placed* job \(j\) from node \(i\) to a different node \(k\). No change to accepted job set, so \(V\) is invariant.
+2. **Exchange (2-opt):** swap destinations of two *accepted, newly placed* jobs \(j,\ell\) assigned to different nodes. Again \(V\) is invariant.
+3. **Optional admission exchange:** eject one or more newly admitted jobs and accept one or more previously rejected jobs. This changes \(V\) and must be treated under strict lexicographic dominance. Leave this outside the first M2 exchange implementation to preserve interpretation and bounded runtime.
+
+**Strict lexicographic acceptance:** for any candidate feasible \(\pi'\), accept iff
+\[
+(V(\pi'),F(\pi')) >_{\rm lex}(V(\pi),F(\pi)).
+\]
+For fixed accepted-set relocation/pair exchange, this simplifies to
+\[
+\boxed{\Delta V=0,\qquad \Delta F=F(\pi')-F(\pi)>0.}
+\]
+The strict inequality prevents zero-gain cycling. Use deterministic move enumeration and choose the first strict improvement (or explicitly specify best improvement); stop at local optimum or a fixed scan/move budget. With integer GPU counts and nonnegative integer future weights, strictly increasing \(F\) bounds the number of accepted improvements; with arbitrary real weights, finiteness still follows from finite placements plus no revisiting under strict increase, but there is **no practical polynomial iteration guarantee**.
+
+**Local delta derivation.** For a relocation of new job \(j\) with resource vector \(D_j\) from source \(i\) to destination \(k\), let current residual vectors be \(R_i,R_k\). Provided destination fits and all other constraints hold,
+\[
+\Delta F =
+  [f_i(R_i+D_j)-f_i(R_i)]
+ +[f_k(R_k-D_j)-f_k(R_k)],
+\quad f_i(r)=\sum_\omega w_\omega e_{i\omega}{\bf1}\{r\succeq d^\omega\}.
+\]
+Only two nodes need rescoring. For swapping \(j:i\to k\) and \(\ell:k\to i\),
+\[
+R_i'=R_i+D_j-D_\ell,\quad R_k'=R_k+D_\ell-D_j,
+\]
+and \(\Delta F=[f_i(R_i')-f_i(R_i)]+[f_k(R_k')-f_k(R_k)]\). Verify both new residual vectors are componentwise nonnegative, plus all other hard constraints.
+
+**Tiny exact example.** Two 8-GPU nodes; two newly admitted 4-GPU jobs are initially split (residuals \(4,4\)); \(F_8=0\). Relocating either newly placed job onto the other node yields residuals \(8,0\), hence \(F_8=1\) with unchanged admitted value. This is a certified strict lexicographic improvement. If those were *pre-existing* running jobs, the move is **forbidden** in batch-only M2.
+
+**Ablation contract.** Hold instance, price vectors, greedy task/shape order, future batch and random seed fixed. Compare Random, Best-Fit and PGFP **each with and without** identical local-exchange postprocessing; report pre/post \(V,F\), accepted relocation/swaps, feasibility, exchange computation time and future-batch acceptance. Do not claim an improvement in \(F\) necessarily raises actual future-batch acceptance. Local optimality is *neighborhood-relative*, not global MILP optimality. A bounded 1+2-opt neighborhood can still get stuck in a non-global optimum.
+
+**Validation gates:** independent recomputation of residual capacities and compatibility, exact \(\Delta V=0\) on fixed-set moves, strict positive \(\Delta F\) on each accepted move, finite termination under bound, reproducible fixed-seed order, and no mutation of pre-existing allocation. Tests include split 4+4 relocation, swap with nonidentical GPU/CPU requirements, incompatible destination, zero-gain move rejection and CPU-capacity violation.
