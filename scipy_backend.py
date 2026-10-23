@@ -25,11 +25,26 @@ def solve_mip(a, time_limit):
                bounds=Bounds(np.zeros(s*n), a.eligible.ravel().astype(float)),
                constraints=LinearConstraint(np.array(rows), -np.inf, np.array(ub)),
                options={'time_limit': time_limit})
+    if out.status not in (0, 1):
+        return None, 'failed', f'MIP solver status {out.status}: {out.message}'
     if out.x is None:
-        return None, 'uncertified', out.message
-    x = out.x.reshape(s, n)
+        return None, ('invalid' if out.status == 0 else 'uncertified'), out.message
+    if np.iscomplexobj(out.x):
+        return None, 'invalid', 'MIP returned complex incumbent'
+    try:
+        x = np.asarray(out.x, dtype=float)
+    except (TypeError, ValueError):
+        return None, 'invalid', 'MIP returned malformed incumbent'
+    if x.shape != (s*n,) or not np.all(np.isfinite(x)):
+        return None, 'invalid', 'MIP returned malformed or nonfinite incumbent'
+    x = x.reshape(s, n)
     if np.max(np.abs(x - np.round(x))) > 1e-6:
         return None, 'uncertified', 'MIP returned nonintegral incumbent'
+    rounded = np.round(x)
+    # Argmax must not conceal out-of-bounds or multiply assigned jobs.
+    if (np.any(rounded < 0) or np.any(rounded > a.eligible)
+            or np.any(rounded.sum(axis=0) > 1)):
+        return None, 'invalid', 'MIP incumbent violates binary assignment bounds'
     placement = tuple(int(np.argmax(x[:, j])) if np.max(x[:, j]) > 0.5 else -1
                       for j in range(n))
     if not validate(a, placement):
