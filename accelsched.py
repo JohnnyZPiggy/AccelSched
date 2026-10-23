@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from time import perf_counter_ns
 
 import numpy as np
-from scipy.optimize import Bounds, LinearConstraint, milp
+from scipy_backend import solve_mip
 
 from m0_oracle import Instance, greedy, shape_lp, placed_value, residual, validate
 
@@ -104,31 +104,8 @@ def _input_error(a, time_limit, seed):
 
 
 def _highs_placement(a, time_limit):
-    """Physical-node binary MIP with eligible arcs and exact assignment bounds."""
-    s, n = a.eligible.shape
-    r = a.demand.shape[1]
-    rows, ub = [], []
-    for j in range(n):
-        row = np.zeros((s, n)); row[:, j] = 1
-        rows.append(row.ravel()); ub.append(1.)
-    for i in range(s):
-        for k in range(r):
-            row = np.zeros((s, n)); row[i, :] = a.demand[:, k]
-            rows.append(row.ravel()); ub.append(a.capacity[i, k])
-    out = milp(-np.tile(a.value, s), integrality=np.ones(s*n),
-               bounds=Bounds(np.zeros(s*n), a.eligible.ravel().astype(float)),
-               constraints=LinearConstraint(np.array(rows), -np.inf, np.array(ub)),
-               options={'time_limit': time_limit})
-    if out.x is None:
-        return None, 'uncertified', out.message
-    x = out.x.reshape(s, n)
-    if np.max(np.abs(x - np.round(x))) > 1e-6:
-        return None, 'uncertified', 'MIP returned nonintegral incumbent'
-    placement = tuple(int(np.argmax(x[:, j])) if np.max(x[:, j]) > 0.5 else -1
-                      for j in range(n))
-    if not validate(a, placement):
-        return None, 'invalid', 'MIP incumbent fails independent validation'
-    return placement, ('optimal' if out.status == 0 else 'feasible_uncertified'), (None if out.status == 0 else out.message)
+    """Compatibility shim for the physical-server SciPy backend."""
+    return solve_mip(a, time_limit)
 
 
 def solve(instance: Instance, method='pgfp', *, seed=2026, time_limit=10.0):
@@ -235,12 +212,12 @@ def test_mip_incumbent_status_contract(monkeypatch):
     from m0_oracle import packing_case
     a = packing_case()
     x = np.array([1., 0., 0., 1.])
-    monkeypatch.setattr('accelsched.milp', lambda *args, **kwargs:
+    monkeypatch.setattr('scipy_backend.milp', lambda *args, **kwargs:
                         SimpleNamespace(x=x, status=1, message='time limit'))
     out = solve(a, 'highs_mip')
     assert out.status == 'feasible_uncertified' and not out.optimal
     assert out.placement == (0, 1) and out.value == 20
-    monkeypatch.setattr('accelsched.milp', lambda *args, **kwargs:
+    monkeypatch.setattr('scipy_backend.milp', lambda *args, **kwargs:
                         SimpleNamespace(x=None, status=1, message='time limit'))
     out = solve(a, 'highs_mip')
     assert out.status == 'uncertified' and not out.optimal and out.placement is None
