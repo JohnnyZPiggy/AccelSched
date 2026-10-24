@@ -11,4 +11,4 @@ dependencies = ["numpy>=1.23", "scipy>=1.9"]
 license = "MIT"
 
 [tool.setuptools]
-py-modules = ["accelsched", "m0_oracle", "scipy_backend", "workload"]
+py-modules = ["accelsched", "m0_oracle", "scipy_backend", "workload", "rolling"]
