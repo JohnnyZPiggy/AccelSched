@@ -1,8 +1,8 @@
 # AccelSched
 
-[English](README.md) · [静态放置](#静态放置) · [滚动批次](#滚动批次) · [基准研究](#基准研究)
+[English](README.md) · [静态放置](#静态放置) · [滚动批次](#滚动批次) · [P0](#p0静态容量对比) · [P1](#p1时间窗口容量) · [P2](#p2容量决策报告) · [六种方法](#六种方法) · [基准研究](#基准研究)
 
-在 CPU 上运行的 Python **异构 GPU/CPU/RAM 放置优化与事件调度模拟工具**。
+在 CPU 上运行的 Python **离线异构 GPU/CPU/主机 RAM 放置、事件调度模拟与容量决策报告工具**。
 
 在多资源容量约束下，将每个不可拆分作业放到一个符合资格的物理节点。可用六种方法比较静态批次，也可按作业持续时间和完成事件模拟立即启动的滚动批次。GPU 型号兼容性显式指定；本项目是研究工具，不是实时集群编排器。
 
@@ -48,6 +48,44 @@ for decision in report["decisions"]:
 ```
 
 输出依次为 `A accepted 0`、`B not_scheduled None`、`C accepted 0`。到达时间为非负整数，持续时间为正整数，使用任意时间单位；接纳后立即启动。同一时间**先释放完成作业的资源**，再将同时到达的作业按输入顺序组成一个批次求解。资格固定；拒绝是永久决定，不排队、不重试、不迁移、不抢占。`solver_error` 与正常的 `not_scheduled` 拒绝分开记录。
+
+## 容量规划：P0/P1/P2
+
+在检出目录根目录使用自行准备的 `static.json` 和 `dynamic.json`；
+项目不附带这两个文件。[Shared JSON Input v1 指南](docs/examples/planner-input.md)
+提供示意 JSON，并说明如何准备两种模式的输入。
+
+### P0：静态容量对比
+
+P0 比较名义容量的静态节点增配方案，以命名的 Baseline 为基准。
+
+```bash
+python -m examples.capacity_whatif --input static.json
+```
+
+### P1：时间窗口容量
+
+P1 比较有限时间窗口中观测到的接纳量、完成量，以及显式参考需求的资源压力。
+
+```bash
+python -m examples.time_window_capacity --input dynamic.json
+```
+
+### P2：容量决策报告
+
+P2 将 P0/P1 输出整理为文本或 JSON 报告：CLI 对每个场景运行一次选定的规划器，随后仅汇总，不重复求解。
+
+```bash
+python -m examples.capacity_decision_report --input static.json --mode static
+python -m examples.capacity_decision_report --input dynamic.json --mode dynamic --format json
+```
+
+相对 Baseline 的差值是观测结果，除非获得经过验证、受求解器容差约束的 P0 静态模型最优证书；
+滚动 MIP 证书只覆盖各个到达批次，描述性 leader 仅表示接纳数量最多，
+不代表成本最优采购、预测、ROI 或整个时间范围的最优方案。
+解释及适用范围见 [P0 指南](docs/examples/capacity-whatif.md)、
+[P1 指南](docs/examples/time-window-capacity.md)和
+[P2 报告指南](docs/examples/capacity-decision-report.md)。
 
 ## 六种方法
 

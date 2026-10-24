@@ -1,8 +1,8 @@
 # AccelSched
 
-[简体中文](README.zh-CN.md) · [Static placement](#static-placement) · [Rolling batches](#rolling-batches) · [Benchmarks](#benchmarks)
+[简体中文](README.zh-CN.md) · [Static placement](#static-placement) · [Rolling batches](#rolling-batches) · [P0](#p0-static-what-if) · [P1](#p1-time-window-capacity) · [P2](#p2-capacity-decision-report) · [Six methods](#six-methods) · [Benchmarks](#benchmarks)
 
-A CPU-only Python toolkit for **heterogeneous GPU/CPU/RAM placement and event-driven scheduling simulation**.
+A CPU-based Python toolkit for **offline heterogeneous GPU/CPU/host RAM placement, event-driven simulation and capacity decision reporting**.
 
 Place each indivisible job on one eligible physical node under multiple resource constraints. Compare six methods on a static batch, or simulate immediate-start rolling batches with job durations and completion events. GPU-family compatibility is explicit; AccelSched is a research toolkit, not a live orchestrator.
 
@@ -48,6 +48,45 @@ for decision in report["decisions"]:
 ```
 
 Output: `A accepted 0`, `B not_scheduled None`, `C accepted 0`. Arrival times are nonnegative integers and durations positive integers in arbitrary time units; accepted jobs start immediately. At each timestamp, completions release resources **before** all simultaneous arrivals are solved as one batch in input order. Eligibility stays fixed; refusal is permanent, with no queue, retry, migration or preemption. `solver_error` is recorded separately from normal `not_scheduled` rejection.
+
+## Capacity planning: P0/P1/P2
+
+From the checkout root, use your own `static.json` and `dynamic.json` files;
+they are not bundled. The [Shared JSON Input v1 guide](docs/examples/planner-input.md)
+includes an illustrative JSON document and explains how to prepare both modes.
+
+### P0: Static what-if
+
+P0 compares nominal additive static inventories against a named Baseline.
+
+```bash
+python -m examples.capacity_whatif --input static.json
+```
+
+### P1: Time-window capacity
+
+P1 compares observed finite-window admissions, completions and pressure for explicit references.
+
+```bash
+python -m examples.time_window_capacity --input dynamic.json
+```
+
+### P2: Capacity decision report
+
+P2 turns P0/P1 outputs into text or JSON reports: its CLI runs the selected planner once per scenario, then summarizes without re-solving.
+
+```bash
+python -m examples.capacity_decision_report --input static.json --mode static
+python -m examples.capacity_decision_report --input dynamic.json --mode dynamic --format json
+```
+
+Baseline-relative deltas are observed unless backed by validated P0 static-model
+optimality certificates within solver tolerances; rolling MIP certificates cover
+only individual arrival batches, and the descriptive leader means largest accepted
+count, not a cost-optimal purchase, forecast, ROI or whole-horizon optimum.
+See the [P0 guide](docs/examples/capacity-whatif.md),
+[P1 guide](docs/examples/time-window-capacity.md) and
+[P2 report guide](docs/examples/capacity-decision-report.md) for interpretation and limits.
 
 ## Six methods
 
