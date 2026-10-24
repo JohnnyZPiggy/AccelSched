@@ -1,6 +1,8 @@
 # AccelSched
 
-A lightweight Python toolkit for **GPU/CPU resource placement optimization**. Place indivisible jobs onto eligible servers under multi-resource capacity constraints; compare fast heuristics against an exact HiGHS mixed-integer optimization baseline.
+[简体中文](README.zh-CN.md)
+
+A lightweight Python toolkit for **GPU/CPU resource placement optimization**. Place indivisible jobs onto eligible servers under multi-resource capacity constraints; compare fast heuristics against a physical-server HiGHS mixed-integer optimization baseline.
 
 ## Install
 
@@ -37,7 +39,19 @@ for method in ("first_fit", "classic_best_fit", "lp_order_best_fit",
     print(method, result.status, result.value, result.placement)
 ```
 
-`Instance` stores server resource capacities, job demands/values, job–server eligibility and future job types. The example's resource columns represent GPUs and CPUs. `SolveResult` returns a validated placement, accepted value, residual resources, elapsed CPU time, status and optimality flag.
+`Instance` stores server resource capacities, job demands/values, job–server eligibility and future job types. The example's resource columns represent GPUs and CPUs. `SolveResult` returns a validated placement, accepted value, residual resources, elapsed solve time, status and optimality flag.
+
+For a synthetic three-resource comparison:
+
+```python
+from workload import heterogeneous_example, evaluate
+
+report = evaluate(heterogeneous_example(seed=11), seed=11, time_limit=2.0)
+for row in report["rows"]:
+    print(row["method"], row["status"], row["admitted_count"])
+```
+
+[`workload.py`](workload.py) provides `build_workload` for ordered whole-GPU-count, CPU-core and host-RAM-GiB vectors with explicit eligibility. `evaluate` runs all six methods on the same instance and reconstructs admission and resource utilization. GPU types belong in `eligible`; `shapes` group identical capacity vectors. Trace parsing remains external.
 
 ## Solvers
 
@@ -48,9 +62,9 @@ for method in ("first_fit", "classic_best_fit", "lp_order_best_fit",
 | `lp_order_best_fit` | Shape-LP job priority followed by global Best-Fit |
 | `lp_best_fit` | Shape-LP priority and shape-aware Best-Fit |
 | `pgfp` | Shape-LP priority and future-capacity-aware placement |
-| `highs_mip` | HiGHS exact physical-server mixed-integer optimization |
+| `highs_mip` | HiGHS physical-server mixed-integer optimization |
 
-An `optimal` result means HiGHS certified optimality; heuristic `feasible` results are **not** optimality certificates. `feasible_uncertified` means a valid MIP incumbent without optimality proof; `uncertified` means no valid incumbent. Other statuses include `input_invalid`, `invalid` and `failed`. `solve(..., time_limit=10.0)` sets the HiGHS time limit.
+An `optimal` result means HiGHS certified optimality within solver tolerances; heuristic `feasible` results are **not** optimality certificates. `feasible_uncertified` means a valid MIP incumbent without optimality proof; `uncertified` means no valid incumbent. Other statuses include `input_invalid`, `invalid` and `failed`. `solve(..., time_limit=10.0)` sets the HiGHS time limit.
 
 ## Validation and scope
 
@@ -60,6 +74,12 @@ Run the CPU regression from the repository root:
 OPENBLAS_NUM_THREADS=1 python -m pytest -q test_m0_oracle.py bench_cpu.py bench_cpu_v2.py bench_cpu_v3.py bench_cpu_v31.py accelsched.py
 ```
 
-Version 0.1 implements **single-node placement decisions for a batch of jobs**, with synthetic GPU/CPU resource models. It is an optimization toolkit, not a production Kubernetes scheduler; topology, job lifetime, migrations, live cluster integration and GPU acceleration are outside this version's scope.
+AccelSched makes **single-node placement decisions for each job in a batch**. The public three-resource adapter supports synthetic workloads; trace-derived counterfactual research evidence is summarized below. It is an optimization toolkit, not a production Kubernetes scheduler; topology, job lifetime, migrations, live cluster integration and GPU acceleration are outside its scope.
 
-Licensed under [MIT](LICENSE).
+### Trace-derived counterfactual benchmark
+
+An [accepted Issue #31 study](https://github.com/JohnnyZPiggy/AccelSched/issues/31#issuecomment-6377137390) used Alibaba PAI GPU 2020 tasks and nominal-capacity empty-cluster counterfactuals, labeled `TRACE_DERIVED_ASSUMED`. Whole-GPU singleton-job samples covered explicit T4/P100/V100/V100M32 request eligibility, wrong-family nodes and separate `SYNTHETIC_CONTROL` RAM-shortage cases. The Engineer reported **60/60 independently feasible placement results** and **10/10 physical HiGHS MIP runs returning `optimal`**, within solver tolerances. Feasibility includes correctly unplaced negative controls.
+
+Two **ASSUMED** RAM interpretations applied consistently to capacity and demand: raw values already GiB, or decimal GB converted to GiB by `10**9/2**30`. Equal task values (`value=1`) measured admission, not revenue. Deliberately stratified, individually fitting samples introduce selection bias: these static results are not population admission rates, historical Alibaba allocations or production-performance measurements.
+
+The [Alibaba PAI 2020 trace](https://github.com/alibaba/clusterdata/tree/3858992ca41bf92082e6d6522ddf0bebd14e838b/cluster-trace-gpu-v2020) is licensed under [CC BY 4.0](https://github.com/alibaba/clusterdata/blob/3858992ca41bf92082e6d6522ddf0bebd14e838b/cluster-trace-gpu-v2020/LICENSE); attribution: [Weng et al., NSDI 2022](https://www.usenix.org/conference/nsdi22/presentation/weng). The source-data license is distinct from AccelSched's [MIT code license](LICENSE).
