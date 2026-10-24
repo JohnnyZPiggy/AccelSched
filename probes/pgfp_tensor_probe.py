@@ -11,6 +11,7 @@ import math
 import os
 from pathlib import Path
 import statistics
+import subprocess
 import sys
 import time
 
@@ -200,7 +201,14 @@ def run_probe(*, cuda=False):
                             median_ms=statistics.median(times), compilation_ms=0,
                             timing='validation + copies/transfers + compute + host return + validated choice; CUDA synchronized'))
     assert fixture_sha256(inputs) == digest
-    return dict(status='PASS', mode='PROBE_ONLY', source_sha=os.environ.get('SAE_CANDIDATE_SHA'),
+    source_sha = os.environ.get('SAE_CANDIDATE_SHA')
+    if source_sha is None:
+        try:
+            source_sha = subprocess.check_output(['git', '-C', str(Path(__file__).resolve().parents[1]),
+                                                  'rev-parse', 'HEAD'], text=True, timeout=2).strip()
+        except (OSError, subprocess.SubprocessError):
+            pass
+    return dict(status='PASS', mode='PROBE_ONLY', source_sha=source_sha,
                 fixture_sha256=digest, seed=11, shapes=[list(x.shape) for x in inputs],
                 dtype='float64', resource_slack=0, score_atol=1e-10,
                 chunk=32, warmups=1, measured_calls=3, environment=environment,
