@@ -1,5 +1,7 @@
 """Offline nominal-capacity comparison: python -m examples.capacity_whatif."""
+import argparse
 import json
+import sys
 from typing import NamedTuple
 
 import numpy as np
@@ -37,12 +39,13 @@ TASKS = (Task('t-small-1', 'T4', (1, 4, 16)),
          Task('v-oversize', 'V100', (8, 32, 128)))
 
 
-def build_instance(nodes):
+def build_instance(nodes, tasks=None):
+    tasks = TASKS if tasks is None else tasks
     capacity = [n.capacity for n in nodes]
     labels = {c: i for i, c in enumerate(sorted(set(capacity)))}
-    return build_workload(capacity, [j.demand for j in TASKS],
-                          value=[j.value for j in TASKS],
-                          eligible=np.array([[n.family == j.family for j in TASKS]
+    return build_workload(capacity, [j.demand for j in tasks],
+                          value=[j.value for j in tasks],
+                          eligible=np.array([[n.family == j.family for j in tasks]
                                              for n in nodes], dtype=bool),
                           shapes=[labels[c] for c in capacity])
 
@@ -88,28 +91,47 @@ def describe(a, out, ids):
     return row
 
 
-def compare():
+def compare(config=None):
+    tasks = TASKS if config is None else config['jobs']
+    scenarios = SCENARIOS if config is None else config['scenarios']
+    baseline = BASELINE if config is None else config['nodes']
+    solver = dict(method='highs_mip', seed=11, time_limit=.5) if config is None else config['solver']
     rows = []
-    for name, nodes in SCENARIOS:
-        a = build_instance(nodes)
-        out = solve(a, method='highs_mip', seed=11, time_limit=.5)
-        row = describe(a, out, [j.id for j in TASKS])
+    for name, nodes in scenarios:
+        a = build_instance(nodes, tasks)
+        out = solve(a, **solver)
+        row = describe(a, out, [j.id for j in tasks])
         row.update(scenario=name, inventory=[n._asdict() for n in nodes],
-                   added_nodes=[n.id for n in nodes[len(BASELINE):]])
+                   added_nodes=[n.id for n in nodes[len(baseline):]])
         rows.append(row)
-    base = rows[0]
+    base = next(r for r in rows if r['scenario'] == 'Baseline')
     for row in rows:
         comparable = base['valid'] and row['valid']
         row['delta_count'] = row['accepted_count']-base['accepted_count'] if comparable else None
         row['delta_value'] = row['accepted_value']-base['accepted_value'] if comparable else None
         row['difference_kind'] = ('static-model optimal difference' if base['certified'] and row['certified']
                                   else 'observed difference (uncertified)') if comparable else 'NOT COMPARABLE'
-    return dict(label='SYNTHETIC offline capacity what-if', seed=11, time_limit=.5,
-                tasks=[j._asdict() for j in TASKS], rows=rows)
+    report = dict(label='SYNTHETIC offline capacity what-if' if config is None else 'USER_INPUT offline capacity what-if',
+                  seed=solver['seed'], time_limit=solver['time_limit'],
+                  tasks=[j._asdict() for j in tasks], rows=rows)
+    if config is not None:
+        report['input'] = config['provenance']
+    return report
 
 
-def main():
-    report = compare()
+def main(argv=None):
+    from examples.planner_input import InputError, load_input
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--input', help='Shared JSON Input v1 (static)')
+    args = parser.parse_args(argv)
+    try:
+        config = load_input(args.input, 'static') if args.input else None
+    except InputError as exc:
+        print(f'INPUT_INVALID: {exc}', file=sys.stderr)
+        return 2
+    report = compare() if config is None else compare(config)
+    if config is not None:
+        print('Input: ' + json.dumps(report['input'], allow_nan=False))
     print(report['label'] + ' | GPU-count / CPU-cores / host-RAM-GiB')
     print('Scenario | Added nodes | Count/value | Delta count/value | Status | Comparison | Solve ms')
     for r in report['rows']:

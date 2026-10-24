@@ -1,7 +1,9 @@
 """SYNTHETIC offline planner: python -m examples.time_window_capacity."""
 from collections import Counter
+import argparse
 from dataclasses import asdict
 import json
+import sys
 
 import numpy as np
 from rolling import Job, simulate
@@ -26,13 +28,14 @@ def utilization(work, capacity, horizon):
     return [float(w/c) if c else None for w, c in zip(work, total)]
 
 
-def pressure(nodes, events, horizon):
+def pressure(nodes, events, horizon, references=None):
     """Fraction of [0,T) with no single compatible node fitting a reference."""
     points = [(0, [n.capacity for n in nodes])]
     points += [(e['time'], e['free']) for e in events if e['time'] < horizon]
     points.append((horizon, None))
     result = {}
-    for family, demand in REFERENCES.items():
+    references = REFERENCES if references is None else references
+    for family, demand in references.items():
         intervals = []
         for (start, free), (end, _) in zip(points, points[1:]):
             fits = any(n.family == family and all(c >= d for c, d in zip(free[i], demand))
@@ -47,7 +50,7 @@ def pressure(nodes, events, horizon):
     return result
 
 
-def summarize(nodes, jobs, requests, raw, horizon):
+def summarize(nodes, jobs, requests, raw, horizon, references=None):
     if (isinstance(horizon, bool) or not isinstance(horizon, int) or horizon <= 0
             or any(not 0 <= j.arrival < horizon for j in jobs)):
         raise ValueError('positive integer horizon; all arrivals must be in [0,T)')
@@ -71,7 +74,7 @@ def summarize(nodes, jobs, requests, raw, horizon):
                 full_tail_resource_time=list(raw['resource_time']),
                 window_resource_time=clipped.tolist(),
                 utilization=utilization(clipped, [n.capacity for n in nodes], horizon),
-                pressure=pressure(nodes, raw['events'], horizon),
+                pressure=pressure(nodes, raw['events'], horizon, references),
                 batch_status_counts=dict(Counter(b['solver_status'] for b in raw['batches'])),
                 certified_batch_count=sum(bool(b['optimal']) for b in raw['batches']),
                 batches=[{k: b[k] for k in ('time', 'solver_status', 'optimal', 'error', 'solve_wall_ms')}
@@ -79,28 +82,49 @@ def summarize(nodes, jobs, requests, raw, horizon):
                 solve_wall_ms=raw['solve_wall_ms'], simulation_wall_ms=raw['elapsed_ms'])
 
 
-def compare():
+def compare(config=None):
+    jobs = JOBS if config is None else config['jobs']
+    requests = REQUESTS if config is None else config['requests']
+    scenarios = SCENARIOS if config is None else config['scenarios']
+    baseline = BASELINE if config is None else config['nodes']
+    horizon = T if config is None else config['horizon']
+    references = None if config is None else config['references']
+    solver = dict(method='highs_mip', seed=11, time_limit=.5) if config is None else config['solver']
     rows = []
-    for name, nodes in SCENARIOS:
-        eligible = np.array([[n.family == f for f in REQUESTS] for n in nodes], bool)
-        raw = simulate([n.capacity for n in nodes], JOBS, eligible,
-                       method='highs_mip', seed=11, time_limit=.5)
-        row = summarize(nodes, JOBS, REQUESTS, raw, T)
-        row.update(scenario=name, added_nodes=[n.id for n in nodes[len(BASELINE):]])
+    for name, nodes in scenarios:
+        eligible = np.array([[n.family == f for f in requests] for n in nodes], bool)
+        raw = simulate([n.capacity for n in nodes], jobs, eligible, **solver)
+        row = summarize(nodes, jobs, requests, raw, horizon, references)
+        row.update(scenario=name, added_nodes=[n.id for n in nodes[len(baseline):]])
         rows.append(row)
     comparable = not any(r['solver_error_count'] for r in rows)
+    base = next(r for r in rows if r['scenario'] == 'Baseline')
     for row in rows:
         row['comparison'] = 'COMPARABLE' if comparable else 'NOT COMPARABLE'
-        row['delta_admitted'] = row['accepted_count']-rows[0]['accepted_count'] if comparable else None
-        row['delta_value'] = row['accepted_value']-rows[0]['accepted_value'] if comparable else None
+        row['delta_admitted'] = row['accepted_count']-base['accepted_count'] if comparable else None
+        row['delta_value'] = row['accepted_value']-base['accepted_value'] if comparable else None
         row['difference_kind'] = 'observed simulation difference' if comparable else 'NOT COMPARABLE'
-    return dict(label='SYNTHETIC offline time-window capacity', T=T, seed=11,
-                time_limit=.5, jobs=[dict(**asdict(j), family=f) for j, f in zip(JOBS, REQUESTS)],
-                rows=rows)
+    report = dict(label='SYNTHETIC offline time-window capacity' if config is None else 'USER_INPUT offline time-window capacity',
+                  T=horizon, seed=solver['seed'], time_limit=solver['time_limit'],
+                  jobs=[dict(**asdict(j), family=f) for j, f in zip(jobs, requests)], rows=rows)
+    if config is not None:
+        report['input'] = config['provenance']
+    return report
 
 
-def main():
-    report = compare()
+def main(argv=None):
+    from examples.planner_input import InputError, load_input
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--input', help='Shared JSON Input v1 (dynamic)')
+    args = parser.parse_args(argv)
+    try:
+        config = load_input(args.input, 'dynamic') if args.input else None
+    except InputError as exc:
+        print(f'INPUT_INVALID: {exc}', file=sys.stderr)
+        return 2
+    report = compare() if config is None else compare(config)
+    if config is not None:
+        print('Input: ' + json.dumps(report['input'], allow_nan=False))
     print(f"{report['label']} | [0,{report['T']}] | GPU-count / CPU-cores / host-RAM-GiB")
     print('Shared jobs: ' + ', '.join(j['id'] for j in report['jobs']))
     print('Scenario | Admit/reject/error | Complete by T / running at T | Delta admit | Certified batches | Comparison')
