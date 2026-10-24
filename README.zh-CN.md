@@ -28,6 +28,27 @@ for row in report["rows"]:
 
 [`workload.py`](workload.py) 的 `build_workload` 接受按顺序排列的整卡 GPU 数、CPU 核数和主机内存 GiB 向量；`evaluate` 在同一实例上运行六种方法，重建接纳数量和资源利用率。GPU 型号资格通过 `eligible` 显式给定，`shapes` 只归并相同容量向量。Trace 解析由外部处理；底层 `Instance` / `solve` 用法见[英文示例](README.md#quick-start)。
 
+## 滚动批次
+
+[`rolling.py`](rolling.py) 提供 `Job` 和 `simulate`，以事件驱动批次复用相同的六种方法。下面是合成示例，资源向量依次为整卡 GPU 数、CPU 核数和主机内存 GiB：
+
+```python
+from rolling import Job, simulate
+
+jobs = [
+    Job("A", 0, 2, (1, 4, 16)),
+    Job("B", 1, 3, (1, 4, 16)),
+    Job("C", 2, 2, (1, 4, 16)),
+]
+report = simulate([[1, 8, 32]], jobs, [[True, True, True]], method="first_fit")
+for decision in report["decisions"]:
+    print(decision["job_id"], decision["status"], decision["node"])
+```
+
+输出依次为 `A accepted 0`、`B not_scheduled None`、`C accepted 0`。到达时间和持续时间使用任意整数时间单位；接纳后立即启动。同一时间先释放已完成作业的资源，再将同时到达的作业按输入顺序组成一个批次。节点与作业之间的 eligibility 固定。拒绝是永久决定：不排队、不重试、不迁移、不抢占。
+
+使用 `method="highs_mip"` 时，经过验证的 `optimal` 结果仅在求解器容差内认证当前到达批次，不能证明整个时间范围的调度最优。此示例为合成数据，不是阿里巴巴历史分配或生产调度。
+
 ## 六种方法
 
 | 方法 | 策略 |

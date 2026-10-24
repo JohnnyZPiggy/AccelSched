@@ -53,6 +53,27 @@ for row in report["rows"]:
 
 [`workload.py`](workload.py) provides `build_workload` for ordered whole-GPU-count, CPU-core and host-RAM-GiB vectors with explicit eligibility. `evaluate` runs all six methods on the same instance and reconstructs admission and resource utilization. GPU types belong in `eligible`; `shapes` group identical capacity vectors. Trace parsing remains external.
 
+## Rolling batches
+
+[`rolling.py`](rolling.py) provides `Job` and `simulate` for event-driven batches using the same six methods. This synthetic example uses resource vectors ordered as whole GPU count, CPU cores and host RAM GiB:
+
+```python
+from rolling import Job, simulate
+
+jobs = [
+    Job("A", 0, 2, (1, 4, 16)),
+    Job("B", 1, 3, (1, 4, 16)),
+    Job("C", 2, 2, (1, 4, 16)),
+]
+report = simulate([[1, 8, 32]], jobs, [[True, True, True]], method="first_fit")
+for decision in report["decisions"]:
+    print(decision["job_id"], decision["status"], decision["node"])
+```
+
+The output is `A accepted 0`, `B not_scheduled None`, then `C accepted 0`. Arrival times and durations use arbitrary integer time units; accepted jobs start immediately. Completions release resources before arrivals at the same timestamp, and all simultaneous arrivals form one batch in input order. Eligibility is fixed per node/job. Rejection is permanent: there is no queue, retry, migration or preemption.
+
+With `method="highs_mip"`, a validated `optimal` result certifies only that arrival batch within solver tolerances, never the full scheduling horizon. This example is synthetic, not an Alibaba historical allocation or production schedule.
+
 ## Solvers
 
 | Method | Strategy |
