@@ -187,6 +187,7 @@ def evaluate(a,identifier,factory,optimum,base_result=None,reference_cost=0.,nat
         return dict(id=identifier,status='PASS',domain='STRICT_OPTIMAL',face_epsilon=0.,
                     face_numeric_tolerance=face_tol(optimum),certificate=c,metadata=metadata,replay=replay,
                     evaluation=evaluation,incremental_total_seconds=added,
+                    additional_computation_seconds=end-start,
                     fair_standalone_total_seconds=added+reference_cost,
                     timing=dict(generation_and_certificate=native_cost+generated-start,
                                 replay_and_physical_audit=replayed-generated,evaluation=end-replayed))
@@ -201,7 +202,7 @@ def select(records,pool,shared_reference_cost):
     start=perf_counter();valid=[records[i] for i in pool if records[i]['status']=='PASS']
     if not valid:raise ValueError('empty certified candidate pool')
     chosen=min(valid,key=lambda r:(-r['replay']['value'],-r['replay']['future_score'],
-                                    r['incremental_total_seconds'],r['id']))
+                                    r.get('additional_computation_seconds',r['incremental_total_seconds']),r['id']))
     elapsed=perf_counter()-start
     pool_cost=sum(records[i]['incremental_total_seconds'] for i in pool)
     return dict(selected_id=chosen['id'],pool=pool,certified_candidates=len(valid),
@@ -276,6 +277,7 @@ def run(p4f_directory,p4g_results):
             'positive GPU demand among rejected jobs; zero when no such rejected job. Full residual resource sums also reported.',
         cost_definition='Standalone derived methods add shared native acquisition. Selection sums all pool '
             'generation/replay/evaluation costs (including blocked attempts), shared reference once, and selection overhead. '
+            'Cost tie-break excludes the common native acquisition for every candidate. '
             'Controls are separately recorded common experimental audit cost. Reused P4F times are historical only.')
 
 

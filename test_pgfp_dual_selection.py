@@ -59,6 +59,10 @@ def test_selection_value_future_cost_id_and_no_near():
     assert p.select(r,['a','b'],0)['selected_id']=='a'
     r['c']['domain']='NEAR_OPTIMAL'
     with pytest.raises(ValueError):p.select(r,list(r),0)
+    r={'native':item('native',3,1,100.),'derived':item('derived',3,1,.02)}
+    r['native']['additional_computation_seconds']=.01
+    r['derived']['additional_computation_seconds']=.02
+    assert p.select(r,list(r),0)['selected_id']=='native'
 
 
 def test_feasible_nonoptimal_cannot_enter_strict_face():
