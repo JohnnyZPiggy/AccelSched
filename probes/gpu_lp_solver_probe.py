@@ -153,7 +153,7 @@ def json_safe(x):
     return x
 
 
-def run(directory,archive_path,budget=240.):
+def run(directory,archive_path,budget=240.,shape_only=False):
     start=perf_counter();directory=Path(directory);directory.mkdir(exist_ok=True)
     import hpdlp
     imported=perf_counter();archive_raw=Path(archive_path).read_bytes()
@@ -168,7 +168,7 @@ def run(directory,archive_path,budget=240.):
         payload=dict(archive_base64=base64.b64encode(raw).decode(),archive_sha256=hashlib.sha256(raw).hexdigest(),archive_bytes=len(raw),vectors={k:dict(shape=list(v.shape),dtype=v.dtype.str,sha256=hashlib.sha256(v.tobytes()).hexdigest()) for k,v in all_vectors.items()})
         (directory/'p7a-vectors.json').write_text(json.dumps(payload,separators=(',',':'),allow_nan=False));report['elapsed_seconds']=perf_counter()-start
         (directory/'results.json').write_text(json.dumps(json_safe(report),separators=(',',':'),allow_nan=False))
-    planned=[(name,m,None,{}) for name,m in smoke_models().items()]+[(f'shape_{n}',None,n,dict(nodes=s)) for n,s in ((1000,64),(10000,256))]
+    planned=([] if shape_only else [(name,m,None,{}) for name,m in smoke_models().items()])+[(f'shape_{n}',None,n,dict(nodes=s)) for n,s in ((1000,64),(10000,256))]
     for name,m,n,meta in planned:
         if perf_counter()-start>budget-45:report.update(status='PARTIAL_TIME_BUDGET');break
         tick=perf_counter();shape_model=None
@@ -213,6 +213,6 @@ def audit(summary,directory,output):
 
 
 if __name__=='__main__':
-    parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--output-dir');parser.add_argument('--p5a-archive');parser.add_argument('--audit-summary');parser.add_argument('--audit-directory');parser.add_argument('--audit-output');args=parser.parse_args()
+    parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--output-dir');parser.add_argument('--p5a-archive');parser.add_argument('--shape-only',action='store_true');parser.add_argument('--audit-summary');parser.add_argument('--audit-directory');parser.add_argument('--audit-output');args=parser.parse_args()
     if args.audit_summary:audit(args.audit_summary,args.audit_directory,args.audit_output)
-    else:run(args.output_dir,args.p5a_archive)
+    else:run(args.output_dir,args.p5a_archive,shape_only=args.shape_only)

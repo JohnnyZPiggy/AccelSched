@@ -1,5 +1,6 @@
 """P7A original ranged-model KKT, signs, rays and immutable P5 input tests."""
 import numpy as np
+import pytest
 from probes import gpu_lp_solver_probe as p
 
 
@@ -49,7 +50,8 @@ def test_p5_original_fixture_csr_hash_pins():
         assert np.all(m['lb']==0.) and np.all(np.isneginf(m['l']))
 
 
-def test_failed_1k_blocks_10k_without_gpu(monkeypatch,tmp_path):
+@pytest.mark.parametrize('shape_only',[False,True])
+def test_failed_1k_blocks_10k_without_gpu(monkeypatch,tmp_path,shape_only):
     import sys,json,hashlib
     from contextlib import nullcontext
     from types import SimpleNamespace
@@ -64,8 +66,8 @@ def test_failed_1k_blocks_10k_without_gpu(monkeypatch,tmp_path):
     def solve(m,name,module,shape_model):
         called.append(name);return dict(name=name,status='UNCERTIFIED' if name=='shape_1000' else 'PASS',timing=dict(total=0.)),{}
     monkeypatch.setattr(p,'shape',shape);monkeypatch.setattr(p,'solve',solve)
-    result=p.run(tmp_path/'result',archive)
+    result=p.run(tmp_path/'result',archive,shape_only=shape_only)
     assert result['status']=='BLOCKED_SHAPE_CORRECTNESS' and generated==[1000]
     assert (result['inputs']['shape_1000']['rows'],result['inputs']['shape_1000']['variables'],result['inputs']['shape_1000']['nnz'])==(1024,8000,32000)
     assert result['inputs']['shape_1000']['lp_sha256']==p.PINS[1000][1]
-    assert called==[name for name in ('hand_mixed','infeasible','unbounded','shape_1000') for _ in range(2)]
+    assert called==[name for name in (('shape_1000',) if shape_only else ('hand_mixed','infeasible','unbounded','shape_1000')) for _ in range(2)]
