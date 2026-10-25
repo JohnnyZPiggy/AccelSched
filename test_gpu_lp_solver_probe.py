@@ -47,3 +47,23 @@ def test_p5_original_fixture_csr_hash_pins():
         assert (meta['fixture_sha256'],meta['lp_sha256'])==p.PINS[n]
         assert m['A'].nnz==32*n and m['A'].shape==(n+24,8*n)
         assert np.all(m['lb']==0.) and np.all(np.isneginf(m['l']))
+
+
+def test_failed_1k_blocks_10k_without_gpu(monkeypatch,tmp_path):
+    import sys,json,hashlib
+    from contextlib import nullcontext
+    from types import SimpleNamespace
+    monkeypatch.setitem(sys.modules,'hpdlp',SimpleNamespace())
+    monkeypatch.setattr(p.p5,'Memory',lambda:nullcontext(SimpleNamespace(report=lambda:{})))
+    monkeypatch.setattr(p,'cpu_small',lambda m:dict(status=0))
+    archive=tmp_path/'archive.json';raw=json.dumps({'experiment':{'tiers':[{'n':1000},{'n':10000}]}}).encode();archive.write_bytes(raw)
+    monkeypatch.setattr(p,'ARCHIVE',hashlib.sha256(raw).hexdigest())
+    generated=[];called=[]
+    def shape(n,nodes):
+        generated.append(n);return p.smoke_models()['hand_mixed'],{},{}
+    def solve(m,name,module,shape_model):
+        called.append(name);return dict(name=name,status='UNCERTIFIED' if name=='shape_1000' else 'PASS',timing=dict(total=0.)),{}
+    monkeypatch.setattr(p,'shape',shape);monkeypatch.setattr(p,'solve',solve)
+    result=p.run(tmp_path/'result',archive)
+    assert result['status']=='BLOCKED_SHAPE_CORRECTNESS' and generated==[1000]
+    assert called==[name for name in ('hand_mixed','infeasible','unbounded','shape_1000') for _ in range(2)]

@@ -184,6 +184,7 @@ def run(directory,archive_path,budget=240.):
             if out['status']!='PASS':report['status']='PARTIAL_UNCERTIFIED'
             persist()
         if name=='hand_mixed' and any(x['status']!='PASS' for x in report['records']):report['status']='BLOCKED_SMALL_CORRECTNESS';break
+        if n is not None and any(x['status']!='PASS' for x in report['records'] if x['name']==name):report['status']='BLOCKED_SHAPE_CORRECTNESS';break
     persist();return report
 
 
