@@ -131,10 +131,11 @@ def audit(summary_path,vectors_path,output):
     fixture_sha=base.digest(a.capacity,a.demand,a.value,a.shapes);lp_sha=base.digest(A.data,A.indices,A.indptr,model['b'],model['c'])
     if fixture_sha!=prior.REGISTERED_FIXTURE or lp_sha!=prior.REGISTERED_LP:raise ValueError('local original model mismatch')
     s=remote['raw_solver'];sparse=base.certify(model,x,pi,rc,remote['certificate']['reported_optimal'],s['ObjVal'],s['DualObj'],s['Gap'])
+    sparse['retained_vectors']='Full original x/Pi/RC retained in SHA-verified NPZ; only hashes/samples embedded here.'
     independent=matrix_free(a,x,pi,rc,s)
     differences={name:{k:float(c[k]-remote['certificate'][k]) for k in ('primal_residual','dual_residual','rc_max_error','objective_gap','row_complementarity','column_complementarity','rc_complementarity')}
         for name,c in [('sparse',sparse),('matrix_free',independent)]}
-    result=dict(status=verdict(remote['certificate'],sparse,independent),project_sha=wrapper['project_sha'],adapter_sha=wrapper['source_sha'],
+    result=dict(status=verdict(remote['certificate'],sparse,independent),audit_source_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),project_sha=wrapper['project_sha'],adapter_sha=wrapper['source_sha'],
         selected_index=index,vector_sha256=selected['vector_sha256'],arrays=selected['arrays'],npz_sha256=selected['sha256'],
         fixture_sha256=fixture_sha,lp_sha256=lp_sha,sparse=sparse,matrix_free=independent,differences=differences,
         environment=dict(python=sys.version,numpy=np.__version__,scipy=scipy.__version__,platform=platform.platform()),
