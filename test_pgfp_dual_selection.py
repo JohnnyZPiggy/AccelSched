@@ -70,3 +70,45 @@ def test_feasible_nonoptimal_cannot_enter_strict_face():
     # Spoofed policy labels do not bypass the original primal/dual gap audit.
     y=np.array([0.,0.,1+p.NEAR_DELTA,0.,0.]);m=p.sparse_model(a)
     with pytest.raises(ValueError):p.from_vector(a,c,y)
+
+
+@pytest.mark.parametrize("case", ["A_analytic_split", "B_p4b_heterogeneous", "C_p4f_128"])
+def test_shared_acquisition_once_for_pool_and_standalone(case, monkeypatch):
+    # No LP or replay: exercise run's real argument wiring with nonzero common cost.
+    monkeypatch.setattr(p, 'verify_p4g', lambda _: {})
+    monkeypatch.setattr(p.g, 'scenarios', lambda: {case: object()})
+    certificate = dict(primal_objective=3., capacity_duals=[[0.]])
+    monkeypatch.setattr(p, 'native', lambda *args: ({'certificate': certificate}, {}))
+    monkeypatch.setattr(p, 'strict', lambda *args: certificate)
+    monkeypatch.setattr(p.g, 'control', lambda _: {})
+    monkeypatch.setattr(p, 'fixture_sha', lambda _: 'fixture')
+    monkeypatch.setattr(p.g, 'lp_hash', lambda _: 'lp')
+    monkeypatch.setattr(p, 'near_candidate', lambda *args: {})
+    monkeypatch.setattr(p, 'replay_near', lambda *args: {})
+    monkeypatch.setattr(p, 'fragmentation', lambda *args: {})
+    # A's near rejection is outside this cost-only path.
+    def admission(*args):
+        if args[1] == {}: raise ValueError('near')
+        return certificate
+    monkeypatch.setattr(p, 'strict', admission)
+    ticks=iter(range(100))
+    monkeypatch.setattr(p, 'perf_counter', lambda: float(next(ticks)))
+    def measured(a, identifier, factory, optimum, base_result=None, reference_cost=0.):
+        assert reference_cost == 1.
+        return dict(id=identifier,status='PASS',domain='STRICT_OPTIMAL',
+            certificate=certificate,replay=dict(value=3.,future_score=0.),
+            incremental_total_seconds=.25,additional_computation_seconds=.25,
+            fair_standalone_total_seconds=reference_cost+.25)
+    monkeypatch.setattr(p, 'evaluate', measured)
+    # Capture select before run reaches that unrelated final summary.
+    original=p.select
+    class Captured(Exception): pass
+    def selection(records,pool,shared):
+        result=original(records,pool,shared)
+        assert shared == 1.
+        assert len(pool) == (5 if case.startswith('A') else 3 if case.startswith('B') else 4)
+        assert result['realized_pool_generation_replay_evaluation_seconds'] == len(pool)*.25
+        assert result['fair_total_seconds'] == 1.+len(pool)*.25+result['selection_seconds']
+        raise Captured
+    monkeypatch.setattr(p, 'select', selection)
+    with pytest.raises(Captured): p.run(None,None)

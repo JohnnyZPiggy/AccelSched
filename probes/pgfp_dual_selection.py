@@ -173,7 +173,7 @@ def fragmentation(a,replay):
                 subthreshold_gpu_units=float(rest[pieces,0].sum()))
 
 
-def evaluate(a,identifier,factory,optimum,base_result=None,reference_cost=0.,native_cost=0.):
+def evaluate(a,identifier,factory,optimum,base_result=None,reference_cost=0.):
     start=perf_counter()
     try:
         payload,metadata=factory();c=strict(a,payload,optimum);generated=perf_counter()
@@ -183,13 +183,13 @@ def evaluate(a,identifier,factory,optimum,base_result=None,reference_cost=0.,nat
         if base_result is not None:
             evaluation.update(differences=g.divergence(base_result['replay'],replay),
                 native_price_distance=float(np.max(np.abs(np.array(c['capacity_duals'])-base_result['certificate']['capacity_duals']))))
-        end=perf_counter();added=native_cost+end-start
+        end=perf_counter();added=end-start
         return dict(id=identifier,status='PASS',domain='STRICT_OPTIMAL',face_epsilon=0.,
                     face_numeric_tolerance=face_tol(optimum),certificate=c,metadata=metadata,replay=replay,
                     evaluation=evaluation,incremental_total_seconds=added,
                     additional_computation_seconds=end-start,
                     fair_standalone_total_seconds=added+reference_cost,
-                    timing=dict(generation_and_certificate=native_cost+generated-start,
+                    timing=dict(generation_and_certificate=generated-start,
                                 replay_and_physical_audit=replayed-generated,evaluation=end-replayed))
     except Exception:
         return dict(id=identifier,status='METHOD_BLOCKED',error=traceback.format_exc(),
@@ -233,7 +233,7 @@ def run(p4f_directory,p4g_results):
         acquisition=perf_counter()-acquisition
         control=g.control(a)
         candidates={}
-        candidates['solver_native']=evaluate(a,'solver_native',lambda:(payload,source),optimum,native_cost=acquisition)
+        candidates['solver_native']=evaluate(a,'solver_native',lambda:(payload,source),optimum,reference_cost=acquisition)
         baseline=candidates['solver_native']
         if baseline['status']!='PASS':raise ValueError('native replay failed')
         candidates['minimum_norm']=evaluate(a,'minimum_norm',lambda:minimum_norm(a,reference),optimum,baseline,acquisition)
@@ -262,7 +262,7 @@ def run(p4f_directory,p4g_results):
                     return dict(domain='STRICT_OPTIMAL',face_epsilon=0.,certificate=c),meta
                 candidates['historical_gpu']=evaluate(a,'historical_gpu',gpu,optimum,baseline,acquisition)
                 pool=['solver_native','historical_gpu','minimum_norm','reference_anchor']
-            selection=select(candidates,pool,0.)  # Native acquisition counted once inside pool.
+            selection=select(candidates,pool,acquisition)
         cases[name]=dict(physical_fixture_sha256=fixture_sha(a),lp_input_sha256=g.lp_hash(a),
             optimum=optimum,anchor_before_outcomes=anchor.tolist(),reference_acquisition_seconds=acquisition,
             control=control,candidates=candidates,placement_aware=selection,near_control=near,
