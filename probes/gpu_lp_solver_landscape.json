@@ -1,0 +1,341 @@
+{
+  "schema_version": 1,
+  "mode": "PROBE_ONLY_RESEARCH_SNAPSHOT",
+  "audit_utc": "2026-10-25T21:01:37.910699+00:00",
+  "selection": "H-PDLP",
+  "scope": "No production adapter/dependency change. Exact source audits; actual execution outcomes are separate immutable run evidence, not predeclared success.",
+  "candidates": [
+    {
+      "id": "H-PDLP",
+      "license": "Apache-2.0",
+      "version": "0.0.1 (CMake; no GitHub release)",
+      "method": "Generalized PDHG, restarted reflected Halpern, homogeneous self-dual embedding",
+      "cuda": "Toolkit >=12.4 including nvcc; CMake>=3.24; C++17; Python>=3.10; toolkit must support actual GPU",
+      "interface": "Python Model NumPy/SciPy CSR; low-level CSC/COO/dense; C and MPS CLI; float64/int32",
+      "certificate": "X/Pi/RC, status/objective/residuals; primal-infeasible Pi/RC rays and dual-infeasible X ray when present; presolve may omit rays",
+      "status": "SELECTED_FOR_ISOLATED_TRIAL",
+      "paper": "https://arxiv.org/abs/2610.17695",
+      "notices": "PSLP v0.0.11 Apache-2.0; zlib separate zlib license, system or fetched v1.3; bundled MIPLIB example is third-party data, not used",
+      "repository": "https://github.com/MIT-Lu-Lab/H-PDLP",
+      "audited_ref": "HEAD",
+      "audited_commit": "a89543313b0aa81b0e57c88f964f12daebfe5c65",
+      "commit_date": "2026-10-19T18:19:27Z",
+      "latest_release": null,
+      "release_date": null,
+      "evidence_files": {
+        "CMakeLists.txt": {
+          "blob": "523809a482b054fec74d097d525ba57acada5b9f",
+          "bytes": 9213,
+          "sha256": "40daae4b76064bc5dd497a6ee17732a8e06ed0599ec9f5311155c5309336b7a1",
+          "local": "CMakeLists.txt"
+        },
+        "LICENSE": {
+          "blob": "082f7bb55773b7beac268699dcbdeb6e41cd1788",
+          "bytes": 11306,
+          "sha256": "1b18de633e08be5746f7a2744c023ba2533ecbcd9327fab5273e30c5bd172210",
+          "local": "LICENSE"
+        },
+        "README.md": {
+          "blob": "1a77bc0b0e5dbf0de9393032edcd5727dd3bfdf9",
+          "bytes": 6667,
+          "sha256": "6822e7113c985d4027f098079b257af5e5a2c23dcf4c298f36b6253af187b69f",
+          "local": "README.md"
+        },
+        "pyproject.toml": {
+          "blob": "949685def660465a1e06cf1c921a7bd416787541",
+          "bytes": 2070,
+          "sha256": "60bc854c78f3ed20859235f9bc20999f4960347f3ca38fc6adc07d636dc19b3b",
+          "local": "pyproject.toml"
+        }
+      }
+    },
+    {
+      "id": "HPR-LP-C",
+      "license": "MIT",
+      "version": "v0.1.3",
+      "method": "Halpern Peaceman-Rachford",
+      "cuda": "Linux x86_64, nvcc matching GPU architecture/C++17; GCC9-12 recommendation, not hard floor; regular cuSPARSE below13.3, experimental SpMVOp >=13.3; universal numeric minimum not verified",
+      "interface": "C/C++, MPS CLI; Python direct LP and shared-sparse-matrix batch interface; not executed",
+      "certificate": "Primal/dual native result API to inspect before integration; complete infeasibility ray extraction not experimentally verified",
+      "status": "AUDITED_NOT_RUN",
+      "paper": "https://arxiv.org/abs/2408.12179",
+      "notices": "Vendored PSLP Apache-2.0; GPU-Presolver-C MIT and its CPU reference MIT inspected separately; own notices retained; not equated with unpublished cuPSLP",
+      "repository": "https://github.com/PolyU-IOR/HPR-LP-C",
+      "audited_ref": "HEAD",
+      "audited_commit": "79dbaa3fb082a1b826785d13dcd30d9ba350e056",
+      "commit_date": "2026-09-26T03:41:15Z",
+      "latest_release": "v0.1.3",
+      "release_date": "2026-09-14T15:33:26Z",
+      "evidence_files": {
+        "CMakeLists.txt": {
+          "blob": "21b17f01ed5531404cbf4cd6c3580aa6eb1c1dde",
+          "bytes": 16346,
+          "sha256": "a005879495fe4761ccc6c54bf6a12413f98d7903043f8e8f078f31b6840b9fb6",
+          "local": "CMakeLists.txt"
+        },
+        "LICENSE": {
+          "blob": "05159eecbc795bc16dba02e300bd6620699db994",
+          "bytes": 1125,
+          "sha256": "fb04727c57daca4159e4fc9198bf9a9edcc5055da3616e9676c5a733ceebd285",
+          "local": "LICENSE"
+        },
+        "README.md": {
+          "blob": "e03f676dc17903b243d0aad3f19d201861594ca2",
+          "bytes": 14383,
+          "sha256": "8ab698ae9fcb6238639a9c1c58cfa8acd5cd129fef7e140428339197202ffc51",
+          "local": "README.md"
+        },
+        "third_party/GPU-Presolver-C/LICENSE": {
+          "blob": "05159eecbc795bc16dba02e300bd6620699db994",
+          "bytes": 1125,
+          "sha256": "fb04727c57daca4159e4fc9198bf9a9edcc5055da3616e9676c5a733ceebd285",
+          "local": "third_party__GPU-Presolver-C__LICENSE"
+        },
+        "third_party/GPU-Presolver-C/cpp/third_party/cpu_presolve_reference/LICENSE": {
+          "blob": "05159eecbc795bc16dba02e300bd6620699db994",
+          "bytes": 1125,
+          "sha256": "fb04727c57daca4159e4fc9198bf9a9edcc5055da3616e9676c5a733ceebd285",
+          "local": "third_party__GPU-Presolver-C__cpp__third_party__cpu_presolve_reference__LICENSE"
+        },
+        "third_party/PSLP/LICENSE": {
+          "blob": "0c38718caf306386108141e30bffd1b4bc1b8f3f",
+          "bytes": 11351,
+          "sha256": "24191b0a317aaea6c3c6f6a7a665d443ca127d714b956bdd03bd22d9afe5e945",
+          "local": "third_party__PSLP__LICENSE"
+        }
+      }
+    },
+    {
+      "id": "NVIDIA cuOpt",
+      "license": "Apache-2.0",
+      "version": "v26.10.00 release; audited default HEAD separately pinned",
+      "method": "PDLP, GPU barrier/cuDSS, CPU dual simplex, concurrent selection per26.10 docs",
+      "cuda": "Docs26.10 CC>=7.0, CUDA>=12, Python3.11..3.14, glibc>=2.28, OpenSSL3; storage/RAM recommendations not assumed hard tiny-LP limits",
+      "interface": "Python Problem/C/CLI/server; direct sparse LP and variable/constraint API; not executed",
+      "certificate": "Variable.Value, Constraint.DualValue, reduced cost/status from official API; ray extraction not experimentally established here",
+      "status": "AUDITED_NOT_RUN_RESERVE",
+      "paper": "https://developer.nvidia.com/blog/solve-linear-programs-using-the-gpu-accelerated-barrier-method-in-nvidia-cuopt/",
+      "notices": "thirdparty/THIRD_PARTY_LICENSES includes cxxopts MIT and PSLP Apache; CUDA/cuDSS binary licenses distinct; dedicated26.10 research paper not established by this audit",
+      "repository": "https://github.com/NVIDIA/cuopt",
+      "audited_ref": "HEAD",
+      "audited_commit": "b5ad4d07c3be0e4796cef8d44d891b7f6ce2a91e",
+      "commit_date": "2026-10-23T21:45:57Z",
+      "latest_release": "v26.10.00",
+      "release_date": "2026-10-14T21:49:16Z",
+      "evidence_files": {
+        "LICENSE": {
+          "blob": "6ed9218d9987a824323d10258756529e1bf22f5c",
+          "bytes": 11348,
+          "sha256": "82d36972a71088e8d4a4793313e64e18340c60de08e3175a58360a277c962a33",
+          "local": "LICENSE"
+        },
+        "README.md": {
+          "blob": "27a507a427670d72bec9973fe74aa3cd58353deb",
+          "bytes": 9471,
+          "sha256": "5ec9e8ecb1606442f2fac39dbee6f4dc3243dbe33ecd0a2769448a8c9679a7d3",
+          "local": "README.md"
+        },
+        "pyproject.toml": {
+          "blob": "51aa3b6c7481dc13d213a9600b2d358144bcad57",
+          "bytes": 1853,
+          "sha256": "0ff76af4b9572ae26cd7499bf9a3cab7cb36cbd319dd01ad34cd8097047557aa",
+          "local": "pyproject.toml"
+        },
+        "thirdparty/THIRD_PARTY_LICENSES": {
+          "blob": "15d5a08e007317187ac317bc86ac00211a432f02",
+          "bytes": 43015,
+          "sha256": "0058e0aa8936ffb258302d383508a7aecae0df0c18aaadab8637abac923afdc6",
+          "local": "thirdparty__THIRD_PARTY_LICENSES"
+        }
+      }
+    },
+    {
+      "id": "CuClarabel",
+      "license": "Apache-2.0",
+      "version": "CuClarabel branch Project.toml0.11.0; repo latest0.11.1 is not this branch version",
+      "method": "GPU conic interior-point solver using cuDSS; LP via cone form",
+      "cuda": "Julia>=1.10, CUDA.jl and CUDSS.jl0.6, PythonCall0.9.31; toolkit floor not independently established",
+      "interface": "Julia sparse P/q/A/b/cones, JuMP; Python via JuliaCall/CuPy pointer bridge, not a native Python wheel claim",
+      "certificate": "Julia solution/status primal/dual cone certificates; ranged-LP bound/sign mapping and original-model rays not experimentally verified",
+      "status": "AUDITED_NOT_RUN_RESERVE",
+      "paper": "https://arxiv.org/abs/2412.19027",
+      "notices": "Project license distinct from cuDSS/CUDA runtime licenses; use current oxfordcontrol branch, not stale cvxgrp location",
+      "repository": "https://github.com/oxfordcontrol/Clarabel.jl",
+      "audited_ref": "CuClarabel",
+      "audited_commit": "ffa325c89fa90b7e86b745fa61b1dca64daf3a06",
+      "commit_date": "2026-03-07T02:42:17Z",
+      "latest_release": "v0.11.1",
+      "release_date": "2026-04-14T16:30:16Z",
+      "evidence_files": {
+        "LICENSE.md": {
+          "blob": "70703507b9fd953e0f86bbdf138c9989a202d66f",
+          "bytes": 10779,
+          "sha256": "6e2f382771f8aab58e4868ddd0afe0c2fefe6b54f9681493a9c3d0f32906cfe1",
+          "local": "LICENSE.md"
+        },
+        "Project.toml": {
+          "blob": "c96a85fda5071d3e67f12aa584769ccd9bc374da",
+          "bytes": 1718,
+          "sha256": "d676960d64bbee8aa664a6edffb2b5692219c1d612da4afd03ae715241c2d696",
+          "local": "Project.toml"
+        },
+        "README.md": {
+          "blob": "853f2df35f6414554d374a1140dd6fbaa806e525",
+          "bytes": 8293,
+          "sha256": "7e8dd68d74cd086c047e1ec6713d803dcb07736acaa17262c05eff95ba78ad11",
+          "local": "README.md"
+        }
+      }
+    },
+    {
+      "id": "PSLP",
+      "license": "Apache-2.0",
+      "version": "HEAD/latestv0.3.0; H-PDLP specifically pins older v0.0.11 ae2318909b2f3096a656a642b3d706abafd7e167",
+      "method": "CPU C99 LP/QP presolve/postsolve, not an LP optimization backend by itself",
+      "cuda": "None for standalone CPU presolver; no external dependencies claimed in README",
+      "interface": "ProblemData sparse CSR, new_presolver, run_presolver, postsolve; solution reconstruction z=P*x+c-A^T*y",
+      "certificate": "Postsolve maps reduced primal/dual to original model, still requires independent original certificate",
+      "status": "AUDITED_NOT_RUN_STANDALONE",
+      "paper": "https://stanford.edu/~boyd/papers/pslp.html",
+      "notices": "Actual selected H-PDLP build dependency is separately pinned v0.0.11, not current0.3.0",
+      "repository": "https://github.com/dance858/PSLP",
+      "audited_ref": "HEAD",
+      "audited_commit": "057f16ccfc9f0d2be4d1da8d3ef2c1a0b498df99",
+      "commit_date": "2026-10-24T13:16:25Z",
+      "latest_release": "v0.3.0",
+      "release_date": "2026-10-22T11:45:38Z",
+      "evidence_files": {
+        "CMakeLists.txt": {
+          "blob": "1ecd23cde6d1d0edfb4996882cf38b9424a1d178",
+          "bytes": 7266,
+          "sha256": "18a89e486c76d2c9f7ba918f277dea696ff8de2a8304a787388c9b6edbb4049b",
+          "local": "CMakeLists.txt"
+        },
+        "LICENSE": {
+          "blob": "0c38718caf306386108141e30bffd1b4bc1b8f3f",
+          "bytes": 11351,
+          "sha256": "24191b0a317aaea6c3c6f6a7a665d443ca127d714b956bdd03bd22d9afe5e945",
+          "local": "LICENSE"
+        },
+        "README.md": {
+          "blob": "6d67cb7362fd1c7b1799f64abe1be86714482f6d",
+          "bytes": 4413,
+          "sha256": "28f02d25b03602bb5430cc6c0a8132337c4f6ad5260282438f6e8aacbd08f1e1",
+          "local": "README.md"
+        }
+      }
+    },
+    {
+      "id": "HiGHS",
+      "license": "MIT",
+      "version": "Latest releasev1.15.1; archived SciPy session wrapper recorded separately",
+      "method": "CPU simplex/interior point; archived control only for Shape-LP",
+      "cuda": "None",
+      "interface": "SciPy linprog, native highspy/C; sparse LP",
+      "certificate": "Archived P5 primal/row marginals/reduced costs independently certified; not a new same-device benchmark",
+      "status": "ARCHIVED_CONTROL_NOT_RERUN_SHAPE",
+      "paper": "https://highs.dev/",
+      "notices": "No claim that current source HEAD equals archived installed solver binary",
+      "repository": "https://github.com/ERGO-Code/HiGHS",
+      "audited_ref": "HEAD",
+      "audited_commit": "73cac48c5340d775a477087198611862559be250",
+      "commit_date": "2026-08-19T14:30:50Z",
+      "latest_release": "v1.15.1",
+      "release_date": "2026-07-02T11:25:02Z",
+      "evidence_files": {
+        "CMakeLists.txt": {
+          "blob": "79ef1f02d6b38e66d33ca0f43d7a76f255f23fc8",
+          "bytes": 35595,
+          "sha256": "9363447f05a77e1b800c17ce0abbb647cbc7ce2f453eb58eccbd7d8e96e17b5f",
+          "local": "CMakeLists.txt"
+        },
+        "LICENSE.txt": {
+          "blob": "fd511ea4cdaba5dde10e1ee96b231c755e213583",
+          "bytes": 1062,
+          "sha256": "795e6090936bcf2e1a0bfb339053de0c5bb6f3102035ead0ecc0ed4a7c41f1b7",
+          "local": "LICENSE.txt"
+        },
+        "README.md": {
+          "blob": "519b6c566976e29552417998e9c415763af9c991",
+          "bytes": 11206,
+          "sha256": "c6a0b1fee65a22672c85c9bec8210631105f9cbe2b90d2d58858dc1804209402",
+          "local": "README.md"
+        },
+        "pyproject.toml": {
+          "blob": "46ad827673fa7c548c8dde1911c0ffc23d93e5e3",
+          "bytes": 3489,
+          "sha256": "92a364e39a074bcdd2d959b04707f34b928da359afda388560651f3e697e7b7b",
+          "local": "pyproject.toml"
+        }
+      }
+    },
+    {
+      "id": "cuPDLPx",
+      "license": "Apache-2.0",
+      "version": "v0.3.0; archived PyPI sdist source identity retained",
+      "method": "Restarted Halpern PDHG",
+      "cuda": "CUDA source build supported GPU architecture; exact archived CUDA13/L4 environment retained, not a new install",
+      "interface": "Python Model NumPy/SciPy, C/CLI/Julia",
+      "certificate": "Archived X/Pi/RC P5 strict original CSR certificates; full arrays were not retained for P5A1K/10K, do not infer from samples/hash",
+      "status": "ARCHIVED_CONTROL_NOT_RERUN",
+      "paper": "https://arxiv.org/abs/2507.14051",
+      "notices": "Archived sdist SHA5f6175d244a4a2985bb4454dc908405d3bb0afd3f5755c6c64e4076b1af45fc4; Git tag/archive equivalence not established",
+      "repository": "https://github.com/MIT-Lu-Lab/cuPDLPx",
+      "audited_ref": "HEAD",
+      "audited_commit": "63d823beda289acfcdbb1d9735fc6ba7c35c9c10",
+      "commit_date": "2026-10-11T04:35:07Z",
+      "latest_release": "v0.3.0",
+      "release_date": "2026-07-08T18:36:15Z",
+      "evidence_files": {
+        "CMakeLists.txt": {
+          "blob": "44625f706112b11fad202344aca5f5eb4c2f848e",
+          "bytes": 12295,
+          "sha256": "2db1467fba5c20dc1997b6aab967cfd3e8ee44540010cc98df5cc103959db4e7",
+          "local": "CMakeLists.txt"
+        },
+        "LICENSE": {
+          "blob": "94b024386b6b79c9e5c4aa5f516890d943c57144",
+          "bytes": 11339,
+          "sha256": "f1bfd79e7628563cd8a18679c64e88b242cfd3959de4919cfce390692a00fb37",
+          "local": "LICENSE"
+        },
+        "README.md": {
+          "blob": "afa3d4afde88f7a463b644a0a74c05fcf94e1f1c",
+          "bytes": 3156,
+          "sha256": "a25fc2a38ccb483a1cd9d4affea6cc37332fffa036e9751ac15df39cef71d036",
+          "local": "README.md"
+        },
+        "pyproject.toml": {
+          "blob": "f60c03466290ee46ba220e054f3ed6a6d0e132d1",
+          "bytes": 1610,
+          "sha256": "62dd0f10ef799f5111416d66e3d6d524023032e4fb8cc691b7961bb7e31a52d0",
+          "local": "pyproject.toml"
+        }
+      }
+    },
+    {
+      "id": "cuPSLP",
+      "license": "NOT_ESTABLISHED for a standalone public implementation",
+      "version": "September2026 manuscript; source/release not established",
+      "method": "GPU presolver, not standalone complete LP solver",
+      "cuda": "No independently established runnable-source/toolkit requirement",
+      "interface": "Official author page links manuscript only, no Code link observed; no package/API claimed",
+      "certificate": "Original postsolve certificate extraction unavailable for audit",
+      "status": "PAPER_ONLY_PUBLIC_SOURCE_NOT_ESTABLISHED",
+      "paper": "https://web.stanford.edu/~boyd/papers/cuPSLP.html",
+      "repository": null,
+      "audited_commit": null,
+      "notices": "Absence of author-page Code link is limited evidence, not proof that no source exists elsewhere; GPU-Presolver-C is separately named software"
+    }
+  ],
+  "archived_control": {
+    "sha256": "57b2d4b055edbf7a71a25e15b3ff453dd8ade7799c634380494f7bccaeab5ad3",
+    "bytes": 38604,
+    "scope": "P5A same fixed input model, different historical session; numerical control only, no new speedup comparison"
+  },
+  "official_docs": [
+    "https://docs.nvidia.com/cuopt/user-guide/latest/system-requirements.html",
+    "https://docs.nvidia.com/cuopt/user-guide/latest/cuopt-python/convex/convex-api.html",
+    "https://docs.nvidia.com/cuopt/user-guide/latest/convex-features.html"
+  ]
+}
