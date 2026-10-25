@@ -93,6 +93,80 @@ def cpu_probe():
     return results
 
 
+def gpu_probe():
+    """Explicit optional two-case GPU run, after external isolated install/preflight.
+
+    optimize() owns hidden setup/transfers; do not label its combined wall as a
+    device-only solve measurement. No moderate case, warmup solve or retry here.
+    """
+    start = perf_counter()
+    import cupdlpx
+    from cupdlpx import Model, PDLP
+    imported = perf_counter()
+    cases, sign = {}, None
+    for name in ('hand_unique', 'hand_degenerate'):
+        tick = perf_counter()
+        a = fixtures()[name]
+        sparse = sparse_model(a)
+        assembled = perf_counter()
+        model = Model(objective_vector=sparse['c'], constraint_matrix=sparse['A'],
+                      constraint_lower_bound=np.full(len(sparse['b']), -np.inf),
+                      constraint_upper_bound=sparse['b'],
+                      variable_lower_bound=np.zeros(len(sparse['c'])),
+                      variable_upper_bound=np.full(len(sparse['c']), np.inf))
+        model.ModelSense = PDLP.MINIMIZE
+        model.setParams(TimeLimit=5., OptimalityTol=1e-10, FeasibilityTol=1e-10,
+                        Presolve=False, OutputFlag=False)
+        configured = perf_counter()
+        model.optimize()
+        solved = perf_counter()
+        x = np.array(model.X, float).reshape(sparse['m'], sparse['n'])
+        pi, rc = np.array(model.Pi, float), np.array(model.RC, float)
+        raw = {k: getattr(model, k, None) for k in (
+            'Status', 'StatusCode', 'StatusName', 'ObjVal', 'DualObj', 'Gap',
+            'RelPrimalResidual', 'RelDualResidual', 'IterCount', 'Runtime')}
+        status_code = raw['StatusCode'] if raw['StatusCode'] is not None else raw['Status']
+        retrieved = perf_counter()
+        try:
+            if sign is None:
+                sign = calibrate_hand_a(x, pi, rc)['pi_sign']
+            checked = certificate(a, x, pi, rc, sign, status_code == PDLP.OPTIMAL)
+        except ValueError as exc:
+            cases[name] = dict(certified=False, raw_solver=raw, x=x.tolist(),
+                               pi=pi.tolist(), rc=rc.tolist(), error=str(exc),
+                               fixture_sha256=fixture_sha(a))
+            break
+        cpu = solve_sparse(a)
+        raw_objectives_match = (np.isfinite([raw['ObjVal'], raw['DualObj'], raw['Gap']]).all()
+                                and abs(raw['ObjVal']+checked['primal_objective']) <= 1e-7
+                                and abs(raw['DualObj']+checked['dual_objective']) <= 1e-7
+                                and abs(abs(raw['Gap'])-checked['objective_gap']) <= 1e-7)
+        value_error = abs(cpu['primal_objective']-checked['primal_objective'])
+        audited = perf_counter()
+        cases[name] = dict(fixture_sha256=fixture_sha(a), raw_solver=raw,
+                           original_model_certificate=checked, highs=cpu,
+                           raw_objectives_match=bool(raw_objectives_match),
+                           value_error=value_error,
+                           task_order_match=checked['task_order'] == cpu['task_order'],
+                           shape_order_match=checked['shape_order'] == cpu['shape_order'],
+                           parameters=dict(model._params),
+                           timings_seconds=dict(assembly=assembled-tick,
+                                host_model_setup=configured-assembled,
+                                optimize_including_hidden_transfers=solved-configured,
+                                result_retrieval=retrieved-solved,
+                                audit_and_highs=audited-retrieved,total=audited-tick),
+                           certified=bool(checked['certified'] and raw_objectives_match
+                                          and value_error <= 1e-7))
+        if not cases[name]['certified']:
+            break
+    return dict(status='PASS' if len(cases) == 2 and all(c['certified'] for c in cases.values())
+                else 'BLOCKED', backend='cupdlpx', version=getattr(cupdlpx, '__version__', None),
+                cases=cases, gpu_pi_sign=sign, import_seconds=imported-start,
+                total_seconds=perf_counter()-start,
+                transfer_note='Individual H2D/device setup/D2H timings unavailable from Model API; '
+                              'optimize wall is inclusive, not a kernel benchmark')
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--metadata', type=Path, required=True)
