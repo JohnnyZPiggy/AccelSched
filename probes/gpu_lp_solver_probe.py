@@ -175,7 +175,7 @@ def run(directory,archive_path,budget=240.):
         if n is not None:
             m,shape_model,meta=shape(n,meta['nodes']);meta['archived_control']=next(t for t in archive['experiment']['tiers'] if t['n']==n)
         else:report['smoke_cpu'][name]=cpu_small(m)
-        built=perf_counter();report['inputs'][name]=dict(**meta,input_build_or_cpu_control_seconds=built-tick,rows=m['A'].shape[0],variables=len(m['c']),nnz=m['A'].nnz,input_sha256=p5.digest(m['A'].data,m['A'].indices,m['A'].indptr,m['c'],m['l'],m['u'],m['lb'],m['ub'],np.array([m['offset']])))
+        built=perf_counter();report['inputs'][name]=dict(meta,input_build_or_cpu_control_seconds=built-tick,rows=m['A'].shape[0],variables=len(m['c']),nnz=m['A'].nnz,input_sha256=p5.digest(m['A'].data,m['A'].indices,m['A'].indptr,m['c'],m['l'],m['u'],m['lb'],m['ub'],np.array([m['offset']])))
         for rep in range(2):
             with p5.Memory() as mem:out,vectors=solve(m,name,hpdlp,shape_model)
             key=name+'_'+str(rep);out.update(key=key,repetition=rep,label='first' if rep==0 else 'warm',memory=mem.report(),from_scratch_total_seconds=built-tick+out['timing']['total'])

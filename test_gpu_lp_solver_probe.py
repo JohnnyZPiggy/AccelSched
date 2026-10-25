@@ -58,12 +58,14 @@ def test_failed_1k_blocks_10k_without_gpu(monkeypatch,tmp_path):
     monkeypatch.setattr(p,'cpu_small',lambda m:dict(status=0))
     archive=tmp_path/'archive.json';raw=json.dumps({'experiment':{'tiers':[{'n':1000},{'n':10000}]}}).encode();archive.write_bytes(raw)
     monkeypatch.setattr(p,'ARCHIVE',hashlib.sha256(raw).hexdigest())
-    generated=[];called=[]
+    generated=[];called=[];original_shape=p.shape
     def shape(n,nodes):
-        generated.append(n);return p.smoke_models()['hand_mixed'],{},{}
+        generated.append(n);return original_shape(n,nodes)
     def solve(m,name,module,shape_model):
         called.append(name);return dict(name=name,status='UNCERTIFIED' if name=='shape_1000' else 'PASS',timing=dict(total=0.)),{}
     monkeypatch.setattr(p,'shape',shape);monkeypatch.setattr(p,'solve',solve)
     result=p.run(tmp_path/'result',archive)
     assert result['status']=='BLOCKED_SHAPE_CORRECTNESS' and generated==[1000]
+    assert (result['inputs']['shape_1000']['rows'],result['inputs']['shape_1000']['variables'],result['inputs']['shape_1000']['nnz'])==(1024,8000,32000)
+    assert result['inputs']['shape_1000']['lp_sha256']==p.PINS[1000][1]
     assert called==[name for name in ('hand_mixed','infeasible','unbounded','shape_1000') for _ in range(2)]
