@@ -1,7 +1,8 @@
-"""P4E PROBE_ONLY wheel gate and CPU certificate probe; never installs/allocates.
+"""P4E PROBE_ONLY certificate probes; never installs or allocates implicitly.
 
-No Linux wheel was published in the inspected registry, so no cuPDLPx device
-adapter is claimed. Current docs/main and v0.3.0 have different status APIs.
+The default CLI is CPU-only; gpu_probe is an explicit two-case optional run for
+an externally prepared isolated environment. Current docs/main and v0.3.0 have
+different status APIs. Wheel absence is not a proof of source-build incompatibility.
 https://mit-lu-lab.github.io/cuPDLPx/guides/python.html
 """
 import argparse
@@ -184,8 +185,8 @@ def main():
                   gpu_rc=None, gpu_timings=None, gpu_method=None, installation_attempted=False,
                   source_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
                   wall_seconds=perf_counter()-start,
-                  note='No device adapter or installation path. Any future wheel candidate '
-                       'needs separate ABI/CUDA/device and released API validation.')
+                  note='CPU-only CLI; explicit gpu_probe requires external isolated preparation. '
+                       'Wheel absence does not establish a hardware incompatibility.')
     args.output.write_text(json.dumps(result, indent=2, allow_nan=False)+'\n', encoding='utf-8')
     print(json.dumps(dict(status=result['status'], cpu_status=result['cpu_status'],
                           wall_seconds=result['wall_seconds'],
