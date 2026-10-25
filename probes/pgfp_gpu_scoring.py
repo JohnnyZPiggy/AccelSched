@@ -258,6 +258,7 @@ def run(directory,p4g_path,budget=240.):
 
 def audit(summary_path,directory,output):
     wrapper=json.loads(Path(summary_path).read_bytes());directory=Path(directory);checks=[]
+    if not wrapper.get('trace_artifacts'):raise ValueError('empty trace manifest cannot pass audit')
     for item in wrapper['trace_artifacts']:
         raw=(directory/item['name']).read_bytes()
         if hashlib.sha256(raw).hexdigest()!=item['sha256']:raise ValueError('trace SHA mismatch')
