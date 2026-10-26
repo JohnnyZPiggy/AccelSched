@@ -80,18 +80,34 @@ def _hpdlp(model,time_limit):
     return RawResult('hpdlp',version,status,dict(name=name,code=p.Status,native_runtime=p.Runtime,presolve=getattr(p,'PresolveTime',None),rescaling=getattr(p,'RescalingTime',None)),*vectors,objective=p.ObjVal,dual_objective=p.DualObj,gap=p.Gap,timing=dict(lazy_import=imported-start,conversion=configured-imported,native_call_hidden_init_transfer_postsolve=solved-configured,extraction=perf_counter()-solved,total=perf_counter()-start),settings=params)
 
 
+def _cupdlpx(model,time_limit):
+    start=perf_counter()
+    try:module=importlib.import_module('cupdlpx')
+    except (ImportError,OSError) as e:return RawResult('cupdlpx',None,'BACKEND_UNAVAILABLE',error=str(e),timing=dict(total=perf_counter()-start))
+    imported=perf_counter();version=importlib.metadata.version('cupdlpx')
+    p=module.Model(objective_vector=model.c,constraint_matrix=model.A,constraint_lower_bound=model.row_lo,constraint_upper_bound=model.row_hi,variable_lower_bound=model.var_lo,variable_upper_bound=model.var_hi,objective_constant=model.c0)
+    params=dict(TimeLimit=time_limit,OptimalityTol=1e-12,FeasibilityTol=1e-12,OptimalityNorm='linf',Presolve=False,OutputFlag=False)
+    p.ModelSense=module.PDLP.MINIMIZE;p.setParams(**params)
+    roundtrip=CanonicalLP(p.A,p.c,p.constr_lb,p.constr_ub,p.lb,p.ub,p.c0)
+    if roundtrip.source_hash!=model.source_hash:raise ValueError('cuPDLPx original-index/bound roundtrip changed')
+    configured=perf_counter();p.optimize();solved=perf_counter()
+    name=str(p.StatusName);status={'OPTIMAL':'OPTIMAL','TIME_LIMIT':'TIME_LIMIT','PRIMAL_INFEASIBLE':'INFEASIBLE','DUAL_INFEASIBLE':'UNBOUNDED'}.get(name,'ERROR')
+    vectors=[None if x is None else np.array(x,dtype=float,copy=True) for x in (p.X,p.Pi,p.RC)]
+    return RawResult('cupdlpx',version,status,dict(name=name,code=p.Status,native_runtime=p.Runtime,presolve=getattr(p,'PresolveTime',None),rescaling=getattr(p,'RescalingTime',None)),*vectors,objective=p.ObjVal,dual_objective=p.DualObj,gap=p.Gap,timing=dict(lazy_import=imported-start,conversion=configured-imported,native_call_hidden_init_transfer_postsolve=solved-configured,extraction=perf_counter()-solved,total=perf_counter()-start),settings=params)
+
+
 def solve_lp(model,*,backend='highs',fallback='none',time_limit=10.):
     # time_limit is per native attempt; native limits need not be hard wall limits.
     start=perf_counter()
     if not isinstance(model,CanonicalLP):raise TypeError('model must be CanonicalLP')
     model.assert_intact()
-    if backend not in ('highs','hpdlp') or fallback not in ('none','highs'):raise ValueError('explicit backend/fallback required')
+    if backend not in ('highs','hpdlp','cupdlpx') or fallback not in ('none','highs'):raise ValueError('explicit backend/fallback required')
     if isinstance(time_limit,(bool,np.bool_)) or not isinstance(time_limit,(int,float,np.number)) or np.iscomplexobj(time_limit) or not np.isfinite(time_limit) or time_limit<=0:raise ValueError('positive finite time_limit required')
     attempts=[]
     for selected in ([backend,'highs'] if fallback=='highs' and backend!='highs' else [backend]):
         tick=perf_counter()
         try:
-            model.assert_intact();raw=(_highs if selected=='highs' else _hpdlp)(model,float(time_limit));model.assert_intact();check=certify(model,raw)
+            model.assert_intact();raw=(_highs if selected=='highs' else _hpdlp if selected=='hpdlp' else _cupdlpx)(model,float(time_limit));model.assert_intact();check=certify(model,raw)
         except Exception as e:raw=RawResult(selected,None,'ERROR',error=str(e),timing=dict(total=perf_counter()-tick));check=dict(certified=False,reason='ADAPTER_OR_CERTIFICATE_ERROR')
         if raw.status in ('INFEASIBLE','UNBOUNDED'):status=raw.status if check['certified'] else 'NOT_CERTIFIED_'+raw.status
         elif check['certified']:status='OPTIMAL'
