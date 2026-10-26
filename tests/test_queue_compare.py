@@ -20,7 +20,8 @@ import bench_queue_compare as bench
 @pytest.fixture(scope='module')
 def experiment():
     path = os.environ.get('SAE_QUEUE_COMPARE_RESULT')
-    result = json.loads(Path(path).read_bytes()) if path else bench.run_benchmark()
+    # Match the documented external JSON batch when using the in-memory fallback.
+    result = json.loads(Path(path).read_bytes()) if path else json.loads(json.dumps(bench.run_benchmark()))
     assert result['simulator_invocations'] == 6
     assert len(result['cases']) == 3 and result['source_dirty'] is False
     for case, fixed in zip(result['cases'], bench.fixed_cases()):

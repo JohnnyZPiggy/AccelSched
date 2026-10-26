@@ -79,4 +79,4 @@ m=CanonicalLP(csr_matrix([[1.]]),[-1.],[-np.inf],[2.],[0.],[np.inf])
 assert lp_backends.solve_lp(m).certified
 assert 'cupdlpx' not in sys.modules and 'hpdlp' not in sys.modules
 """
-    subprocess.run([sys.executable,'-B','-c',code],cwd=Path(__file__).parent,check=True,timeout=20)
+    subprocess.run([sys.executable,'-B','-c',code],cwd=Path(__file__).resolve().parents[1],check=True,timeout=20)

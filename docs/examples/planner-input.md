@@ -73,7 +73,7 @@ See [P0](capacity-whatif.md) and [P1](time-window-capacity.md) for existing reso
 python -m pytest -q -p no:cacheprovider test_planner_input.py
 ```
 
-[Tests](../../test_planner_input.py) mirror the built-in eight-job P0/P1 inputs as external JSON and independently reconstruct integer ledgers, family compatibility, capacity shapes, clipped/event/full integrals, completions and pressure; also check validation-before-solve, default entry paths, order, provenance, zero-total utilization, missing families and error/certificate boundaries.
+[Tests](../../tests/test_planner_input.py) mirror the built-in eight-job P0/P1 inputs as external JSON and independently reconstruct integer ledgers, family compatibility, capacity shapes, clipped/event/full integrals, completions and pressure; also check validation-before-solve, default entry paths, order, provenance, zero-total utilization, missing families and error/certificate boundaries.
 
 At base `e524cb2218d9525f5418d717373c0ff1d6603707`, one focused invocation returned **66 passed in 2.65 s** (exit 0, outer 3.530238 s); one external-input CLI smoke per mode returned **exit 0** (static 1.204221 s, dynamic 1.088871 s outer walls). Existing Windows CPU environment: Python 3.14.6 / NumPy 2.4.6 / SciPy 1.18.0; `D:/software/anaconda3/python.exe`, `PYTHONDONTWRITEBYTECODE=1`, `OPENBLAS_NUM_THREADS=1`, `OMP_NUM_THREADS=1`. Pytest additionally used `--basetemp ../pytest-temp` on D:; each of the three subprocesses had a 30 s timeout. No old test/benchmark sweep or numerical retry.
 

@@ -7,7 +7,7 @@ from tools.source_deposit import paginate,selected_pages,generate
 
 
 def test_bundled_inputs_and_modes():
-    root=Path(__file__).parent/'examples/data'
+    root=Path(__file__).resolve().parents[1]/'examples/data'
     for mode in ('static','dynamic'):
         config=load_input(root/(mode+'.json'),mode);assert config['solver']['time_limit']==.5
 

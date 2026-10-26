@@ -361,7 +361,7 @@ def test_zero_total_guard_no_implicit_family_substitution(tmp_path, monkeypatch)
 
 
 def test_documented_json_and_pressure_boundary(tmp_path):
-    text = (Path(__file__).parent/'docs/examples/planner-input.md').read_text(encoding='utf-8')
+    text = (Path(__file__).resolve().parents[1]/'docs/examples/planner-input.md').read_text(encoding='utf-8')
     doc = json.loads(re.search(r'```json\n(.*?)\n```', text, re.S).group(1))
     cfg = load_input(write(tmp_path/'documented.json', doc), 'dynamic')
     assert len(cfg['scenarios']) == 2 and cfg['references'] == {'T4': (2, 8, 32)}
