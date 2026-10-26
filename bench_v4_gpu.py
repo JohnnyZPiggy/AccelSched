@@ -178,17 +178,20 @@ def sync():
 
 def pipeline(c,directory,key,backend=None,dense=True):
     start=perf_counter();stages=dict(input_gen_hash=0.,model_lp_certification=0.,ordering=0.,placement=0.,audit=0.,serialization=0.)
+    def mark(stage,processed=0):
+        (Path(directory)/(key+'-phase.json')).write_bytes(js(dict(config=asdict(c),stage=stage,processed_jobs=processed,elapsed_seconds=perf_counter()-start)))
+    mark('INVENTORY_AND_OUTPUT_ALLOCATION')
     tick=perf_counter();cap,nf,ng,kind=inventory(c);rest=cap.tolist();p=np.full(c.n,-1,np.int32);h=fingerprint_start(c,cap)
     stages['input_gen_hash']+=perf_counter()-tick;cursors={};lp=None;vectors={};data=None
     if backend:
-        tick=perf_counter();data=materialize(c)
+        mark('INPUT_GENERATION_HASH');tick=perf_counter();data=materialize(c)
         for offset in range(0,c.n,c.chunk):update_hash(h,offset,data[offset:offset+c.chunk])
         stages['input_gen_hash']+=perf_counter()-tick
         from certified_pgfp import canonical_shape
         from lp_backends import solve_lp
         from probes.gpu_lp_solver_probe import kkt
-        tick=perf_counter();a=SimpleNamespace(capacity=cap.astype(float),demand=data[:,:3].astype(float),value=data[:,3].astype(float),shapes=kind)
-        model,labels=canonical_shape(a);sync_before=sync();result=solve_lp(model,backend=backend,fallback='none',time_limit=20.);sync_after=sync()
+        mark('SPARSE_CANONICAL_BUILD');tick=perf_counter();a=SimpleNamespace(capacity=cap.astype(float),demand=data[:,:3].astype(float),value=data[:,3].astype(float),shapes=kind)
+        model,labels=canonical_shape(a);mark('NATIVE_BACKEND_AND_ORIGINAL_CERTIFICATE');sync_before=sync();result=solve_lp(model,backend=backend,fallback='none',time_limit=20.);sync_after=sync()
         raw=result.raw
         independent=kkt(dict(A=model.A,c=model.c,l=model.row_lo,u=model.row_hi,lb=model.var_lo,ub=model.var_hi,offset=model.c0),raw.x,raw.pi,raw.rc,raw.status=='OPTIMAL',raw.objective)
         lp=dict(backend=backend,status=result.status,certified=result.certified,independent=independent,
@@ -203,15 +206,15 @@ def pipeline(c,directory,key,backend=None,dense=True):
             path=Path(directory)/(key+'.npz');np.savez_compressed(path,**vectors)
             return dict(status='UNCERTIFIED',lp=lp,config=asdict(c),input_sha256=h.hexdigest(),stages=stages,
                         full_path_seconds=perf_counter()-start,vectors=path.name,vectors_sha256=sha(path.read_bytes()),peak_rss_bytes=peak_rss())
-        tick=perf_counter();prices=-raw.pi[c.n:].reshape(len(labels),3)
+        mark('EXPERIMENTAL_LP_SCORE_ORDERING');tick=perf_counter();prices=-raw.pi[c.n:].reshape(len(labels),3)
         scores=np.max(data[:,3][None,:]-prices@data[:,:3].T,axis=0)
         order=np.lexsort((np.arange(c.n),-scores));stages['ordering']=perf_counter()-tick
-        tick=perf_counter()
+        mark('DISCRETE_PHYSICAL_PLACEMENT');tick=perf_counter()
         for offset in range(0,c.n,c.chunk):
             ids=order[offset:offset+c.chunk];place_block(data[ids],ids,rest,nf,ng,cursors,p)
         stages['placement']=perf_counter()-tick
     else:
-        iterator=iter(chunks(c))
+        mark('STREAM_GENERATE_HASH_PLACE');iterator=iter(chunks(c))
         while True:
             tick=perf_counter()
             try:offset,x=next(iterator)
@@ -219,7 +222,8 @@ def pipeline(c,directory,key,backend=None,dense=True):
             update_hash(h,offset,x);stages['input_gen_hash']+=perf_counter()-tick
             tick=perf_counter();place_block(x,range(offset,offset+len(x)),rest,nf,ng,cursors,p)
             stages['placement']+=perf_counter()-tick
-    tick=perf_counter();residual=np.array(rest,np.int64);check=audit(c,p,residual,h.hexdigest())
+            if offset%1048576==0:mark('STREAM_GENERATE_HASH_PLACE',offset+len(x))
+    mark('INDEPENDENT_ALL_JOB_AUDIT',c.n);tick=perf_counter();residual=np.array(rest,np.int64);check=audit(c,p,residual,h.hexdigest())
     if dense and c.n<=100000:
         from m0_oracle import validate
         a=original_instance(c,data);assert validate(a,p);check['dense_reference']='PASS_ALL_JOBS'
@@ -229,11 +233,11 @@ def pipeline(c,directory,key,backend=None,dense=True):
             assert reference.placement is not None and np.array_equal(reference.placement,p)
             check['production_first_fit_equivalence']='PASS_EXACT_PLACEMENT'
     stages['audit']=perf_counter()-tick
-    tick=perf_counter();vectors.update(placement=p,residual=residual)
+    mark('LOSSLESS_OUTPUT_SERIALIZATION',c.n);tick=perf_counter();vectors.update(placement=p,residual=residual)
     path=Path(directory)/(key+'.npz');np.savez_compressed(path,**vectors)
     output=dict(placement_sha256=sha(p.tobytes()),residual_sha256=sha(residual.tobytes()),accepted_value=check['accepted_value'],accepted_count=check['accepted_count'])
     output_sha=sha(js(output));artifact_sha=sha(path.read_bytes());stages['serialization']=perf_counter()-tick
-    total=perf_counter()-start
+    mark('COMPLETE',c.n);total=perf_counter()-start
     return dict(status='PHYSICAL_E2E_CERTIFIED',track='C_INTEGRATED' if backend else 'A_PRIMARY',
         policy='EXPERIMENTAL_LP_SCORE_FIRST_FIT_POLICY_DIFFERENT' if backend else 'EXACT_INPUT_ORDER_FIRST_FIT',
         config=asdict(c),shape_count=4 if c.nodes>=4 else len(set(kind.tolist())),eligibility_groups=17 if c.case=='multiresource' else 1,
