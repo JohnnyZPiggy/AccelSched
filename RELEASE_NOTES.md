@@ -1,6 +1,6 @@
-# 1.0.0 candidate — Unreleased
+# v1.0.0 — Published GitHub Release (2026-10-26)
 
-发行展示名 / Filing display name: **AccelSched 异构算力资源优化调度软件 V1.0**. Package version: **1.0.0**. No Git tag, GitHub Release, PyPI publication or registration submission is created by this preparation.
+发行展示名 / Filing display name: **AccelSched 异构算力资源优化调度软件 V1.0**. Package version: **1.0.0**. The v1.0.0 Git tag and [GitHub Release](https://github.com/JohnnyZPiggy/AccelSched/releases/tag/v1.0.0) were subsequently published on 2026-10-26 (non-draft, non-prerelease). This document preserves the original release preparation scope; it does not claim a PyPI publication or software-registration submission.
 
 ## Included existing scope / 既有发行范围
 
