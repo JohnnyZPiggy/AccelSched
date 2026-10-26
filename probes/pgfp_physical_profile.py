@@ -78,8 +78,10 @@ def experiment(case,*,device=None,warm=False):
         for name in (('baseline','variant') if rep%2==0 else ('variant','baseline')):
             tick=perf_counter();out=pg._replay(a,lp) if name=='baseline' else replay(a,lp,vector=True);physical=perf_counter()-tick;tick=perf_counter();metrics=checked(a,out);validation=perf_counter()-tick
             if reference is None:reference=out
+            tick=perf_counter()
             assert out==reference
-            paths[name]=dict(physical_wall=physical,independent_audit_and_metrics_wall=validation,source_to_valid_wall=prefix+physical+validation,metrics=metrics)
+            equality=perf_counter()-tick
+            paths[name]=dict(physical_wall=physical,independent_audit_and_metrics_wall=validation,equivalence_wall=equality,source_to_valid_wall=prefix+physical+validation+equality,metrics=metrics)
         pairs.append(dict(rep=rep,order=['baseline','variant'] if rep%2==0 else ['variant','baseline'],paths=paths))
     scalar,stages=replay(a,lp,instrument=True);vector,vector_stages=replay(a,lp,vector=True,instrument=True);assert scalar==vector==reference
     profiled,profile=profile_call(pg._replay,a,lp);assert profiled==reference
