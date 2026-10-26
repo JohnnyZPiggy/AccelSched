@@ -1,41 +1,54 @@
-# AccelSched 1.0.0 候选发行版
+# AccelSched
 
-独立 AIDC 优化引擎。拟登记名称：**AccelSched 异构算力资源优化调度软件 V1.0**（展示版本 V1.0 对应包版本 1.0.0）。本分支仅准备发行，不表示已有 Tag、已发布安装包或取得登记证书。[Release Notes](RELEASE_NOTES.md) · [中文设计说明书](docs/release/software-design.zh-CN.md) · [登记与权属清单](docs/release/registration-checklist.zh-CN.md)。
+[English](README.md) | [简体中文](README.zh-CN.md)
 
-## V1.0 CPU 快速开始
+**异构 GPU/CPU 资源放置与算力容量优化引擎。**
 
-Python >=3.10，运行依赖仅 NumPy、SciPy。以下命令在审阅后的源码根目录执行，无需 GPU：
+AccelSched 是一个 Python 优化工具，面向异构计算节点的任务放置与容量决策。项目整合六种调度方法、事件驱动模拟、LP/MIP 求解、可认证求解器接口及资源规划报告。
 
-```bash
-python -m pip install .
-python -m pip wheel --no-deps --wheel-dir dist .
-python -m pip install dist/accelsched-1.0.0-py3-none-any.whl
-python -c "from importlib.metadata import version; print(version('accelsched'))"
-python -m examples.capacity_whatif --input examples/data/static.json
-python -m examples.time_window_capacity --input examples/data/dynamic.json
-python -m examples.capacity_decision_report --input examples/data/static.json --mode static --format json
-python -m examples.capacity_decision_report --input examples/data/dynamic.json --mode dynamic --format json
+![MIT](https://img.shields.io/badge/license-MIT-0f766e) ![Python](https://img.shields.io/badge/Python-3.10%2B-3776ab) ![Version](https://img.shields.io/badge/version-1.0.0-0f766e) ![NumPy/SciPy](https://img.shields.io/badge/core-NumPy%20%2B%20SciPy-334155)
+
+**快速导航：** [调度算法](#调度方法) · [快速开始](#安装与快速开始) · [容量规划](#容量规划) · [实验结果](#性能与验证) · [软件设计说明](docs/release/software-design.zh-CN.md)
+
+## 核心能力
+
+- **异构资源放置：** 统一建模整卡 GPU 数量、CPU 核数、主机内存与 GPU 家族兼容性。
+- **六种调度方法：** First-Fit、Best-Fit、LP 引导的启发式、PGFP 与 HiGHS MIP。
+- **动态调度模拟：** 任务到达、执行时长、完成释放与接纳率分析。
+- **算力容量规划：** 比较现有集群和新增节点方案，输出静态及时间窗口报告。
+- **优化求解器：** CPU HiGHS 与可选的 cuPDLPx、H-PDLP GPU LP 后端。
+- **可验证优化：** 物理资源可行性检查、求解器状态、原模型数值认证与可复现实验。
+
+## 优化架构
+
+```text
+节点资源 + 任务需求 + 硬件兼容性
+                 │
+                 ▼
+         资源约束与输入校验
+                 │
+       ┌─────────┴──────────┐
+       ▼                    ▼
+    静态资源放置         动态事件模拟
+       │                    │
+       ├─ Greedy / PGFP      ├─ 任务到达
+       ├─ LP 引导策略        ├─ 完成事件
+       └─ HiGHS MIP         └─ 资源释放
+       │                    │
+       └─────────┬──────────┘
+                 ▼
+          独立物理可行性校验
+                 ▼
+         放置决策 + 资源利用率
+                 ▼
+             容量分析报告
 ```
 
-随包的合成名义输入，Baseline/Add T4 的静态接纳数为 1/2，动态接纳数为 2/3；缺失家族任务是有效输入，正常拒绝。家族名仅用于资格匹配，不代表厂商性能或显存规格。
+可选 Solver Portfolio 支持 GPU LP 求解与 CPU 回退。核心安装只需要 NumPy 和 SciPy，GPU 求解器作为可选加速组件。
 
-wheel 也包含 `examples` 和输入文件。在仓库外先创建新的 `demo-inputs` 目录（已有目录会报错，避免覆盖输入），再使用 `--input demo-inputs/static.json` / `--input demo-inputs/dynamic.json`：
+## 安装与快速开始
 
-```bash
-python -c "from importlib.resources import files; from pathlib import Path; d=Path('demo-inputs'); d.mkdir(); [d.joinpath(n+'.json').write_bytes(files('examples').joinpath('data',n+'.json').read_bytes()) for n in ('static','dynamic')]"
-```
-
-CPU 默认行为不变；可选认证 `hpdlp`、`cupdlpx` 和 Portfolio 不替代默认 PGFP。GPU 研究 Probe 和 FIFO 研究文件不作为 V1 wheel CLI 功能安装。声明兼容 Python >=3.10，不等于已测试所有版本；实际环境和发行门槛见[验证清单](docs/release/validation.md)。
-
-[English](README.md) · [静态放置](#静态放置) · [滚动批次](#滚动批次) · [P0](#p0静态容量对比) · [P1](#p1时间窗口容量) · [P2](#p2容量决策报告) · [六种方法](#六种方法) · [基准研究](#基准研究)
-
-在 CPU 上运行的 Python **离线异构 GPU/CPU/主机 RAM 放置、事件调度模拟与容量决策报告工具**。
-
-在多资源容量约束下，将每个不可拆分作业放到一个符合资格的物理节点。可用六种方法比较静态批次，也可按作业持续时间和完成事件模拟立即启动的滚动批次。GPU 型号兼容性显式指定；本项目是研究工具，不是实时集群编排器。
-
-## 安装
-
-需要 Python 3.10+、NumPy 和 SciPy，无需 GPU 或外部调度器。
+要求 Python 3.10+。
 
 ```bash
 git clone https://github.com/JohnnyZPiggy/AccelSched.git
@@ -43,23 +56,19 @@ cd AccelSched
 python -m pip install .
 ```
 
-## 静态放置
-
-资源向量依次为**整卡 GPU 数、CPU 核数、主机内存 GiB**。下面在同一个合成异构工作负载上比较六种方法：
+使用同一异构算力实例比较六种静态调度方法：
 
 ```python
 from workload import heterogeneous_example, evaluate
 
-report = evaluate(heterogeneous_example(seed=11), seed=11, time_limit=2.0)
-for row in report["rows"]:
+results = evaluate(heterogeneous_example(seed=11), seed=11, time_limit=2.0)
+for row in results["rows"]:
     print(row["method"], row["status"], row["admitted_count"])
 ```
 
-[`workload.py`](workload.py) 的 `build_workload` 接受自定义容量、需求、价值和固定的节点/作业 `eligible` 数组，`evaluate` 比较接纳数量与资源利用率。GPU 型号资格通过 `eligible` 表达；`shapes` 归并相同容量向量，不代表 GPU 型号。底层 [`Instance` / `solve` API](accelsched.py) 返回放置、接纳价值、剩余资源、耗时和状态。Trace 解析由外部处理。
+底层 [`Instance` / `solve` 接口](accelsched.py) 可以输出任务放置、目标值、剩余资源、求解状态与运行耗时。
 
-## 滚动批次
-
-[`rolling.Job` / `simulate`](rolling.py) 复用相同资源单位和六种方法。下面是单节点合成示例：
+### 动态事件调度
 
 ```python
 from rolling import Job, simulate
@@ -69,90 +78,84 @@ jobs = [
     Job("B", 1, 3, (1, 4, 16)),
     Job("C", 2, 2, (1, 4, 16)),
 ]
+
 report = simulate([[1, 8, 32]], jobs, [[True, True, True]], method="first_fit")
 for decision in report["decisions"]:
     print(decision["job_id"], decision["status"], decision["node"])
 ```
 
-输出依次为 `A accepted 0`、`B not_scheduled None`、`C accepted 0`。到达时间为非负整数，持续时间为正整数，使用任意时间单位；接纳后立即启动。同一时间**先释放完成作业的资源**，再将同时到达的作业按输入顺序组成一个批次求解。资格固定；拒绝是永久决定，不排队、不重试、不迁移、不抢占。`solver_error` 与正常的 `not_scheduled` 拒绝分开记录。
+同一时刻先释放已完成任务的资源，再处理新任务到达。
 
-## 容量规划：P0/P1/P2
+## 调度方法
 
-在检出目录根目录可使用随包 `examples/data/static.json` 和 `examples/data/dynamic.json`，
-也可自行准备输入。[Shared JSON Input v1 指南](docs/examples/planner-input.md)
-提供示意 JSON，并说明如何准备两种模式的输入。
-
-### P0：静态容量对比
-
-P0 比较名义容量的静态节点增配方案，以命名的 Baseline 为基准。
-
-```bash
-python -m examples.capacity_whatif --input static.json
-```
-
-### P1：时间窗口容量
-
-P1 比较有限时间窗口中观测到的接纳量、完成量，以及显式参考需求的资源压力。
-
-```bash
-python -m examples.time_window_capacity --input dynamic.json
-```
-
-### P2：容量决策报告
-
-P2 将 P0/P1 输出整理为文本或 JSON 报告：CLI 对每个场景运行一次选定的规划器，随后仅汇总，不重复求解。
-
-```bash
-python -m examples.capacity_decision_report --input static.json --mode static
-python -m examples.capacity_decision_report --input dynamic.json --mode dynamic --format json
-```
-
-相对 Baseline 的差值是观测结果，除非获得经过验证、受求解器容差约束的 P0 静态模型最优证书；
-滚动 MIP 证书只覆盖各个到达批次，描述性 leader 仅表示接纳数量最多，
-不代表成本最优采购、预测、ROI 或整个时间范围的最优方案。
-解释及适用范围见 [P0 指南](docs/examples/capacity-whatif.md)、
-[P1 指南](docs/examples/time-window-capacity.md)和
-[P2 报告指南](docs/examples/capacity-decision-report.md)。
-
-## 六种方法
-
-| 方法 | 策略 |
+| 方法 | 核心策略 |
 | --- | --- |
-| `first_fit` | 按输入顺序选择首个可行节点 |
-| `classic_best_fit` | 按输入顺序选择剩余资源总和最小的可行节点 |
-| `lp_order_best_fit` | Shape-LP 作业优先级与全局 Best-Fit |
-| `lp_best_fit` | Shape-LP 优先级与按容量形状选择的 Best-Fit |
-| `pgfp` | Shape-LP 优先级与未来容量感知放置 |
-| `highs_mip` | 物理节点级 HiGHS 混合整数优化 |
+| `first_fit` | 选择第一个满足资格与容量的节点 |
+| `classic_best_fit` | 选择剩余资源较小的可行节点 |
+| `lp_order_best_fit` | LP 决定任务优先级，结合全局 Best-Fit |
+| `lp_best_fit` | LP 引导排序与 Shape-aware Best-Fit |
+| `pgfp` | 使用影子价格与未来容量评分进行放置 |
+| `highs_mip` | 物理节点混合整数优化 |
 
-`optimal` 表示经过验证的 MIP 解**在求解器数值容差内认证最优**；`feasible_uncertified` 是有效可行解但无最优证明，`uncertified` 表示没有有效可行解。启发式的 `feasible` 不是最优证书。其他状态包括 `input_invalid`、`invalid` 和 `failed`；`time_limit` 参数设置 HiGHS 求解时间上限。
+资源向量顺序为 `[GPU 数量, CPU 核数, 主机 RAM GiB]`。Shape 根据容量聚类，GPU 家族兼容性由 Eligibility 指定。最优性声明以经过验证的求解器证书和数值容差为依据。
 
-滚动模拟使用**中性的未来类型**，不从输入推断预测，因此不能据此宣称 PGFP 的预测收益。滚动 MIP 证书仅适用于当前到达批次，不证明整个时间范围的调度最优。
+## 容量规划
 
-## 基准研究
-
-### Alibaba Trace 来源静态反事实
-
-[Issue #31 已验收研究](https://github.com/JohnnyZPiggy/AccelSched/issues/31#issuecomment-6377137390) 使用 Alibaba PAI GPU 2020 任务构造**带 ASSUMED 假设的空集群反事实**（`TRACE_DERIVED_ASSUMED`）。Engineer 报告 **60/60 放置结果独立验证可行**，**10/10 物理节点级 HiGHS MIP 返回 `optimal`**，受求解器容差约束。整卡 GPU、单任务单实例作业样本覆盖 T4/P100/V100/V100M32 显式资格、错误型号节点，以及单独标记为 `SYNTHETIC_CONTROL` 的 RAM 不足负对照；可行结果包括正确拒绝放置的对照。
-
-RAM 对容量和需求一致采用两种 **ASSUMED** 解释：原始值已是 GiB，或原始值为十进制 GB、乘 `10**9/2**30` 转为 GiB。单位任务价值（`value=1`）衡量接纳数量，不是经济收益。样本按型号刻意分层并筛选为可被单节点容纳，存在选择偏差；结果不代表总体接纳率、阿里巴巴历史分配或生产性能。
-
-### 有界 SYNTHETIC 动态基准
-
-[Issue #36 研究报告](docs/research/dynamic-scheduling-benchmark.md) 记录九个固定工作负载：8 个名义容量异构节点，T=40，种子 11/29/47，GPU offered load 为 0.3/0.7/1.1。六种方法 × 九个工作负载得到 **54/54 次独立审计通过的模拟**，`solver_error` 为零，**313/313 个 `highs_mip` 到达批次在求解器容差内返回 `optimal`**。审计覆盖固定窗口 GPU/CPU/RAM 资源时间利用率、事件账本、资格和按时间加权的可放置性。
-
-保留了低负载下接纳数量相同的结果；较高负载有时出现累计接纳差异。单批最优 MIP 不一定在整个时间范围内最好。此研究为 **SYNTHETIC**，不代表历史调度、加速比或生产性能。详细原始 JSON 仅保留在本地，报告提供路径和 SHA 索引，并未发布到 GitHub。
-
-## 验证和范围
-
-安装 pytest 后，可在检出目录运行 focused CPU 测试：
+仓库附带合成示例，可直接运行静态与动态容量分析：
 
 ```bash
-python -m pytest -q test_rolling.py test_dynamic_bench.py
+python -m examples.capacity_whatif --input examples/data/static.json
+python -m examples.time_window_capacity --input examples/data/dynamic.json
+python -m examples.capacity_decision_report --input examples/data/static.json --mode static --format json
+python -m examples.capacity_decision_report --input examples/data/dynamic.json --mode dynamic --format json
 ```
 
-参见[滚动模拟测试](test_rolling.py)和[动态指标独立 oracle](test_dynamic_bench.py)。模拟已支持作业持续时间及完成事件；不建模多节点/gang 放置、拓扑、设备显存、运行性能或实时 Kubernetes 集成。GPU 执行、排队、迁移和抢占不在范围内。
+- **P0 · 静态容量比较：** 比较基线与新增算力节点方案。
+- **P1 · 时间窗口容量：** 分析接纳、完成与资源时间利用率。
+- **P2 · 决策报告：** 生成可比较场景的文本或 JSON 结果。
 
-## 归属与许可证
+更多说明：[输入格式](docs/examples/planner-input.md) · [静态规划](docs/examples/capacity-whatif.md) · [动态规划](docs/examples/time-window-capacity.md) · [容量报告](docs/examples/capacity-decision-report.md)。
 
-[Alibaba PAI 2020 trace](https://github.com/alibaba/clusterdata/tree/3858992ca41bf92082e6d6522ddf0bebd14e838b/cluster-trace-gpu-v2020) 遵循 [CC BY 4.0](https://github.com/alibaba/clusterdata/blob/3858992ca41bf92082e6d6522ddf0bebd14e838b/cluster-trace-gpu-v2020/LICENSE)；论文归属：[Weng 等，NSDI 2022](https://www.usenix.org/conference/nsdi22/presentation/weng)。源数据许可证与 AccelSched 的 [MIT 代码许可证](LICENSE) 相互独立。
+## 性能与验证
+
+项目保留了物理可行性、数值认证及调度性能实验。
+
+| 研究场景 | 实测结果 | 证据 |
+| --- | --- | --- |
+| Alibaba PAI 派生的静态反事实实验 | 60/60 放置结果通过独立物理校验 | [实验记录](https://github.com/JohnnyZPiggy/AccelSched/issues/31) |
+| 合成动态调度 | 54/54 模拟通过审计；313/313 MIP 到达批次在容差内达到最优 | [动态 Benchmark](docs/research/dynamic-scheduling-benchmark.md) |
+| GPU LP + CPU 放置 | L4 上 1K 工作负载暖运行端到端约 0.738 秒，优于所测 GPU 常驻 Greedy 版本 | [P6-G0 研究](https://github.com/JohnnyZPiggy/AccelSched/issues/99) |
+| 发行验收 | 记录环境中的 264 项 CPU 聚焦测试通过 | [验收清单](docs/release/validation.md) |
+
+实验数据均对应明确的工作负载与测量范围；L4 数据来自特定同机实验，并不代表所有规模的性能表现。
+
+## 应用场景
+
+| 场景 | 可实现的功能 |
+| --- | --- |
+| AI 算力集群 | 比较异构节点上的资源放置策略 |
+| 算力扩容 | 评估新增 GPU 节点带来的容量变化 |
+| 批任务调度 | 研究任务到达与完成过程中的资源利用 |
+| 优化算法研究 | 比较 LP 引导策略、MIP 与认证求解器 |
+| 基础设施规划 | 输出静态和动态容量分析报告 |
+
+## 项目文档
+
+- [中文软件设计说明书](docs/release/software-design.zh-CN.md)
+- [JSON 输入格式](docs/examples/planner-input.md)
+- [发行说明](RELEASE_NOTES.md)
+- [测试与验证记录](docs/release/validation.md)
+- [软件登记准备清单](docs/release/registration-checklist.zh-CN.md)
+
+运行核心 CPU 测试：
+
+```bash
+python -m pip install pytest
+python -m pytest -q test_m0_oracle.py test_workload.py test_rolling.py test_capacity_whatif.py test_time_window_capacity.py test_capacity_decision_report.py
+```
+
+## 开源许可
+
+[MIT License](LICENSE) · Copyright © 2026 Ru Zhang。
+
+项目使用 [SAE（Scientist–Architect–Engineer）协作框架](https://github.com/JohnnyZPiggy/SAE-Framework) 开发。
