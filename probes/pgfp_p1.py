@@ -54,6 +54,9 @@ def observe(b):
 
 def worker(a):
     sys.path.insert(0,str(a.source));import bench_ultra_pgfp as b
+    if a.variant=='candidate':
+        from probes.pgfp_p1_fast import CandidateIndex
+        b.ExactIndex=CandidateIndex
     import numpy as np
     out=a.out;out.mkdir(parents=True,exist_ok=False);rows=[]
     c=b.base.Config(a.n,a.nodes,a.case,a.seed)
@@ -70,13 +73,13 @@ def worker(a):
                 stats=pstats.Stats(profiler)
                 r['profile_functions']=[dict(file=k[0],line=k[1],function=k[2],primitive_calls=v[0],calls=v[1],self_seconds=v[2],inclusive_seconds=v[3]) for k,v in sorted(stats.stats.items(),key=lambda kv:-kv[1][2])[:100]]
                 r.update(observed_index=observations,instrumentation='CPROFILE_NOT_A_SPEEDUP_CLOCK')
-            r.update(rep=rep,policy=a.policy,backend=a.backend,mode=a.mode,completion_monotonic=perf_counter())
+            r.update(rep=rep,policy=a.policy,backend=a.backend,mode=a.mode,variant=a.variant,completion_monotonic=perf_counter())
         except BaseException:r=dict(rep=rep,policy=a.policy,mode=a.mode,status='ERROR',error=traceback.format_exc(),config=b.base.asdict(c))
         rows.append(r);write(out/'results.json',rows)
 
 
-def invoke(source,out,c,policy,backend='cupdlpx',mode='primary',limit=180):
-    args=[sys.executable,'-B',str(Path(__file__).resolve()),'--worker','--source',str(source),'--out',str(out),'--n',str(c.n),'--nodes',str(c.nodes),'--case',c.case,'--seed',str(c.seed),'--policy',policy,'--backend',backend,'--mode',mode]
+def invoke(source,out,c,policy,backend='cupdlpx',mode='primary',limit=180,variant='baseline'):
+    args=[sys.executable,'-B',str(Path(__file__).resolve()),'--worker','--source',str(source),'--out',str(out),'--n',str(c.n),'--nodes',str(c.nodes),'--case',c.case,'--seed',str(c.seed),'--policy',policy,'--backend',backend,'--mode',mode,'--variant',variant]
     start=perf_counter();p=subprocess.Popen(args,stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True,start_new_session=True)
     try:stdout,stderr=p.communicate(timeout=limit);timeout=False
     except subprocess.TimeoutExpired:
@@ -132,14 +135,15 @@ def memory_replay(b,out,report):
 
 def phase(source,out,*,baseline=None,budget=900):
     sys.path.insert(0,str(source));import bench_ultra_pgfp as b
-    out=Path(out);out.mkdir(exist_ok=False);start=perf_counter();report=dict(attempts=[],status='RUNNING',source=str(source))
+    variant='candidate' if baseline is not None else 'baseline'
+    out=Path(out);out.mkdir(exist_ok=False);start=perf_counter();report=dict(attempts=[],status='RUNNING',source=str(source),variant=variant,harness_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest())
     cases=[b.base.Config(10000,256,case,11) for case in ['high_pressure','fragmentation','multiresource']]
     cases += [b.base.Config(100000,1024,case,11) for case in ['high_pressure','fragmentation','multiresource']]
     cases += [b.base.Config(1000000,4096,case,11) for case in ['high_pressure','fragmentation']]
     def call(c,policy,backend='cupdlpx',mode='primary'):
         key=f'{mode}-{c.n}-{c.case}-{c.seed}-{policy}-{backend}';remaining=budget-(perf_counter()-start)
         if remaining<5:r=dict(records=[dict(rep=i,status='NOT_RUN',config=vars(c),policy=policy) for i in range(1 if mode!='primary' else 2)])
-        else:r=invoke(source,out/key,c,policy,backend,mode,min(180 if c.n>=1000000 else 90,remaining))
+        else:r=invoke(source,out/key,c,policy,backend,mode,min(180 if c.n>=1000000 else 90,remaining),variant)
         r.update(key=key,config=vars(c),policy=policy,backend=backend,mode=mode);report['attempts'].append(r)
         report['seconds']=perf_counter()-start;write(out/'summary.json',report)
     for i,c in enumerate(cases):
@@ -152,6 +156,8 @@ def phase(source,out,*,baseline=None,budget=900):
         report['tracemalloc']=memory_replay(b,out,report)
     else:
         call(b.base.Config(100000,1024,'fragmentation',11),'pgfp',mode='profile')
+        from probes.pgfp_p1_fast import CandidateIndex
+        b.ExactIndex=CandidateIndex
         report['tracemalloc']=memory_replay(b,out,report)
         report['fixed_price_shadows']=shadow(source,Path(baseline),json.loads((Path(baseline)/'summary.json').read_bytes()),out/'shadow.json')
     report.update(status='COMPLETE_WITH_EXPLICIT_STATUSES',seconds=perf_counter()-start);write(out/'summary.json',report);return report
@@ -162,6 +168,7 @@ if __name__=='__main__':
     p.add_argument('--n',type=int,default=100000);p.add_argument('--nodes',type=int,default=1024);p.add_argument('--case',default='fragmentation');p.add_argument('--seed',type=int,default=11)
     p.add_argument('--policy',default='pgfp');p.add_argument('--backend',default='cupdlpx');p.add_argument('--mode',default='primary');p.add_argument('--budget',type=float,default=900)
     p.add_argument('--baseline',type=Path)
+    p.add_argument('--variant',choices=['baseline','candidate'],default='baseline')
     a=p.parse_args()
     if a.worker:worker(a)
     else:phase(a.source,a.out,baseline=a.baseline,budget=a.budget)
