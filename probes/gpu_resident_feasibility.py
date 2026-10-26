@@ -46,8 +46,8 @@ class Transfers:
 
 def certificate(a,result):
     if not result.certified or result.status!='OPTIMAL':raise ValueError('No certified LP')
-    raw=result.raw;checked=b.g.admit(a,raw.x,raw.pi,raw.rc,-1,True)
-    return dict(checked,x=raw.x,raw_pi=raw.pi,raw_rc=raw.rc,pi_sign=-1,reported_optimal=True,lp_input_sha256=b.g.lp_hash(a))
+    raw=result.raw;x=raw.x.reshape(len(set(a.shapes.tolist())),len(a.value));checked=b.g.admit(a,x,raw.pi,raw.rc,-1,True)
+    return dict(checked,x=x,raw_pi=raw.pi,raw_rc=raw.rc,pi_sign=-1,reported_optimal=True,lp_input_sha256=b.g.lp_hash(a))
 
 
 def run_physical(a,result,method,cp=None):
