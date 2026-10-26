@@ -46,6 +46,9 @@ its assertions, six actual simulator calls and clean-source requirement remain.
 For development in a dirty checkout, generate a genuine queue JSON batch at a
 clean commit and supply its path with the existing `SAE_QUEUE_COMPARE_RESULT`
 environment variable. Do not fabricate a clean-source flag.
+Only generated Python/pytest caches and setuptools build/dist/egg-info paths are
+ignored by Git. Source edits and research data/results remain visible; ordinary
+bytecode generation should not mark an otherwise clean source tree dirty.
 
 Canonical historical invocations use module mode, so package resolution does not
 depend on injecting cwd into `sys.path`:
