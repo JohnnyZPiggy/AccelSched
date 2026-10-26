@@ -1,4 +1,8 @@
-"""Explicit opt-in certified Shape-LP and physical PGFP shadow; defaults untouched."""
+"""Sparse opt-in certified Shape-LP; bounded diagnostic legacy PGFP comparison.
+
+Only shadow comparison calls the unchanged dense legacy LP, capped at 1M entries.
+Larger instances use sparse shape_lp directly; default APIs remain untouched.
+"""
 from time import perf_counter
 import numpy as np
 from scipy.sparse import csr_matrix
@@ -48,6 +52,8 @@ def shadow(a,*,backend='highs',fallback='none',time_limit=10.,strict_compatibili
     from accelsched import _input_error
     error=_input_error(a,time_limit,11)
     if error:raise ValueError(error)
+    n,r=a.demand.shape;m=len(set(a.shapes.tolist()))
+    if (n+m*r)*m*n>1_000_000:raise ValueError('diagnostic shadow baseline exceeds 1M dense entries; use sparse shape_lp')
     start=perf_counter();lp=shape_lp(a,backend=backend,fallback=fallback,time_limit=time_limit);solved=perf_counter()
     if lp['result'].status!='OPTIMAL':return dict(status='LP_NOT_CERTIFIED',lp=lp,elapsed_seconds=perf_counter()-start)
     proposed=_replay(a,lp);physical=perf_counter();baseline=_replay(a,oracle.shape_lp(a));flags={key:proposed[key]==baseline[key] for key in baseline};exact=all(flags.values())

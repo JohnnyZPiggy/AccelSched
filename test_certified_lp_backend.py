@@ -139,3 +139,10 @@ def test_single_physical_node_default_order_and_rejection():
     out=pg.shadow(a);assert out['proposed']['placement']==[0,0,-1] and out['proposed']['future_score']==0.
     assert out['baseline']['placement']==list(g.api.solve(a,method='pgfp',seed=11,time_limit=.5).placement)
     q=out['proposed'];assert g.audit_steps(a,q['ledger_steps'],q['task_order'],q['shape_order'])['value']==3.
+
+
+def test_large_shadow_never_enters_dense_legacy_baseline(monkeypatch):
+    original=g.scenarios()['C_p4f_128'];a=replace(original,demand=np.tile(original.demand,(4,1)),value=np.tile(original.value,4),eligible=np.tile(original.eligible,(1,4)))
+    def forbidden(*args,**kwargs):raise AssertionError('large shadow must fail before any LP/dense baseline')
+    monkeypatch.setattr(pg,'shape_lp',forbidden);monkeypatch.setattr(pg.oracle,'shape_lp',forbidden)
+    with pytest.raises(ValueError,match='1M dense entries'):pg.shadow(a)
