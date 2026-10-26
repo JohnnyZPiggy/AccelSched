@@ -129,6 +129,20 @@ python -m examples.capacity_decision_report --input examples/data/dynamic.json -
 
 实验数据均对应明确的工作负载与测量范围；L4 数据来自特定同机实验，并不代表所有规模的性能表现。
 
+### Benchmark V4 · 超大规模合成调度实验
+
+Benchmark V4 严格区分 **完整物理调度** 与仅完成 LP 求解的结果。以下均为工程师报告的特定合成工作负载实验，不代表生产环境的普遍性能：
+
+| 实验性方法 | 已报告最大规模 | 完整物理审计结果 |
+| --- | --- | --- |
+| Streaming First-Fit（CPU 物理放置） | **1000 万任务 / 8192 节点** | S3 **8/8** |
+| 真正的索引化 PGFP（认证 LP 价格 + CPU 物理放置） | **100 万任务 / 4096 节点** | S2 **6/8** |
+| LP 引导的 `lp_best_fit`（认证 LP 价格 + CPU 物理放置） | **100 万任务 / 4096 节点** | S2 **6/8** |
+
+可选 cuPDLPx / H-PDLP 用于 **GPU 加速 LP 求解环节**，物理任务放置依然在 CPU 上进行。1000 万任务 Balanced 场景仅约 **0.097%** 的任务需要 GPU。数值未认证、超时和失败记录未被计作有效物理调度。完整原始归档保留在 Engineer 本地工作区，Architect 未独立下载和复跑，因此不主张算法原创性、全局最优、通用 GPU 加速或真实集群部署性能。
+
+详见 [Benchmark V4 英文技术报告](docs/research/benchmark-v4-ultra-scale.md)、[PR #109](https://github.com/JohnnyZPiggy/AccelSched/pull/109)、[PR #111](https://github.com/JohnnyZPiggy/AccelSched/pull/111)、[PR #112](https://github.com/JohnnyZPiggy/AccelSched/pull/112)。
+
 ## 应用场景
 
 | 场景 | 可实现的功能 |
