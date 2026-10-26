@@ -1,15 +1,25 @@
 [build-system]
-requires = ["setuptools>=61"]
+requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "accelsched"
-version = "0.1.0"
+version = "1.0.0"
 description = "CPU resource placement optimization with validated solver outcomes"
+readme = "README.md"
 requires-python = ">=3.10"
 dependencies = ["numpy>=1.23", "scipy>=1.9"]
 license = "MIT"
+license-files = ["LICENSE"]
+
+[project.urls]
+Repository = "https://github.com/JohnnyZPiggy/AccelSched"
+Issues = "https://github.com/JohnnyZPiggy/AccelSched/issues"
 
 [tool.setuptools]
+packages = ["examples"]
 py-modules = ["accelsched", "m0_oracle", "scipy_backend", "workload", "rolling",
               "lp_contract", "lp_certify", "lp_backends", "certified_pgfp", "solver_portfolio"]
+
+[tool.setuptools.package-data]
+examples = ["data/*.json"]

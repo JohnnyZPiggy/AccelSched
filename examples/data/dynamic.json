@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "mode": "dynamic",
+  "horizon": 5,
+  "nodes": [{"id": "t0", "family": "T4", "capacity": [1, 8, 32]}],
+  "jobs": [
+    {"id": "A", "family": "T4", "demand": [1, 4, 16], "arrival": 0, "duration": 2},
+    {"id": "B", "family": "T4", "demand": [1, 4, 16], "arrival": 1, "duration": 2},
+    {"id": "C", "family": "T4", "demand": [1, 4, 16], "arrival": 2, "duration": 2},
+    {"id": "missing-family", "family": "P100", "demand": [1, 4, 16], "arrival": 3, "duration": 1}
+  ],
+  "scenarios": [
+    {"name": "Baseline", "add_nodes": []},
+    {"name": "Add T4", "add_nodes": [{"id": "t1", "family": "T4", "capacity": [1, 8, 32]}]}
+  ],
+  "solver": {"method": "highs_mip", "seed": 11, "time_limit": 0.5},
+  "pressure_references": [{"family": "T4", "demand": [1, 4, 16]}]
+}
