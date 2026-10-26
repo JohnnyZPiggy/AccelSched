@@ -32,7 +32,7 @@ Dynamic jobs additionally require integer `arrival` in [0,horizon) and `duration
 
 ## Small dynamic example
 
-Save this as `dynamic.json` (the file is not bundled):
+Save this illustrative document as `dynamic.json`; the smaller release smoke inputs are bundled separately as [`static.json`](../../examples/data/static.json) / [`dynamic.json`](../../examples/data/dynamic.json):
 
 ```json
 {

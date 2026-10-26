@@ -1,4 +1,6 @@
-# AccelSched
+# AccelSched 1.0.0 release candidate
+
+Independent AIDC optimization engine. Chinese filing name: **AccelSched 异构算力资源优化调度软件 V1.0** (display V1.0 maps to package 1.0.0). This checkout prepares a release; no tag, published wheel or software registration is implied. [Release notes](RELEASE_NOTES.md) · [中文设计说明书](docs/release/software-design.zh-CN.md) · [Registration/ownership checklist](docs/release/registration-checklist.zh-CN.md).
 
 [简体中文](README.zh-CN.md) · [Static placement](#static-placement) · [Rolling batches](#rolling-batches) · [P0](#p0-static-what-if) · [P1](#p1-time-window-capacity) · [P2](#p2-capacity-decision-report) · [Six methods](#six-methods) · [Benchmarks](#benchmarks)
 
@@ -15,6 +17,31 @@ git clone https://github.com/JohnnyZPiggy/AccelSched.git
 cd AccelSched
 python -m pip install .
 ```
+
+Build/install a wheel from a reviewed checkout (CPU only; no GPU packages required):
+
+```bash
+python -m pip wheel --no-deps --wheel-dir dist .
+python -m pip install dist/accelsched-1.0.0-py3-none-any.whl
+python -c "from importlib.metadata import version; print(version('accelsched'))"
+```
+
+From the checkout root, the bundled **synthetic nominal** inputs give Baseline/Add T4 accepted counts 1/2 (static), 2/3 (dynamic), with missing-family requests legitimately rejected:
+
+```bash
+python -m examples.capacity_whatif --input examples/data/static.json
+python -m examples.time_window_capacity --input examples/data/dynamic.json
+python -m examples.capacity_decision_report --input examples/data/static.json --mode static --format json
+python -m examples.capacity_decision_report --input examples/data/dynamic.json --mode dynamic --format json
+```
+
+The wheel also installs `examples` and these inputs. Outside a checkout, create a new `demo-inputs` directory (the command refuses an existing directory), then use `--input demo-inputs/static.json` / `--input demo-inputs/dynamic.json`:
+
+```bash
+python -c "from importlib.resources import files; from pathlib import Path; d=Path('demo-inputs'); d.mkdir(); [d.joinpath(n+'.json').write_bytes(files('examples').joinpath('data',n+'.json').read_bytes()) for n in ('static','dynamic')]"
+```
+
+Family labels are illustrative eligibility labels, not vendor performance or VRAM specifications. CPU default behavior is unchanged; optional certified `hpdlp`/`cupdlpx`/portfolio APIs do not replace default PGFP. GPU research probes and FIFO research files are not installed as V1 CLI features. Python >=3.10 is declared; see the exact tested environment and remaining release gates in the [release validation manifest](docs/release/validation.md).
 
 ## Static placement
 
@@ -51,8 +78,8 @@ Output: `A accepted 0`, `B not_scheduled None`, `C accepted 0`. Arrival times ar
 
 ## Capacity planning: P0/P1/P2
 
-From the checkout root, use your own `static.json` and `dynamic.json` files;
-they are not bundled. The [Shared JSON Input v1 guide](docs/examples/planner-input.md)
+From the checkout root, use the bundled `examples/data/static.json` and
+`examples/data/dynamic.json`, or prepare your own files. The [Shared JSON Input v1 guide](docs/examples/planner-input.md)
 includes an illustrative JSON document and explains how to prepare both modes.
 
 ### P0: Static what-if

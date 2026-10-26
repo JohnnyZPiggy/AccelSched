@@ -1,4 +1,31 @@
-# AccelSched
+# AccelSched 1.0.0 候选发行版
+
+独立 AIDC 优化引擎。拟登记名称：**AccelSched 异构算力资源优化调度软件 V1.0**（展示版本 V1.0 对应包版本 1.0.0）。本分支仅准备发行，不表示已有 Tag、已发布安装包或取得登记证书。[Release Notes](RELEASE_NOTES.md) · [中文设计说明书](docs/release/software-design.zh-CN.md) · [登记与权属清单](docs/release/registration-checklist.zh-CN.md)。
+
+## V1.0 CPU 快速开始
+
+Python >=3.10，运行依赖仅 NumPy、SciPy。以下命令在审阅后的源码根目录执行，无需 GPU：
+
+```bash
+python -m pip install .
+python -m pip wheel --no-deps --wheel-dir dist .
+python -m pip install dist/accelsched-1.0.0-py3-none-any.whl
+python -c "from importlib.metadata import version; print(version('accelsched'))"
+python -m examples.capacity_whatif --input examples/data/static.json
+python -m examples.time_window_capacity --input examples/data/dynamic.json
+python -m examples.capacity_decision_report --input examples/data/static.json --mode static --format json
+python -m examples.capacity_decision_report --input examples/data/dynamic.json --mode dynamic --format json
+```
+
+随包的合成名义输入，Baseline/Add T4 的静态接纳数为 1/2，动态接纳数为 2/3；缺失家族任务是有效输入，正常拒绝。家族名仅用于资格匹配，不代表厂商性能或显存规格。
+
+wheel 也包含 `examples` 和输入文件。在仓库外先创建新的 `demo-inputs` 目录（已有目录会报错，避免覆盖输入），再使用 `--input demo-inputs/static.json` / `--input demo-inputs/dynamic.json`：
+
+```bash
+python -c "from importlib.resources import files; from pathlib import Path; d=Path('demo-inputs'); d.mkdir(); [d.joinpath(n+'.json').write_bytes(files('examples').joinpath('data',n+'.json').read_bytes()) for n in ('static','dynamic')]"
+```
+
+CPU 默认行为不变；可选认证 `hpdlp`、`cupdlpx` 和 Portfolio 不替代默认 PGFP。GPU 研究 Probe 和 FIFO 研究文件不作为 V1 wheel CLI 功能安装。声明兼容 Python >=3.10，不等于已测试所有版本；实际环境和发行门槛见[验证清单](docs/release/validation.md)。
 
 [English](README.md) · [静态放置](#静态放置) · [滚动批次](#滚动批次) · [P0](#p0静态容量对比) · [P1](#p1时间窗口容量) · [P2](#p2容量决策报告) · [六种方法](#六种方法) · [基准研究](#基准研究)
 
@@ -51,8 +78,8 @@ for decision in report["decisions"]:
 
 ## 容量规划：P0/P1/P2
 
-在检出目录根目录使用自行准备的 `static.json` 和 `dynamic.json`；
-项目不附带这两个文件。[Shared JSON Input v1 指南](docs/examples/planner-input.md)
+在检出目录根目录可使用随包 `examples/data/static.json` 和 `examples/data/dynamic.json`，
+也可自行准备输入。[Shared JSON Input v1 指南](docs/examples/planner-input.md)
 提供示意 JSON，并说明如何准备两种模式的输入。
 
 ### P0：静态容量对比

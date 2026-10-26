@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "mode": "static",
+  "nodes": [{"id": "t0", "family": "T4", "capacity": [1, 8, 32]}],
+  "jobs": [
+    {"id": "A", "family": "T4", "demand": [1, 4, 16]},
+    {"id": "B", "family": "T4", "demand": [1, 4, 16]},
+    {"id": "missing-family", "family": "P100", "demand": [1, 4, 16]}
+  ],
+  "scenarios": [
+    {"name": "Baseline", "add_nodes": []},
+    {"name": "Add T4", "add_nodes": [{"id": "t1", "family": "T4", "capacity": [1, 8, 32]}]}
+  ],
+  "solver": {"method": "highs_mip", "seed": 11, "time_limit": 0.5}
+}
