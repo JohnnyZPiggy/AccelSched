@@ -109,6 +109,7 @@
         "python bench_v4_dynamic.py --help",
         "Do not combine canonical and legacy test paths in the same pytest invocation:",
         "they intentionally expose the same tests. Explicit `pytest .` also visits the",
+        "Only generated Python/pytest caches and setuptools build/dist/egg-info paths are",
         "python -m benchmarks.historical.bench_cpu_v3",
         "python -m benchmarks.historical.bench_cpu_v31",
         "python -m pip install .",
@@ -14159,6 +14160,6 @@
   },
   "pytest": "[pytest]\ntestpaths = tests\n",
   "python_files": 156,
-  "revision": "12ee92a325137d86ea68da554c08f552992e184e",
-  "tracked_files": 185
+  "revision": "3725bc64b2de85b9edf96f668c5e7d587ebeea8d",
+  "tracked_files": 187
 }
