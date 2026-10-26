@@ -38,7 +38,7 @@ Focused tests independently reconstruct eligibility, integer resource loads/resi
 python -m pytest -q -p no:cacheprovider test_capacity_whatif.py
 ```
 
-See [focused tests](../../test_capacity_whatif.py). At baseline `07e225fe282c4a629e8950399f03127dba5853bc`, the existing Windows CPU environment (Python 3.14.6, NumPy 2.4.6, SciPy 1.18.0) ran the focused file **once: 12 passed in 1.94 s**, and the example smoke **once: exit 0**. Commands used `D:/software/anaconda3/python.exe` with `PYTHONDONTWRITEBYTECODE=1`, `OPENBLAS_NUM_THREADS=1`, `OMP_NUM_THREADS=1`; outer process walls were 3.527201 s and 1.405356 s. Three real MIP calls in the shared test fixture plus three in the smoke: six total; no retries or optional six-method comparison.
+See [focused tests](../../tests/test_capacity_whatif.py). At baseline `07e225fe282c4a629e8950399f03127dba5853bc`, the existing Windows CPU environment (Python 3.14.6, NumPy 2.4.6, SciPy 1.18.0) ran the focused file **once: 12 passed in 1.94 s**, and the example smoke **once: exit 0**. Commands used `D:/software/anaconda3/python.exe` with `PYTHONDONTWRITEBYTECODE=1`, `OPENBLAS_NUM_THREADS=1`, `OMP_NUM_THREADS=1`; outer process walls were 3.527201 s and 1.405356 s. Three real MIP calls in the shared test fixture plus three in the smoke: six total; no retries or optional six-method comparison.
 
 | Smoke scenario | Accepted count/value | Difference from Baseline | Status / certificate | Solve wall ms |
 | --- | --- | --- | --- | --- |

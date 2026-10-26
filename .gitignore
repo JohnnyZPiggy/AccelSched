@@ -1,0 +1,8 @@
+# Generated development/build files only; research inputs/results remain visible.
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+/build/
+/dist/
+/*.egg-info/

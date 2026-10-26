@@ -108,3 +108,7 @@ The outcome is primarily an **engineering integration and reproducible-evidence 
 
 ---
 MIT-licensed AccelSched · Copyright © 2026 Ru Zhang.
+
+## Repository-layout compatibility
+
+Phase 1 repository hygiene moves canonical test implementations to 	ests/; the legacy root pytest/import paths in this report remain supported by adapters. V4 benchmark workers and probe implementations remain at their original paths. The measurements and source milestones above are historical and unchanged; small CPU relocation checks do not recompute or extend those experiments. See the [developer guide](../development/repository-layout.md).

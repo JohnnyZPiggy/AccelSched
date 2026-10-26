@@ -168,6 +168,10 @@ python -m pip install pytest
 python -m pytest -q test_m0_oracle.py test_workload.py test_rolling.py test_capacity_whatif.py test_time_window_capacity.py test_capacity_decision_report.py
 ```
 
+## Repository layout and development
+
+Canonical tests live in 	ests/; V3/V3.1 scripts live in enchmarks/historical/. Old root commands remain compatibility entrypoints. Production modules, examples, V4 workers and installed package scope are unchanged. See the [developer layout guide](docs/development/repository-layout.md) for canonical commands, deferred high-risk hubs, full dependency inventory and reproducibility boundaries.
+
 ## License
 
 [MIT License](LICENSE) · Copyright © 2026 Ru Zhang.

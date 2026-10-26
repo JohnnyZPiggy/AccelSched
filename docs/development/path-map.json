@@ -1,0 +1,750 @@
+{
+  "base": "6d89f9e27a1b30b800d6de9765292330cbc94d93",
+  "pure_move_commit": "cb603f5",
+  "original_paths": [
+    {
+      "original": "LICENSE",
+      "canonical": "LICENSE",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "README.md",
+      "canonical": "README.md",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "README.zh-CN.md",
+      "canonical": "README.zh-CN.md",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "RELEASE_NOTES.md",
+      "canonical": "RELEASE_NOTES.md",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "accelsched.py",
+      "canonical": "accelsched.py",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "bench_cpu.py",
+      "canonical": "bench_cpu.py",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "bench_cpu_v2.py",
+      "canonical": "bench_cpu_v2.py",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "bench_cpu_v3.py",
+      "canonical": "benchmarks/historical/bench_cpu_v3.py",
+      "legacy_compatibility": "bench_cpu_v3.py",
+      "disposition": "moved-with-root-adapter"
+    },
+    {
+      "original": "bench_cpu_v31.py",
+      "canonical": "benchmarks/historical/bench_cpu_v31.py",
+      "legacy_compatibility": "bench_cpu_v31.py",
+      "disposition": "moved-with-root-adapter"
+    },
+    {
+      "original": "bench_dynamic.py",
+      "canonical": "bench_dynamic.py",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "bench_m1.py",
+      "canonical": "bench_m1.py",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "bench_m2.py",
+      "canonical": "bench_m2.py",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "bench_queue_compare.py",
+      "canonical": "bench_queue_compare.py",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "bench_ultra_pgfp.py",
+      "canonical": "bench_ultra_pgfp.py",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "bench_v4_dynamic.py",
+      "canonical": "bench_v4_dynamic.py",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "bench_v4_gpu.py",
+      "canonical": "bench_v4_gpu.py",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "bench_v4_static.py",
+      "canonical": "bench_v4_static.py",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "certified_pgfp.py",
+      "canonical": "certified_pgfp.py",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "docs/examples/capacity-decision-report.md",
+      "canonical": "docs/examples/capacity-decision-report.md",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "docs/examples/capacity-whatif.md",
+      "canonical": "docs/examples/capacity-whatif.md",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "docs/examples/planner-input.md",
+      "canonical": "docs/examples/planner-input.md",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "docs/examples/time-window-capacity.md",
+      "canonical": "docs/examples/time-window-capacity.md",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "docs/release/registration-checklist.zh-CN.md",
+      "canonical": "docs/release/registration-checklist.zh-CN.md",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "docs/release/software-design.zh-CN.md",
+      "canonical": "docs/release/software-design.zh-CN.md",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "docs/release/source-deposit.zh-CN.md",
+      "canonical": "docs/release/source-deposit.zh-CN.md",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "docs/release/validation.md",
+      "canonical": "docs/release/validation.md",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "docs/research/benchmark-v4-ultra-scale.md",
+      "canonical": "docs/research/benchmark-v4-ultra-scale.md",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "docs/research/dynamic-scheduling-benchmark.md",
+      "canonical": "docs/research/dynamic-scheduling-benchmark.md",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "docs/research/gpu-fragmentation-pgfp.md",
+      "canonical": "docs/research/gpu-fragmentation-pgfp.md",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "examples/__init__.py",
+      "canonical": "examples/__init__.py",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "examples/capacity_decision_report.py",
+      "canonical": "examples/capacity_decision_report.py",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "examples/capacity_whatif.py",
+      "canonical": "examples/capacity_whatif.py",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "examples/data/dynamic.json",
+      "canonical": "examples/data/dynamic.json",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "examples/data/static.json",
+      "canonical": "examples/data/static.json",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "examples/planner_input.py",
+      "canonical": "examples/planner_input.py",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "examples/time_window_capacity.py",
+      "canonical": "examples/time_window_capacity.py",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "literature/2412.19027v3.pdf",
+      "canonical": "literature/2412.19027v3.pdf",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "literature/CvxCluster.pdf",
+      "canonical": "literature/CvxCluster.pdf",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "literature/H-PDLP.pdf",
+      "canonical": "literature/H-PDLP.pdf",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "literature/PDNQP.pdf",
+      "canonical": "literature/PDNQP.pdf",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "literature/cuPDLP.pdf",
+      "canonical": "literature/cuPDLP.pdf",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "lp_backends.py",
+      "canonical": "lp_backends.py",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "lp_certify.py",
+      "canonical": "lp_certify.py",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "lp_contract.py",
+      "canonical": "lp_contract.py",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "m0_oracle.py",
+      "canonical": "m0_oracle.py",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "probes/cuopt_lp_smoke.py",
+      "canonical": "probes/cuopt_lp_smoke.py",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "probes/cupdlpx_lp_compare.py",
+      "canonical": "probes/cupdlpx_lp_compare.py",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "probes/cupdlpx_lp_smoke.py",
+      "canonical": "probes/cupdlpx_lp_smoke.py",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "probes/gpu_lp_solver_benchmark.py",
+      "canonical": "probes/gpu_lp_solver_benchmark.py",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "probes/gpu_lp_solver_landscape.json",
+      "canonical": "probes/gpu_lp_solver_landscape.json",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "probes/gpu_lp_solver_probe.py",
+      "canonical": "probes/gpu_lp_solver_probe.py",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "probes/gpu_resident_feasibility.py",
+      "canonical": "probes/gpu_resident_feasibility.py",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "probes/pgfp_conflict_batch.py",
+      "canonical": "probes/pgfp_conflict_batch.py",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "probes/pgfp_dual_selection.py",
+      "canonical": "probes/pgfp_dual_selection.py",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "probes/pgfp_dual_stability.py",
+      "canonical": "probes/pgfp_dual_stability.py",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "probes/pgfp_gpu_resident.py",
+      "canonical": "probes/pgfp_gpu_resident.py",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "probes/pgfp_gpu_scoring.py",
+      "canonical": "probes/pgfp_gpu_scoring.py",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "probes/pgfp_p1.py",
+      "canonical": "probes/pgfp_p1.py",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "probes/pgfp_p1_fast.py",
+      "canonical": "probes/pgfp_p1_fast.py",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "probes/pgfp_physical_profile.py",
+      "canonical": "probes/pgfp_physical_profile.py",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "probes/pgfp_shadow_integration.py",
+      "canonical": "probes/pgfp_shadow_integration.py",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "probes/pgfp_tensor_probe.py",
+      "canonical": "probes/pgfp_tensor_probe.py",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "probes/portfolio_value_benchmark.py",
+      "canonical": "probes/portfolio_value_benchmark.py",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "probes/shape_lp_backend_probe.py",
+      "canonical": "probes/shape_lp_backend_probe.py",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "probes/shape_lp_gpu_convergence.py",
+      "canonical": "probes/shape_lp_gpu_convergence.py",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "probes/shape_lp_gpu_numerics.py",
+      "canonical": "probes/shape_lp_gpu_numerics.py",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "probes/shape_lp_gpu_reproducibility.py",
+      "canonical": "probes/shape_lp_gpu_reproducibility.py",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "probes/shape_lp_gpu_scale.py",
+      "canonical": "probes/shape_lp_gpu_scale.py",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "pyproject.toml",
+      "canonical": "pyproject.toml",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "queueing.py",
+      "canonical": "queueing.py",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "rolling.py",
+      "canonical": "rolling.py",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "scipy_backend.py",
+      "canonical": "scipy_backend.py",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "solver_portfolio.py",
+      "canonical": "solver_portfolio.py",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "test_batch_capacity.py",
+      "canonical": "tests/test_batch_capacity.py",
+      "legacy_compatibility": "test_batch_capacity.py",
+      "disposition": "moved-with-root-adapter"
+    },
+    {
+      "original": "test_bench_ultra_pgfp.py",
+      "canonical": "tests/test_bench_ultra_pgfp.py",
+      "legacy_compatibility": "test_bench_ultra_pgfp.py",
+      "disposition": "moved-with-root-adapter"
+    },
+    {
+      "original": "test_bench_v4_dynamic.py",
+      "canonical": "tests/test_bench_v4_dynamic.py",
+      "legacy_compatibility": "test_bench_v4_dynamic.py",
+      "disposition": "moved-with-root-adapter"
+    },
+    {
+      "original": "test_bench_v4_gpu.py",
+      "canonical": "tests/test_bench_v4_gpu.py",
+      "legacy_compatibility": "test_bench_v4_gpu.py",
+      "disposition": "moved-with-root-adapter"
+    },
+    {
+      "original": "test_bench_v4_static.py",
+      "canonical": "tests/test_bench_v4_static.py",
+      "legacy_compatibility": "test_bench_v4_static.py",
+      "disposition": "moved-with-root-adapter"
+    },
+    {
+      "original": "test_capacity_decision_report.py",
+      "canonical": "tests/test_capacity_decision_report.py",
+      "legacy_compatibility": "test_capacity_decision_report.py",
+      "disposition": "moved-with-root-adapter"
+    },
+    {
+      "original": "test_capacity_whatif.py",
+      "canonical": "tests/test_capacity_whatif.py",
+      "legacy_compatibility": "test_capacity_whatif.py",
+      "disposition": "moved-with-root-adapter"
+    },
+    {
+      "original": "test_certified_lp_backend.py",
+      "canonical": "tests/test_certified_lp_backend.py",
+      "legacy_compatibility": "test_certified_lp_backend.py",
+      "disposition": "moved-with-root-adapter"
+    },
+    {
+      "original": "test_cuopt_lp_smoke.py",
+      "canonical": "tests/test_cuopt_lp_smoke.py",
+      "legacy_compatibility": "test_cuopt_lp_smoke.py",
+      "disposition": "moved-with-root-adapter"
+    },
+    {
+      "original": "test_cupdlpx_backend.py",
+      "canonical": "tests/test_cupdlpx_backend.py",
+      "legacy_compatibility": "test_cupdlpx_backend.py",
+      "disposition": "moved-with-root-adapter"
+    },
+    {
+      "original": "test_cupdlpx_lp_compare.py",
+      "canonical": "tests/test_cupdlpx_lp_compare.py",
+      "legacy_compatibility": "test_cupdlpx_lp_compare.py",
+      "disposition": "moved-with-root-adapter"
+    },
+    {
+      "original": "test_cupdlpx_lp_smoke.py",
+      "canonical": "tests/test_cupdlpx_lp_smoke.py",
+      "legacy_compatibility": "test_cupdlpx_lp_smoke.py",
+      "disposition": "moved-with-root-adapter"
+    },
+    {
+      "original": "test_dynamic_bench.py",
+      "canonical": "tests/test_dynamic_bench.py",
+      "legacy_compatibility": "test_dynamic_bench.py",
+      "disposition": "moved-with-root-adapter"
+    },
+    {
+      "original": "test_gpu_lp_solver_benchmark.py",
+      "canonical": "tests/test_gpu_lp_solver_benchmark.py",
+      "legacy_compatibility": "test_gpu_lp_solver_benchmark.py",
+      "disposition": "moved-with-root-adapter"
+    },
+    {
+      "original": "test_gpu_lp_solver_probe.py",
+      "canonical": "tests/test_gpu_lp_solver_probe.py",
+      "legacy_compatibility": "test_gpu_lp_solver_probe.py",
+      "disposition": "moved-with-root-adapter"
+    },
+    {
+      "original": "test_gpu_resident_feasibility.py",
+      "canonical": "tests/test_gpu_resident_feasibility.py",
+      "legacy_compatibility": "test_gpu_resident_feasibility.py",
+      "disposition": "moved-with-root-adapter"
+    },
+    {
+      "original": "test_m0_oracle.py",
+      "canonical": "tests/test_m0_oracle.py",
+      "legacy_compatibility": "test_m0_oracle.py",
+      "disposition": "moved-with-root-adapter"
+    },
+    {
+      "original": "test_m10_shift.py",
+      "canonical": "tests/test_m10_shift.py",
+      "legacy_compatibility": "test_m10_shift.py",
+      "disposition": "moved-with-root-adapter"
+    },
+    {
+      "original": "test_m2_proxy_ablation.py",
+      "canonical": "tests/test_m2_proxy_ablation.py",
+      "legacy_compatibility": "test_m2_proxy_ablation.py",
+      "disposition": "moved-with-root-adapter"
+    },
+    {
+      "original": "test_m4_proxy.py",
+      "canonical": "tests/test_m4_proxy.py",
+      "legacy_compatibility": "test_m4_proxy.py",
+      "disposition": "moved-with-root-adapter"
+    },
+    {
+      "original": "test_m5_proxy.py",
+      "canonical": "tests/test_m5_proxy.py",
+      "legacy_compatibility": "test_m5_proxy.py",
+      "disposition": "moved-with-root-adapter"
+    },
+    {
+      "original": "test_m6_hybrid.py",
+      "canonical": "tests/test_m6_hybrid.py",
+      "legacy_compatibility": "test_m6_hybrid.py",
+      "disposition": "moved-with-root-adapter"
+    },
+    {
+      "original": "test_m7_distribution.py",
+      "canonical": "tests/test_m7_distribution.py",
+      "legacy_compatibility": "test_m7_distribution.py",
+      "disposition": "moved-with-root-adapter"
+    },
+    {
+      "original": "test_m8_robust.py",
+      "canonical": "tests/test_m8_robust.py",
+      "legacy_compatibility": "test_m8_robust.py",
+      "disposition": "moved-with-root-adapter"
+    },
+    {
+      "original": "test_m9_stress.py",
+      "canonical": "tests/test_m9_stress.py",
+      "legacy_compatibility": "test_m9_stress.py",
+      "disposition": "moved-with-root-adapter"
+    },
+    {
+      "original": "test_mip_status.py",
+      "canonical": "tests/test_mip_status.py",
+      "legacy_compatibility": "test_mip_status.py",
+      "disposition": "moved-with-root-adapter"
+    },
+    {
+      "original": "test_pgfp_conflict_batch.py",
+      "canonical": "tests/test_pgfp_conflict_batch.py",
+      "legacy_compatibility": "test_pgfp_conflict_batch.py",
+      "disposition": "moved-with-root-adapter"
+    },
+    {
+      "original": "test_pgfp_dual_selection.py",
+      "canonical": "tests/test_pgfp_dual_selection.py",
+      "legacy_compatibility": "test_pgfp_dual_selection.py",
+      "disposition": "moved-with-root-adapter"
+    },
+    {
+      "original": "test_pgfp_dual_stability.py",
+      "canonical": "tests/test_pgfp_dual_stability.py",
+      "legacy_compatibility": "test_pgfp_dual_stability.py",
+      "disposition": "moved-with-root-adapter"
+    },
+    {
+      "original": "test_pgfp_gpu_resident.py",
+      "canonical": "tests/test_pgfp_gpu_resident.py",
+      "legacy_compatibility": "test_pgfp_gpu_resident.py",
+      "disposition": "moved-with-root-adapter"
+    },
+    {
+      "original": "test_pgfp_gpu_scoring.py",
+      "canonical": "tests/test_pgfp_gpu_scoring.py",
+      "legacy_compatibility": "test_pgfp_gpu_scoring.py",
+      "disposition": "moved-with-root-adapter"
+    },
+    {
+      "original": "test_pgfp_p1.py",
+      "canonical": "tests/test_pgfp_p1.py",
+      "legacy_compatibility": "test_pgfp_p1.py",
+      "disposition": "moved-with-root-adapter"
+    },
+    {
+      "original": "test_pgfp_physical_profile.py",
+      "canonical": "tests/test_pgfp_physical_profile.py",
+      "legacy_compatibility": "test_pgfp_physical_profile.py",
+      "disposition": "moved-with-root-adapter"
+    },
+    {
+      "original": "test_pgfp_shadow_integration.py",
+      "canonical": "tests/test_pgfp_shadow_integration.py",
+      "legacy_compatibility": "test_pgfp_shadow_integration.py",
+      "disposition": "moved-with-root-adapter"
+    },
+    {
+      "original": "test_pgfp_tensor_probe.py",
+      "canonical": "tests/test_pgfp_tensor_probe.py",
+      "legacy_compatibility": "test_pgfp_tensor_probe.py",
+      "disposition": "moved-with-root-adapter"
+    },
+    {
+      "original": "test_planner_input.py",
+      "canonical": "tests/test_planner_input.py",
+      "legacy_compatibility": "test_planner_input.py",
+      "disposition": "moved-with-root-adapter"
+    },
+    {
+      "original": "test_portfolio_value_benchmark.py",
+      "canonical": "tests/test_portfolio_value_benchmark.py",
+      "legacy_compatibility": "test_portfolio_value_benchmark.py",
+      "disposition": "moved-with-root-adapter"
+    },
+    {
+      "original": "test_queue_compare.py",
+      "canonical": "tests/test_queue_compare.py",
+      "legacy_compatibility": "test_queue_compare.py",
+      "disposition": "moved-with-root-adapter"
+    },
+    {
+      "original": "test_queueing.py",
+      "canonical": "tests/test_queueing.py",
+      "legacy_compatibility": "test_queueing.py",
+      "disposition": "moved-with-root-adapter"
+    },
+    {
+      "original": "test_release_readiness.py",
+      "canonical": "tests/test_release_readiness.py",
+      "legacy_compatibility": "test_release_readiness.py",
+      "disposition": "moved-with-root-adapter"
+    },
+    {
+      "original": "test_rolling.py",
+      "canonical": "tests/test_rolling.py",
+      "legacy_compatibility": "test_rolling.py",
+      "disposition": "moved-with-root-adapter"
+    },
+    {
+      "original": "test_shape_lp_backend_probe.py",
+      "canonical": "tests/test_shape_lp_backend_probe.py",
+      "legacy_compatibility": "test_shape_lp_backend_probe.py",
+      "disposition": "moved-with-root-adapter"
+    },
+    {
+      "original": "test_shape_lp_gpu_convergence.py",
+      "canonical": "tests/test_shape_lp_gpu_convergence.py",
+      "legacy_compatibility": "test_shape_lp_gpu_convergence.py",
+      "disposition": "moved-with-root-adapter"
+    },
+    {
+      "original": "test_shape_lp_gpu_numerics.py",
+      "canonical": "tests/test_shape_lp_gpu_numerics.py",
+      "legacy_compatibility": "test_shape_lp_gpu_numerics.py",
+      "disposition": "moved-with-root-adapter"
+    },
+    {
+      "original": "test_shape_lp_gpu_reproducibility.py",
+      "canonical": "tests/test_shape_lp_gpu_reproducibility.py",
+      "legacy_compatibility": "test_shape_lp_gpu_reproducibility.py",
+      "disposition": "moved-with-root-adapter"
+    },
+    {
+      "original": "test_shape_lp_gpu_scale.py",
+      "canonical": "tests/test_shape_lp_gpu_scale.py",
+      "legacy_compatibility": "test_shape_lp_gpu_scale.py",
+      "disposition": "moved-with-root-adapter"
+    },
+    {
+      "original": "test_solver_portfolio.py",
+      "canonical": "tests/test_solver_portfolio.py",
+      "legacy_compatibility": "test_solver_portfolio.py",
+      "disposition": "moved-with-root-adapter"
+    },
+    {
+      "original": "test_time_window_capacity.py",
+      "canonical": "tests/test_time_window_capacity.py",
+      "legacy_compatibility": "test_time_window_capacity.py",
+      "disposition": "moved-with-root-adapter"
+    },
+    {
+      "original": "test_workload.py",
+      "canonical": "tests/test_workload.py",
+      "legacy_compatibility": "test_workload.py",
+      "disposition": "moved-with-root-adapter"
+    },
+    {
+      "original": "tools/source_deposit.py",
+      "canonical": "tools/source_deposit.py",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    },
+    {
+      "original": "workload.py",
+      "canonical": "workload.py",
+      "legacy_compatibility": null,
+      "disposition": "unchanged-path"
+    }
+  ]
+}

@@ -154,6 +154,10 @@ python -m pip install pytest
 python -m pytest -q test_m0_oracle.py test_workload.py test_rolling.py test_capacity_whatif.py test_time_window_capacity.py test_capacity_decision_report.py
 ```
 
+## 仓库结构与开发
+
+测试实现统一在 	ests/，历史 V3/V3.1 脚本在 enchmarks/historical/；原根目录命令继续作为兼容入口。生产模块、示例、V4 子进程脚本及安装范围均不改变。规范命令、暂缓迁移的高风险入口、完整依赖清单和复现边界见[开发与目录指南](docs/development/repository-layout.md)。
+
 ## 开源许可
 
 [MIT License](LICENSE) · Copyright © 2026 Ru Zhang。
