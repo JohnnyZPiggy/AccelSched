@@ -28,8 +28,11 @@ def canonical_shape(a):
     return CanonicalLP(A,-np.tile(value,m),np.full(len(upper),-np.inf),upper,np.zeros(m*n),np.full(m*n,np.inf)),labels
 
 
-def shape_lp(a,*,backend='highs',fallback='none',time_limit=10.):
-    start=perf_counter();model,labels=canonical_shape(a);result=solve_lp(model,backend=backend,fallback=fallback,time_limit=time_limit)
+def shape_lp(a,*,backend='highs',fallback='none',time_limit=10.,solver=None):
+    start=perf_counter();model,labels=canonical_shape(a);result=solve_lp(model,backend=backend,fallback=fallback,time_limit=time_limit) if solver is None else solver(model)
+    if solver is not None:
+        model.assert_intact()
+        if result.source_hash!=model.source_hash:raise ValueError('optional solver returned a different original model')
     out=dict(result=result,source_hash=model.source_hash,shapes=labels,elapsed_seconds=perf_counter()-start)
     if result.status=='OPTIMAL' and result.certified:
         n,r=a.demand.shape;out.update(value=-result.attempts[-1].certificate['primal_objective'],dual=-result.attempts[-1].certificate['dual_objective'],prices=-result.raw.pi[n:].reshape(len(labels),r),x=result.raw.x.reshape(len(labels),n))
@@ -48,13 +51,13 @@ def _replay(a,lp):
     return dict(task_order=order,shape_order=shape_orders,ledger_steps=steps,placement=placement,value=oracle.placed_value(a,placement),residual=oracle.residual(a,placement).tolist(),greedy_residual=rest.tolist(),future_score=oracle.future_score(a,rest))
 
 
-def shadow(a,*,backend='highs',fallback='none',time_limit=10.,strict_compatibility=False):
+def shadow(a,*,backend='highs',fallback='none',time_limit=10.,strict_compatibility=False,solver=None):
     from accelsched import _input_error
     error=_input_error(a,time_limit,11)
     if error:raise ValueError(error)
     n,r=a.demand.shape;m=len(set(a.shapes.tolist()))
     if (n+m*r)*m*n>1_000_000:raise ValueError('diagnostic shadow baseline exceeds 1M dense entries; use sparse shape_lp')
-    start=perf_counter();lp=shape_lp(a,backend=backend,fallback=fallback,time_limit=time_limit);solved=perf_counter()
+    start=perf_counter();lp=shape_lp(a,backend=backend,fallback=fallback,time_limit=time_limit,solver=solver);solved=perf_counter()
     if lp['result'].status!='OPTIMAL':return dict(status='LP_NOT_CERTIFIED',lp=lp,elapsed_seconds=perf_counter()-start)
     proposed=_replay(a,lp);physical=perf_counter();baseline=_replay(a,oracle.shape_lp(a));flags={key:proposed[key]==baseline[key] for key in baseline};exact=all(flags.values())
     status='EXACT_BASELINE' if exact else 'STRICT_COMPATIBILITY_REJECTED' if strict_compatibility else 'POLICY_DIFFERENT_VALID'
