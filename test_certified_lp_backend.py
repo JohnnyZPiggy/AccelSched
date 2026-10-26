@@ -132,3 +132,10 @@ def test_strict_shadow_rejects_alternate_certified_prices(monkeypatch):
     monkeypatch.setattr(pg,'shape_lp',lambda *args,**kw:alternative)
     result=pg.shadow(a,strict_compatibility=True)
     assert result['status']=='STRICT_COMPATIBILITY_REJECTED' and not result['accepted']
+
+
+def test_single_physical_node_default_order_and_rejection():
+    a=g.oracle.Instance(np.full((1,3),2.),np.ones((3,3)),np.array([2.,1.,1.]),np.ones((1,3),bool),np.array([0]),np.ones((1,3)),np.ones(1),np.ones((1,1),bool))
+    out=pg.shadow(a);assert out['proposed']['placement']==[0,0,-1] and out['proposed']['future_score']==0.
+    assert out['baseline']['placement']==list(g.api.solve(a,method='pgfp',seed=11,time_limit=.5).placement)
+    q=out['proposed'];assert g.audit_steps(a,q['ledger_steps'],q['task_order'],q['shape_order'])['value']==3.
