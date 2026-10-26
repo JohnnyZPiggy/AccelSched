@@ -128,19 +128,21 @@ def orders(data,prices):
     return task,shape
 
 
-def replay(cap,data,shapes,nf,ng,prices,policy,trace=False,future=FUTURE,weights=WEIGHTS,fe=None):
+def replay(cap,data,shapes,nf,ng,prices,policy,trace=False,future=FUTURE,weights=WEIGHTS,fe=None,progress=None):
     assert np.isfinite(data).all() and np.all(data[:,:3]>=0) and np.all(data[:,:3]==np.floor(data[:,:3]))
     assert np.isfinite(prices).all() and prices.shape[1]==3
     tick=perf_counter();task,shape_order=orders(data,prices);ordering=perf_counter()-tick
     tick=perf_counter();index=ExactIndex(cap,shapes,nf,ng,policy,future,weights,fe)
     p=np.full(len(data),-1,np.int32);ledger=[]
-    for j in task:
+    for position,j in enumerate(task):
         row=data[j];before=index.rest.copy() if trace else None
         for h in shape_order[:,j]:
             node=index.query(row[:3],int(h),row[4],row[5])
             if node is not None:
                 p[j]=node;index.commit(node,row[:3]);break
         if trace:ledger.append(dict(job=int(j),before=before.tolist(),after=index.rest.tolist(),chosen=int(p[j]),shape_order=shape_order[:,j].tolist()))
+        if progress is not None and ((position+1)%65536==0 or position+1==len(task)):
+            progress(position+1,dict(index.counters))
     residual=index.rest;info=dict(ordering=ordering,placement=perf_counter()-tick,
         task_order_sha256=base.sha(task.tobytes()),shape_order_sha256=base.sha(shape_order.tobytes()),
         candidate_counters=dict(index.counters),registered_query_count=len(index.queries),ledger=ledger)
@@ -180,8 +182,8 @@ def audit_extra(c,data,p,residual,base_sha):
 
 def pipeline(c,out,key,policy='pgfp',backend='cupdlpx'):
     start=perf_counter();out=Path(out);stages={k:0. for k in ['generation_hash','canonical','solver_certificate','ordering','placement','audit','serialization']}
-    def mark(stage):
-        (out/(key+'-phase.json')).write_bytes(base.js(dict(stage=stage,config=asdict(c),policy=policy,seconds=perf_counter()-start)))
+    def mark(stage,**fields):
+        (out/(key+'-phase.json')).write_bytes(base.js(dict(stage=stage,config=asdict(c),policy=policy,seconds=perf_counter()-start,**fields)))
     from dataclasses import asdict
     mark('INPUT_GENERATION_HASH');tick=perf_counter();cap,nf,ng,shapes=base.inventory(c);data=base.materialize(c);h=base.fingerprint_start(c,cap)
     for i in range(0,c.n,c.chunk):base.update_hash(h,i,data[i:i+c.chunk])
@@ -206,9 +208,14 @@ def pipeline(c,out,key,policy='pgfp',backend='cupdlpx'):
             rows=model.A.shape[0],variables=model.A.shape[1],nnz=model.A.nnz,shape_count=len(labels),eligibility_relaxed=True)
     row=dict(config=base.asdict(c),policy=policy,lp=lp,input_sha256=h.hexdigest(),stages=stages,
              status='UNCERTIFIED',policy_status='NOT_RUN',peak_vram_bytes='NOT_AVAILABLE')
+    tick=perf_counter();lpfile=out/(key+'-lp.npz');np.savez_compressed(lpfile,**vectors)
+    row.update(lp_vectors=lpfile.name,lp_vectors_sha256=base.sha(lpfile.read_bytes()))
+    vectors={};stages['serialization']+=perf_counter()-tick
     if result.status=='OPTIMAL' and result.certified and independent['certified']:
+        (out/(key+'-lp.json')).write_bytes(base.js(dict(row,status='LP_ONLY_CERTIFIED')))
         prices=-raw.pi[c.n:].reshape(len(labels),3);mark('GLOBAL_ORDER_AND_EXACT_CANDIDATE_INDEX')
-        p,residual,physical=replay(cap,data,shapes,nf,ng,prices,policy)
+        p,residual,physical=replay(cap,data,shapes,nf,ng,prices,policy,
+            progress=lambda done,counters:mark('EXACT_NODE_SCORING_AND_PLACEMENT',processed_tasks=done,candidate_counters=counters))
         stages.update(ordering=physical['ordering'],placement=physical['placement']);mark('INDEPENDENT_ALL_JOB_PHYSICAL_AUDIT');tick=perf_counter()
         check=audit_extra(c,data,p,residual,h.hexdigest());stages['audit']=perf_counter()-tick
         row.update(status='PHYSICAL_E2E_VALID',policy_status='PGFP_CERTIFIED_PRICE_POLICY_DIFFERENT' if policy=='pgfp' else 'LP_GUIDED_POLICY_DIFFERENT',
@@ -219,7 +226,7 @@ def pipeline(c,out,key,policy='pgfp',backend='cupdlpx'):
     if row['status']=='PHYSICAL_E2E_VALID':
         output={k:row['physical'][k] for k in ['accepted_count','accepted_value','accepted_gpu_jobs','weighted_future_placeability','residual_sha256']}
         output['placement_sha256']=base.sha(vectors['placement'].tobytes());row['output']=output;row['output_sha256']=base.sha(base.js(output))
-    stages['serialization']=perf_counter()-tick;total=perf_counter()-start
+    stages['serialization']+=perf_counter()-tick;total=perf_counter()-start
     row.update(full_seconds=total,other_seconds=total-sum(stages.values()),peak_rss_bytes=base.peak_rss())
     if row['status']=='PHYSICAL_E2E_VALID':row.update(offered_jobs_ps=c.n/total,accepted_jobs_ps=row['physical']['accepted_count']/total)
     mark('COMPLETE');return row
@@ -236,7 +243,7 @@ def worker(args):
         except MemoryError:row=dict(status='OOM',error=traceback.format_exc(),config=base.asdict(c),policy=args.policy)
         except BaseException:
             path=out/f'rep{rep}-phase.json';phase=json.loads(path.read_bytes()).get('stage') if path.exists() else 'STARTUP'
-            row=dict(status='PHYSICAL_INVALID' if phase in ('GLOBAL_ORDER_AND_EXACT_CANDIDATE_INDEX','INDEPENDENT_ALL_JOB_PHYSICAL_AUDIT') else 'ERROR',failed_stage=phase,error=traceback.format_exc(),config=base.asdict(c),policy=args.policy)
+            row=dict(status='PHYSICAL_INVALID' if phase in ('GLOBAL_ORDER_AND_EXACT_CANDIDATE_INDEX','EXACT_NODE_SCORING_AND_PLACEMENT','INDEPENDENT_ALL_JOB_PHYSICAL_AUDIT') else 'ERROR',failed_stage=phase,error=traceback.format_exc(),config=base.asdict(c),policy=args.policy)
         row.update(rep=rep,completion_monotonic=perf_counter());rows.append(row)
         (out/'results.json').write_bytes(base.js(rows))
 
@@ -255,7 +262,11 @@ def invoke(out,c,policy,backend='cupdlpx',limit=180):
     rows=json.loads((out/'results.json').read_bytes()) if (out/'results.json').exists() else []
     for r in rows:
         if r['rep']==0:r['cold_process_seconds']=r['completion_monotonic']-tick
-    for rep in range(len(rows),2):rows.append(dict(rep=rep,status='TIMEOUT' if timed_out else 'OOM_OR_PROCESS_ERROR',config=base.asdict(c),policy=policy))
+    for rep in range(len(rows),2):
+        phase=out/f'rep{rep}-phase.json';lp=out/f'rep{rep}-lp.json'
+        rows.append(dict(rep=rep,status='TIMEOUT' if timed_out else 'OOM_OR_PROCESS_ERROR',config=base.asdict(c),policy=policy,
+            last_phase=json.loads(phase.read_bytes()) if phase.exists() else None,
+            optimizer_checkpoint=json.loads(lp.read_bytes()) if lp.exists() else None))
     return dict(argv=args,watchdog=limit,process_seconds=perf_counter()-tick,exit_code=p.returncode,stdout=stdout,stderr=stderr,records=rows)
 
 

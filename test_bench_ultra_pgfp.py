@@ -99,3 +99,14 @@ def test_real_highs_complete_pipeline_and_adversarial_audit(tmp_path):
 
 def test_reject_silent_fractional_truncation():
     with pytest.raises(AssertionError):b.ExactIndex(np.array([[1.5,4,16]]),[0],[-1],[0],'pgfp')
+
+
+def test_real_lp_checkpoint_survives_injected_placement_failure(tmp_path,monkeypatch):
+    import json
+    c=b.base.Config(100,16,'high_pressure',11,64)
+    def interrupted(*args,**kwargs):raise TimeoutError('injected placement interruption, not a native GPU observation')
+    monkeypatch.setattr(b,'replay',interrupted)
+    with pytest.raises(TimeoutError):b.pipeline(c,tmp_path,'interrupted','pgfp','highs')
+    proof=json.loads((tmp_path/'interrupted-lp.json').read_bytes())
+    assert proof['status']=='LP_ONLY_CERTIFIED' and proof['lp']['independent']['certified']
+    with np.load(tmp_path/proof['lp_vectors'],allow_pickle=False) as z:assert all(k in z for k in ['x','pi','rc'])
