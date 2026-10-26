@@ -170,7 +170,7 @@ python -m pytest -q test_m0_oracle.py test_workload.py test_rolling.py test_capa
 
 ## Repository layout and development
 
-Canonical tests live in 	ests/; V3/V3.1 scripts live in enchmarks/historical/. Old root commands remain compatibility entrypoints. Production modules, examples, V4 workers and installed package scope are unchanged. See the [developer layout guide](docs/development/repository-layout.md) for canonical commands, deferred high-risk hubs, full dependency inventory and reproducibility boundaries.
+Canonical tests live in `tests/`; V3/V3.1 scripts live in `benchmarks/historical/`. Old root commands remain compatibility entrypoints. Production modules, examples, V4 workers and installed package scope are unchanged. See the [developer layout guide](docs/development/repository-layout.md) for canonical commands, deferred high-risk hubs, full dependency inventory and reproducibility boundaries.
 
 ## License
 
