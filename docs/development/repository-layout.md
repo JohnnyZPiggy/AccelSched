@@ -104,3 +104,7 @@ base-to-head diff may show additions rather than all rename pairs; inspect the
 pure-move commit and Git `--follow`, not an invented final R100 classification.
 The path map includes unchanged originals and all compatibility paths. No
 scientifically meaningful probe, test or historical evidence was deleted.
+
+## Future package architecture (design only)
+
+The existing v1.0.0 root `py-modules` remain supported and unchanged. A proposed future `src/accelsched/` package, dependency map, compatibility/pickle/monkeypatch risks, wheel scope and separate migration gates are recorded in the [Phase 2 architecture freeze](phase2-python-package-architecture.md). **No Phase 2 production migration is approved or performed.**
