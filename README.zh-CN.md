@@ -19,10 +19,10 @@ python -m examples.capacity_decision_report --input examples/data/dynamic.json -
 
 随包的合成名义输入，Baseline/Add T4 的静态接纳数为 1/2，动态接纳数为 2/3；缺失家族任务是有效输入，正常拒绝。家族名仅用于资格匹配，不代表厂商性能或显存规格。
 
-wheel 也包含 `examples` 和输入文件。在仓库外先复制输入，再使用 `--input static.json` / `--input dynamic.json`：
+wheel 也包含 `examples` 和输入文件。在仓库外先创建新的 `demo-inputs` 目录（已有目录会报错，避免覆盖输入），再使用 `--input demo-inputs/static.json` / `--input demo-inputs/dynamic.json`：
 
 ```bash
-python -c "from importlib.resources import files; from pathlib import Path; [Path(n+'.json').write_bytes(files('examples').joinpath('data',n+'.json').read_bytes()) for n in ('static','dynamic')]"
+python -c "from importlib.resources import files; from pathlib import Path; d=Path('demo-inputs'); d.mkdir(); [d.joinpath(n+'.json').write_bytes(files('examples').joinpath('data',n+'.json').read_bytes()) for n in ('static','dynamic')]"
 ```
 
 CPU 默认行为不变；可选认证 `hpdlp`、`cupdlpx` 和 Portfolio 不替代默认 PGFP。GPU 研究 Probe 和 FIFO 研究文件不作为 V1 wheel CLI 功能安装。声明兼容 Python >=3.10，不等于已测试所有版本；实际环境和发行门槛见[验证清单](docs/release/validation.md)。

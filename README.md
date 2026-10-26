@@ -35,10 +35,10 @@ python -m examples.capacity_decision_report --input examples/data/static.json --
 python -m examples.capacity_decision_report --input examples/data/dynamic.json --mode dynamic --format json
 ```
 
-The wheel also installs `examples` and these inputs. Outside a checkout, copy them to your current directory, then use `--input static.json` / `--input dynamic.json`:
+The wheel also installs `examples` and these inputs. Outside a checkout, create a new `demo-inputs` directory (the command refuses an existing directory), then use `--input demo-inputs/static.json` / `--input demo-inputs/dynamic.json`:
 
 ```bash
-python -c "from importlib.resources import files; from pathlib import Path; [Path(n+'.json').write_bytes(files('examples').joinpath('data',n+'.json').read_bytes()) for n in ('static','dynamic')]"
+python -c "from importlib.resources import files; from pathlib import Path; d=Path('demo-inputs'); d.mkdir(); [d.joinpath(n+'.json').write_bytes(files('examples').joinpath('data',n+'.json').read_bytes()) for n in ('static','dynamic')]"
 ```
 
 Family labels are illustrative eligibility labels, not vendor performance or VRAM specifications. CPU default behavior is unchanged; optional certified `hpdlp`/`cupdlpx`/portfolio APIs do not replace default PGFP. GPU research probes and FIFO research files are not installed as V1 CLI features. Python >=3.10 is declared; see the exact tested environment and remaining release gates in the [release validation manifest](docs/release/validation.md).
