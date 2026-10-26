@@ -67,6 +67,17 @@ def call(m,original,backend,profile,modules=None,sync=lambda:None):
     return out,vectors
 
 
+
+def certificate(m,original,vectors,raw,optimal):
+    check=p.validate(m,'shape','OPTIMAL' if optimal else 'NOT_OPTIMAL',vectors.get('x'),vectors.get('pi'),vectors.get('rc'),raw.get('ObjVal'),original)
+    if raw.get('DualObj') is not None and raw.get('Gap') is not None and all(k in vectors for k in ('x','pi','rc')):
+        fields=p.p5.certify(original,vectors['x'],vectors['pi'],vectors['rc'],optimal,raw.get('ObjVal'),raw['DualObj'],raw['Gap'])
+        check['native_objective_fields_match']=fields['objective_fields_match']
+        check['certified']=bool(check['certified'] and fields['certified'])
+    else:check['native_objective_fields_match']='NOT_EXPOSED_OR_MISSING_VECTORS'
+    return check
+
+
 def archive(vectors):
     buf=io.BytesIO();np.savez_compressed(buf,**vectors);return buf.getvalue(),{k:dict(shape=list(v.shape),dtype=v.dtype.str,bytes=v.nbytes,sha256=hashlib.sha256(v.tobytes()).hexdigest()) for k,v in vectors.items()}
 
@@ -143,7 +154,7 @@ def audit(summary_path,directory,output):
         for field,vm in q['vector_metadata'].items():
             arr=v[field]
             if list(arr.shape)!=vm['shape'] or arr.dtype.str!=vm['dtype'] or arr.nbytes!=vm['bytes'] or hashlib.sha256(arr.tobytes()).hexdigest()!=vm['sha256']:raise ValueError('array bytes')
-        check=p.validate(m,'shape','OPTIMAL' if q.get('reported_optimal') else 'NOT_OPTIMAL',v['x'] if 'x' in v else None,v['pi'] if 'pi' in v else None,v['rc'] if 'rc' in v else None,q.get('raw_solver',{}).get('ObjVal'),original)
+        check=certificate(m,original,{field:v[field] for field in v.files},q.get('raw_solver',{}),q.get('reported_optimal',False))
         if check['certified']!=q.get('certificate',{}).get('certified',False):raise ValueError('remote/local certification disagreement')
         checks.append(dict(key=q['key'],status='PASS' if check['certified'] else 'UNCERTIFIED',certificate=check))
     out=dict(status='PASS_COMPLETE_ORIGINAL_MODEL_AUDIT',project_sha=wrapper['project_sha'],adapter_sha=wrapper['source_sha'],source_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),checks=checks,archive_sha256=report['combined_archive_sha256'])
