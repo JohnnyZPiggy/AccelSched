@@ -151,6 +151,8 @@ def phase(source,out,*,baseline=None,budget=900):
         call(b.base.Config(100000,1024,'fragmentation',11),'pgfp',backend='hpdlp')
         report['tracemalloc']=memory_replay(b,out,report)
     else:
+        call(b.base.Config(100000,1024,'fragmentation',11),'pgfp',mode='profile')
+        report['tracemalloc']=memory_replay(b,out,report)
         report['fixed_price_shadows']=shadow(source,Path(baseline),json.loads((Path(baseline)/'summary.json').read_bytes()),out/'shadow.json')
     report.update(status='COMPLETE_WITH_EXPLICIT_STATUSES',seconds=perf_counter()-start);write(out/'summary.json',report);return report
 
@@ -159,6 +161,7 @@ if __name__=='__main__':
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--source',type=Path,required=True);p.add_argument('--out',type=Path,required=True);p.add_argument('--worker',action='store_true')
     p.add_argument('--n',type=int,default=100000);p.add_argument('--nodes',type=int,default=1024);p.add_argument('--case',default='fragmentation');p.add_argument('--seed',type=int,default=11)
     p.add_argument('--policy',default='pgfp');p.add_argument('--backend',default='cupdlpx');p.add_argument('--mode',default='primary');p.add_argument('--budget',type=float,default=900)
+    p.add_argument('--baseline',type=Path)
     a=p.parse_args()
     if a.worker:worker(a)
-    else:phase(a.source,a.out,budget=a.budget)
+    else:phase(a.source,a.out,baseline=a.baseline,budget=a.budget)
