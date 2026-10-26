@@ -27,11 +27,11 @@ def replay(a,lp,*,vector=False,instrument=False):
             tick=perf_counter() if instrument else 0.
             if vector:
                 pool=groups[h];ids=pool[a.eligible[pool,j]&np.all(rest[pool]+1e-10>=a.demand[j],axis=1)].tolist()
-                if instrument:counts['node_visits']+=len(pool);counts['eligibility_checks']+=len(pool);counts['resource_rows']+=len(pool)
             else:
                 ids=[i for i in range(len(rest)) if a.shapes[i]==labels[h] and a.eligible[i,j] and np.all(rest[i]+1e-10>=a.demand[j])]
-                if instrument:counts['node_visits']+=len(rest);counts['eligibility_checks']+=int(np.sum(a.shapes==labels[h]));counts['resource_rows']+=int(np.sum((a.shapes==labels[h])&a.eligible[:,j]))
             if instrument:stages['feasibility']+=perf_counter()-tick
+            if instrument:
+                counts['node_visits']+=len(pool) if vector else len(rest);counts['eligibility_checks']+=len(pool) if vector else int(np.sum(a.shapes==labels[h]));counts['resource_rows']+=len(pool) if vector else int(np.sum((a.shapes==labels[h])&a.eligible[:,j]))
             tick=perf_counter() if instrument else 0.;scores=[float(oracle.marginal(a,rest,i,j)) for i in ids]
             if instrument:stages['marginal']+=perf_counter()-tick;counts['marginal_calls']+=len(ids)
             tick=perf_counter() if instrument else 0.;step['attempts'].append(dict(shape=labels[h],candidates=ids,scores=scores))
