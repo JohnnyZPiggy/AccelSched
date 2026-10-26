@@ -2,6 +2,14 @@
 
 This is a bounded **CPU release** check, not GPU R&D or a new performance benchmark. Actual commands, versions, return codes/stdout/stderr, immutable source/tree/blob, wheel and JSON output hashes are in Issue #101 / its one Draft PR and retained local evidence. No tag/release/application is performed.
 
+## Executed CPU checkpoint (2026-10-26)
+
+At source `086a51ac2cc4f6c616871db33a999394d3ca957f`, a new Windows x86-64 venv (`include-system-site-packages=false`) ran **264 tests PASS in11.52s**. Python3.14.6, NumPy2.5.4, SciPy1.18.1, pytest9.1.1, setuptools84.2.1, pip26.1.2; no optional GPU packages. These are observations, not new dependency pins or a tested Python matrix.
+
+The manifest covered release tests, static/workload/rolling, P0/P1/P2/parser, LP/MIP statuses and optional-backend CPU behavior. Isolated wheel build, install, pip check, `python -I` imports/six methods/rolling/reports outside checkout, all documented CLIs and invalid/mode-mismatch exit2 passed. An initial invocation from the outer workspace found no tests; the corrected source-cwd result is above. Both logs retained.
+
+The subsequent generator path-boundary fix passed **4 focused tests in1.26s**. Final wheel/install and deterministic deposit checks use the final source commit; exact artifacts and command outcomes are in Issue/PR evidence. No scheduler implementation changed, so the core suite is not repeated for a document/deposit-tool-only change.
+
 ## Required gates
 
 1. Reproduce base-wheel gap: old0.1.0 wheel lacks examples CLI package.

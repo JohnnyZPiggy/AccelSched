@@ -23,6 +23,8 @@ def generate(root,commit,output):
     root=Path(root).resolve();output=Path(output).resolve()
     if output.is_relative_to(root):raise ValueError('output must be outside Git checkout')
     if not re.fullmatch('[0-9a-f]{40}',commit):raise ValueError('full immutable commit SHA required')
+    root=Path(subprocess.check_output(['git','-C',str(root),'rev-parse','--show-toplevel']).decode().strip()).resolve()
+    if output.is_relative_to(root):raise ValueError('output must be outside actual Git checkout')
     def git(*args):return subprocess.check_output(['git','-C',str(root),*args])
     if git('cat-file','-t',commit).strip()!=b'commit':raise ValueError('not a commit')
     config=git('show',commit+':pyproject.toml').decode();version=re.search(r'^version\s*=\s*"([^"]+)"',config,re.M).group(1)

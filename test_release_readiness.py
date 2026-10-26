@@ -1,4 +1,5 @@
 import json
+import subprocess
 from pathlib import Path
 import pytest
 from examples.planner_input import load_input
@@ -21,3 +22,9 @@ def test_deposit_exact_lines_no_padding_and_selection():
 def test_deposit_rejects_checkout_output_and_nonimmutable_sha(tmp_path):
     with pytest.raises(ValueError):generate(tmp_path,'a'*40,tmp_path/'inside')
     with pytest.raises(ValueError):generate(tmp_path,'HEAD',tmp_path.parent/'outside')
+
+
+def test_deposit_nested_repo_cannot_write_into_parent_checkout(tmp_path):
+    subprocess.run(['git','init',str(tmp_path)],check=True,capture_output=True)
+    nested=tmp_path/'nested';nested.mkdir()
+    with pytest.raises(ValueError):generate(nested,'a'*40,tmp_path/'artifact')
