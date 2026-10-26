@@ -129,6 +129,20 @@ The repository includes independently checked placement and numerical experiment
 
 The benchmarks identify their workloads and measurement boundaries; the cited L4 result is one same-host experiment, not a universal speedup claim.
 
+### Benchmark V4 — ultra-scale synthetic placement
+
+Benchmark V4 distinguishes **physical end-to-end scheduling** from LP-only solver timings and keeps experimental implementations separate from the production API.
+
+| Experimental path | Largest demonstrated size | Engineer-reported validation |
+| --- | --- | --- |
+| Streaming input-order First-Fit (CPU placement) | **10M jobs / 8,192 nodes** | S3: **8/8** full physical all-job audits |
+| Indexed, true future-marginal PGFP (certified-price, CPU placement) | **1M jobs / 4,096 nodes** | S2: **6/8** complete attempts; numerical failures retained |
+| Named LP-guided `lp_best_fit` (certified-price, CPU placement) | **1M jobs / 4,096 nodes** | S2: **6/8** complete attempts; numerical failures retained |
+
+Optional cuPDLPx/H-PDLP GPU acceleration applies to the **LP-solving stage**, not to GPU-resident physical placement or the production scheduler by default. The work uses **synthetic** CPU/GPU/RAM and eligibility workloads; for the 10M balanced case, just ~0.097% of jobs requested a GPU. Results are Engineer-run and raw full archives are local-only; they have **not** been independently re-executed by the Architect. This is evidence of bounded successful physical scheduling on selected cases, **not** a claim of novel algorithms, global placement optimality, universal speedup or real-cluster deployment.
+
+Read the [Benchmark V4 technical report](docs/research/benchmark-v4-ultra-scale.md) for methods, fixed workload configurations, success denominators, timing boundaries, KKT/physical audits, numerical failures, raw SHA-256 provenance and reproducibility commands. Source milestones: [#109](https://github.com/JohnnyZPiggy/AccelSched/pull/109), [#111](https://github.com/JohnnyZPiggy/AccelSched/pull/111), [#112](https://github.com/JohnnyZPiggy/AccelSched/pull/112).
+
 ## Applications
 
 | Area | AccelSched capability |
