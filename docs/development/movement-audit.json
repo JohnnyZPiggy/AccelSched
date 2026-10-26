@@ -1,0 +1,1025 @@
+{
+  "status": "PASS",
+  "base": "6d89f9e27a1b30b800d6de9765292330cbc94d93",
+  "python_canonical_files_changed_only_in_four_explicit_test_adapters": true,
+  "protected": [
+    "accelsched.py",
+    "m0_oracle.py",
+    "scipy_backend.py",
+    "workload.py",
+    "rolling.py",
+    "lp_contract.py",
+    "lp_certify.py",
+    "lp_backends.py",
+    "certified_pgfp.py",
+    "solver_portfolio.py",
+    "queueing.py",
+    "pyproject.toml",
+    "LICENSE"
+  ],
+  "original_path_audit": [
+    {
+      "original": "LICENSE",
+      "canonical": "LICENSE",
+      "before_blob": "15c7f31b999279adce3c6a36c5628fb22e58e319",
+      "after_blob": "15c7f31b999279adce3c6a36c5628fb22e58e319",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "README.md",
+      "canonical": "README.md",
+      "before_blob": "6fa87ddfa7bbb1cf6870eb8de3f296adbb99210d",
+      "after_blob": "ae682418e378c544a9b175126a5db742e19abe4e",
+      "same_blob": false,
+      "allowed_change": null
+    },
+    {
+      "original": "README.zh-CN.md",
+      "canonical": "README.zh-CN.md",
+      "before_blob": "5c58e943d50a713c221f9a6c2eb2ec2c1fed8fc5",
+      "after_blob": "cc09802eb3d84d98c2ea370e44d6c0eddae8560e",
+      "same_blob": false,
+      "allowed_change": null
+    },
+    {
+      "original": "RELEASE_NOTES.md",
+      "canonical": "RELEASE_NOTES.md",
+      "before_blob": "a07c679e18fde8858233958f0fcb3e3ffa4d9d7b",
+      "after_blob": "a07c679e18fde8858233958f0fcb3e3ffa4d9d7b",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "accelsched.py",
+      "canonical": "accelsched.py",
+      "before_blob": "8595667252b05880d8ccf137af2180ad8a55b648",
+      "after_blob": "8595667252b05880d8ccf137af2180ad8a55b648",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "bench_cpu.py",
+      "canonical": "bench_cpu.py",
+      "before_blob": "87f0c7095249f5d081079ac06ba2a30a76c5f7b2",
+      "after_blob": "87f0c7095249f5d081079ac06ba2a30a76c5f7b2",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "bench_cpu_v2.py",
+      "canonical": "bench_cpu_v2.py",
+      "before_blob": "63c18601e167433b605b62eecc68a9569154e2d4",
+      "after_blob": "63c18601e167433b605b62eecc68a9569154e2d4",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "bench_cpu_v3.py",
+      "canonical": "benchmarks/historical/bench_cpu_v3.py",
+      "before_blob": "8e042728a954ac0f57f4279492d52086ac6d7317",
+      "after_blob": "8e042728a954ac0f57f4279492d52086ac6d7317",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "bench_cpu_v31.py",
+      "canonical": "benchmarks/historical/bench_cpu_v31.py",
+      "before_blob": "83ab4260ce62404f5339ebc04f02b3a2c5c393a2",
+      "after_blob": "83ab4260ce62404f5339ebc04f02b3a2c5c393a2",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "bench_dynamic.py",
+      "canonical": "bench_dynamic.py",
+      "before_blob": "d6547ba4b50f7eb5392eaf72d3b065a28ba8c1dd",
+      "after_blob": "d6547ba4b50f7eb5392eaf72d3b065a28ba8c1dd",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "bench_m1.py",
+      "canonical": "bench_m1.py",
+      "before_blob": "01787e170062d8814304aebbfc3374cd3daf66b4",
+      "after_blob": "01787e170062d8814304aebbfc3374cd3daf66b4",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "bench_m2.py",
+      "canonical": "bench_m2.py",
+      "before_blob": "9769703c5c206b9b6207dec4e2a86b2290c29f91",
+      "after_blob": "9769703c5c206b9b6207dec4e2a86b2290c29f91",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "bench_queue_compare.py",
+      "canonical": "bench_queue_compare.py",
+      "before_blob": "d48d7a683d5ba294c541cd71f242fe8eaf09d554",
+      "after_blob": "d48d7a683d5ba294c541cd71f242fe8eaf09d554",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "bench_ultra_pgfp.py",
+      "canonical": "bench_ultra_pgfp.py",
+      "before_blob": "954ed1fe3a7237b817170b2a383400742b3e9916",
+      "after_blob": "954ed1fe3a7237b817170b2a383400742b3e9916",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "bench_v4_dynamic.py",
+      "canonical": "bench_v4_dynamic.py",
+      "before_blob": "ac45f571cf92bebf77f37b2291562fd0c11c84e7",
+      "after_blob": "ac45f571cf92bebf77f37b2291562fd0c11c84e7",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "bench_v4_gpu.py",
+      "canonical": "bench_v4_gpu.py",
+      "before_blob": "276a95c86717036246067e14e1319683263fa9de",
+      "after_blob": "276a95c86717036246067e14e1319683263fa9de",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "bench_v4_static.py",
+      "canonical": "bench_v4_static.py",
+      "before_blob": "8e205ab77416e2b95b8bb0ed4cc9023808d073c6",
+      "after_blob": "8e205ab77416e2b95b8bb0ed4cc9023808d073c6",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "certified_pgfp.py",
+      "canonical": "certified_pgfp.py",
+      "before_blob": "90d97aea2abd9e71b27f88182c0ee8d6144933cb",
+      "after_blob": "90d97aea2abd9e71b27f88182c0ee8d6144933cb",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "docs/examples/capacity-decision-report.md",
+      "canonical": "docs/examples/capacity-decision-report.md",
+      "before_blob": "82d7ebda99e7ca0c7fe8f5fa055e6aa84f77073c",
+      "after_blob": "82d7ebda99e7ca0c7fe8f5fa055e6aa84f77073c",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "docs/examples/capacity-whatif.md",
+      "canonical": "docs/examples/capacity-whatif.md",
+      "before_blob": "d3ca10e6d65b4dda58d68d36b265565e8f4642ef",
+      "after_blob": "86703a4e6803d62a2ad13de746090f832c365f4c",
+      "same_blob": false,
+      "allowed_change": null
+    },
+    {
+      "original": "docs/examples/planner-input.md",
+      "canonical": "docs/examples/planner-input.md",
+      "before_blob": "2f667c518cc87f156fa4a3041aba217cf5eb5083",
+      "after_blob": "5410bb669b9cd2bcdb3d54722125703fe5167fc9",
+      "same_blob": false,
+      "allowed_change": null
+    },
+    {
+      "original": "docs/examples/time-window-capacity.md",
+      "canonical": "docs/examples/time-window-capacity.md",
+      "before_blob": "7cea3c462ccbd760751afa17b0dcd61816acc42b",
+      "after_blob": "8352940af5e704cd4991493df1ba7d65694f61db",
+      "same_blob": false,
+      "allowed_change": null
+    },
+    {
+      "original": "docs/release/registration-checklist.zh-CN.md",
+      "canonical": "docs/release/registration-checklist.zh-CN.md",
+      "before_blob": "05132f639a9312b56f4f6cb342595dbf8be7601d",
+      "after_blob": "05132f639a9312b56f4f6cb342595dbf8be7601d",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "docs/release/software-design.zh-CN.md",
+      "canonical": "docs/release/software-design.zh-CN.md",
+      "before_blob": "3a2414f4b67e1c4b6664a45ad0034938df462a76",
+      "after_blob": "3a2414f4b67e1c4b6664a45ad0034938df462a76",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "docs/release/source-deposit.zh-CN.md",
+      "canonical": "docs/release/source-deposit.zh-CN.md",
+      "before_blob": "83f44bd9bbd97785e43bf70286f5c88b207227cd",
+      "after_blob": "83f44bd9bbd97785e43bf70286f5c88b207227cd",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "docs/release/validation.md",
+      "canonical": "docs/release/validation.md",
+      "before_blob": "1b6210912e0d7bb03c01b1dca4808e2e97f69b01",
+      "after_blob": "1b6210912e0d7bb03c01b1dca4808e2e97f69b01",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "docs/research/benchmark-v4-ultra-scale.md",
+      "canonical": "docs/research/benchmark-v4-ultra-scale.md",
+      "before_blob": "bc6b9036ef5dc71c13d1c3489bce66d70acedb31",
+      "after_blob": "bc1a0994d6012cafe82abc070c69b68df1b669b4",
+      "same_blob": false,
+      "allowed_change": null
+    },
+    {
+      "original": "docs/research/dynamic-scheduling-benchmark.md",
+      "canonical": "docs/research/dynamic-scheduling-benchmark.md",
+      "before_blob": "b591dca525a9fa6bbd353e1e00993606afe4e3c3",
+      "after_blob": "b591dca525a9fa6bbd353e1e00993606afe4e3c3",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "docs/research/gpu-fragmentation-pgfp.md",
+      "canonical": "docs/research/gpu-fragmentation-pgfp.md",
+      "before_blob": "58d29c8abd936c279a6b8350096f026a40b0f243",
+      "after_blob": "58d29c8abd936c279a6b8350096f026a40b0f243",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "examples/__init__.py",
+      "canonical": "examples/__init__.py",
+      "before_blob": "97d1473e5df9b2fb4cd8bc215aee141f4e3fd0f9",
+      "after_blob": "97d1473e5df9b2fb4cd8bc215aee141f4e3fd0f9",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "examples/capacity_decision_report.py",
+      "canonical": "examples/capacity_decision_report.py",
+      "before_blob": "c1065756a7b3699ac4d23dd58a56376a20fb8ec1",
+      "after_blob": "c1065756a7b3699ac4d23dd58a56376a20fb8ec1",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "examples/capacity_whatif.py",
+      "canonical": "examples/capacity_whatif.py",
+      "before_blob": "3cd3205788282352ba626a65bafd6a69f1006aa4",
+      "after_blob": "3cd3205788282352ba626a65bafd6a69f1006aa4",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "examples/data/dynamic.json",
+      "canonical": "examples/data/dynamic.json",
+      "before_blob": "cac7d61c72d1504c1b093a6ff4ec12af03040221",
+      "after_blob": "cac7d61c72d1504c1b093a6ff4ec12af03040221",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "examples/data/static.json",
+      "canonical": "examples/data/static.json",
+      "before_blob": "8a381a7f0fccf9de6386dcc7b666a1c6333f07af",
+      "after_blob": "8a381a7f0fccf9de6386dcc7b666a1c6333f07af",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "examples/planner_input.py",
+      "canonical": "examples/planner_input.py",
+      "before_blob": "739cee53f639fa23960813fde4f3db799462c9af",
+      "after_blob": "739cee53f639fa23960813fde4f3db799462c9af",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "examples/time_window_capacity.py",
+      "canonical": "examples/time_window_capacity.py",
+      "before_blob": "dd50e480b129bb11dd12b588de60a4551bd447f2",
+      "after_blob": "dd50e480b129bb11dd12b588de60a4551bd447f2",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "literature/2412.19027v3.pdf",
+      "canonical": "literature/2412.19027v3.pdf",
+      "before_blob": "e4ac03beaac87f8afcbfaf72f49350655c4f73cb",
+      "after_blob": "e4ac03beaac87f8afcbfaf72f49350655c4f73cb",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "literature/CvxCluster.pdf",
+      "canonical": "literature/CvxCluster.pdf",
+      "before_blob": "40246c5143f2b89410506395fe03d17ab6b52a3c",
+      "after_blob": "40246c5143f2b89410506395fe03d17ab6b52a3c",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "literature/H-PDLP.pdf",
+      "canonical": "literature/H-PDLP.pdf",
+      "before_blob": "c1d88ad698b22fced4c7360ebabe6ca612e4f9ab",
+      "after_blob": "c1d88ad698b22fced4c7360ebabe6ca612e4f9ab",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "literature/PDNQP.pdf",
+      "canonical": "literature/PDNQP.pdf",
+      "before_blob": "7efec36fbe5c914edb301825dfa8965a8af6ad10",
+      "after_blob": "7efec36fbe5c914edb301825dfa8965a8af6ad10",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "literature/cuPDLP.pdf",
+      "canonical": "literature/cuPDLP.pdf",
+      "before_blob": "d8da9ac1ad380fbbb3f0c0c1af9f9300cfbeb6c1",
+      "after_blob": "d8da9ac1ad380fbbb3f0c0c1af9f9300cfbeb6c1",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "lp_backends.py",
+      "canonical": "lp_backends.py",
+      "before_blob": "133f14393e6acb8d877b0932a9c4b4b08c20b83c",
+      "after_blob": "133f14393e6acb8d877b0932a9c4b4b08c20b83c",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "lp_certify.py",
+      "canonical": "lp_certify.py",
+      "before_blob": "c8c01cc914fc2c045a1eb8c1d29bfbabd1fcf339",
+      "after_blob": "c8c01cc914fc2c045a1eb8c1d29bfbabd1fcf339",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "lp_contract.py",
+      "canonical": "lp_contract.py",
+      "before_blob": "90896b9658bd50dedb08690770206f0a66296868",
+      "after_blob": "90896b9658bd50dedb08690770206f0a66296868",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "m0_oracle.py",
+      "canonical": "m0_oracle.py",
+      "before_blob": "3a4c145ce2446cc666efc3baaef68b5a85479239",
+      "after_blob": "3a4c145ce2446cc666efc3baaef68b5a85479239",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "probes/cuopt_lp_smoke.py",
+      "canonical": "probes/cuopt_lp_smoke.py",
+      "before_blob": "627126d2aa8ff28ef262e059ca5849625d61ec05",
+      "after_blob": "627126d2aa8ff28ef262e059ca5849625d61ec05",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "probes/cupdlpx_lp_compare.py",
+      "canonical": "probes/cupdlpx_lp_compare.py",
+      "before_blob": "33135b55135f645712a3c2cf617d4fa39a596c19",
+      "after_blob": "33135b55135f645712a3c2cf617d4fa39a596c19",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "probes/cupdlpx_lp_smoke.py",
+      "canonical": "probes/cupdlpx_lp_smoke.py",
+      "before_blob": "6b104206c070a60e2a5d4cf1e64444c0d7e2b98f",
+      "after_blob": "6b104206c070a60e2a5d4cf1e64444c0d7e2b98f",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "probes/gpu_lp_solver_benchmark.py",
+      "canonical": "probes/gpu_lp_solver_benchmark.py",
+      "before_blob": "490678669dba4f9b6ba08e8be1678ae00143f60a",
+      "after_blob": "490678669dba4f9b6ba08e8be1678ae00143f60a",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "probes/gpu_lp_solver_landscape.json",
+      "canonical": "probes/gpu_lp_solver_landscape.json",
+      "before_blob": "56dd2b7d20b8c2f3d18d09acebed427ffea7ee07",
+      "after_blob": "56dd2b7d20b8c2f3d18d09acebed427ffea7ee07",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "probes/gpu_lp_solver_probe.py",
+      "canonical": "probes/gpu_lp_solver_probe.py",
+      "before_blob": "b64f8038384b5a8b6519006565ed0a1a3c936487",
+      "after_blob": "b64f8038384b5a8b6519006565ed0a1a3c936487",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "probes/gpu_resident_feasibility.py",
+      "canonical": "probes/gpu_resident_feasibility.py",
+      "before_blob": "b01684e3f769062252689bd28457bd23d5066b5d",
+      "after_blob": "b01684e3f769062252689bd28457bd23d5066b5d",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "probes/pgfp_conflict_batch.py",
+      "canonical": "probes/pgfp_conflict_batch.py",
+      "before_blob": "7fb73dea82d40124f2ee952b6e76ecfe5b0c4cde",
+      "after_blob": "7fb73dea82d40124f2ee952b6e76ecfe5b0c4cde",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "probes/pgfp_dual_selection.py",
+      "canonical": "probes/pgfp_dual_selection.py",
+      "before_blob": "443c38500d80466cc449b2e4757afab0bb9290f6",
+      "after_blob": "443c38500d80466cc449b2e4757afab0bb9290f6",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "probes/pgfp_dual_stability.py",
+      "canonical": "probes/pgfp_dual_stability.py",
+      "before_blob": "8bc6b96f0843be11553d3efe2ec5111538ac6ab0",
+      "after_blob": "8bc6b96f0843be11553d3efe2ec5111538ac6ab0",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "probes/pgfp_gpu_resident.py",
+      "canonical": "probes/pgfp_gpu_resident.py",
+      "before_blob": "40259626c5b72fea2a6cc57df3c09663da3f4872",
+      "after_blob": "40259626c5b72fea2a6cc57df3c09663da3f4872",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "probes/pgfp_gpu_scoring.py",
+      "canonical": "probes/pgfp_gpu_scoring.py",
+      "before_blob": "3c548286fd66ff79a91c656e4442ae0bfb71cd50",
+      "after_blob": "3c548286fd66ff79a91c656e4442ae0bfb71cd50",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "probes/pgfp_p1.py",
+      "canonical": "probes/pgfp_p1.py",
+      "before_blob": "27684ab3b230cadd8026262a90b11b710fff7606",
+      "after_blob": "27684ab3b230cadd8026262a90b11b710fff7606",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "probes/pgfp_p1_fast.py",
+      "canonical": "probes/pgfp_p1_fast.py",
+      "before_blob": "25b35cbb323453872a1959cc7b70aa7c0a2bd19f",
+      "after_blob": "25b35cbb323453872a1959cc7b70aa7c0a2bd19f",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "probes/pgfp_physical_profile.py",
+      "canonical": "probes/pgfp_physical_profile.py",
+      "before_blob": "8f2725131c448bfedd542e67978f9d9687404cad",
+      "after_blob": "8f2725131c448bfedd542e67978f9d9687404cad",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "probes/pgfp_shadow_integration.py",
+      "canonical": "probes/pgfp_shadow_integration.py",
+      "before_blob": "dec7c0377cf08ba589ccb3146e5c85252bdb37f7",
+      "after_blob": "dec7c0377cf08ba589ccb3146e5c85252bdb37f7",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "probes/pgfp_tensor_probe.py",
+      "canonical": "probes/pgfp_tensor_probe.py",
+      "before_blob": "e07e802298b446c5c5dfdd6c4462e99b68016a69",
+      "after_blob": "e07e802298b446c5c5dfdd6c4462e99b68016a69",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "probes/portfolio_value_benchmark.py",
+      "canonical": "probes/portfolio_value_benchmark.py",
+      "before_blob": "001ebaee08823f0d3330bc7d83e69c57a267b277",
+      "after_blob": "001ebaee08823f0d3330bc7d83e69c57a267b277",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "probes/shape_lp_backend_probe.py",
+      "canonical": "probes/shape_lp_backend_probe.py",
+      "before_blob": "839de27762848dc6534fed6198aa21a4b133dfc9",
+      "after_blob": "839de27762848dc6534fed6198aa21a4b133dfc9",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "probes/shape_lp_gpu_convergence.py",
+      "canonical": "probes/shape_lp_gpu_convergence.py",
+      "before_blob": "6b4bcefd83e6a6251d0df57a98971be3e25fb695",
+      "after_blob": "6b4bcefd83e6a6251d0df57a98971be3e25fb695",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "probes/shape_lp_gpu_numerics.py",
+      "canonical": "probes/shape_lp_gpu_numerics.py",
+      "before_blob": "3225474a5206795fe2066fcb8372c88978668251",
+      "after_blob": "3225474a5206795fe2066fcb8372c88978668251",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "probes/shape_lp_gpu_reproducibility.py",
+      "canonical": "probes/shape_lp_gpu_reproducibility.py",
+      "before_blob": "bf77adb737ae5099a02ba09f57dc1437950db13f",
+      "after_blob": "bf77adb737ae5099a02ba09f57dc1437950db13f",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "probes/shape_lp_gpu_scale.py",
+      "canonical": "probes/shape_lp_gpu_scale.py",
+      "before_blob": "375fc518ec718ef4e6ccdea27db49b4d1aa2a434",
+      "after_blob": "375fc518ec718ef4e6ccdea27db49b4d1aa2a434",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "pyproject.toml",
+      "canonical": "pyproject.toml",
+      "before_blob": "ec8de7577665384a8237dc621abec9b7357119f7",
+      "after_blob": "ec8de7577665384a8237dc621abec9b7357119f7",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "queueing.py",
+      "canonical": "queueing.py",
+      "before_blob": "ed734045b5627886f738353f777fc5e6878aef27",
+      "after_blob": "ed734045b5627886f738353f777fc5e6878aef27",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "rolling.py",
+      "canonical": "rolling.py",
+      "before_blob": "9d69b564562d210df5f9b10f7133c5c60b6f42da",
+      "after_blob": "9d69b564562d210df5f9b10f7133c5c60b6f42da",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "scipy_backend.py",
+      "canonical": "scipy_backend.py",
+      "before_blob": "7271ba32f004eaa3cad045c1f7958985013853dc",
+      "after_blob": "7271ba32f004eaa3cad045c1f7958985013853dc",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "solver_portfolio.py",
+      "canonical": "solver_portfolio.py",
+      "before_blob": "83844f67a8ba0c7ee19b35dbf08417ecd2e403bf",
+      "after_blob": "83844f67a8ba0c7ee19b35dbf08417ecd2e403bf",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "test_batch_capacity.py",
+      "canonical": "tests/test_batch_capacity.py",
+      "before_blob": "fa8ffd577a63850180f68e07d8e726783c757c51",
+      "after_blob": "fa8ffd577a63850180f68e07d8e726783c757c51",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "test_bench_ultra_pgfp.py",
+      "canonical": "tests/test_bench_ultra_pgfp.py",
+      "before_blob": "c7b2bfe1186ff6090561f8801c078068941be123",
+      "after_blob": "c7b2bfe1186ff6090561f8801c078068941be123",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "test_bench_v4_dynamic.py",
+      "canonical": "tests/test_bench_v4_dynamic.py",
+      "before_blob": "a753e3358d8ec22183a8769f059dfbe1d07cabda",
+      "after_blob": "a753e3358d8ec22183a8769f059dfbe1d07cabda",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "test_bench_v4_gpu.py",
+      "canonical": "tests/test_bench_v4_gpu.py",
+      "before_blob": "b405190c422b2827dc13883b28cb9036dbdbf9df",
+      "after_blob": "b405190c422b2827dc13883b28cb9036dbdbf9df",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "test_bench_v4_static.py",
+      "canonical": "tests/test_bench_v4_static.py",
+      "before_blob": "666029a202689fb085b20b212216b0c03e437305",
+      "after_blob": "666029a202689fb085b20b212216b0c03e437305",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "test_capacity_decision_report.py",
+      "canonical": "tests/test_capacity_decision_report.py",
+      "before_blob": "edc2f5d41c1378c48dd7d74afbae108af4443129",
+      "after_blob": "edc2f5d41c1378c48dd7d74afbae108af4443129",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "test_capacity_whatif.py",
+      "canonical": "tests/test_capacity_whatif.py",
+      "before_blob": "7c92ddcc2250cc88b680dd65e2e396b2baf24703",
+      "after_blob": "7c92ddcc2250cc88b680dd65e2e396b2baf24703",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "test_certified_lp_backend.py",
+      "canonical": "tests/test_certified_lp_backend.py",
+      "before_blob": "e61169c144147ecfb4ec5cfb5a1d3480aa75be38",
+      "after_blob": "e61169c144147ecfb4ec5cfb5a1d3480aa75be38",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "test_cuopt_lp_smoke.py",
+      "canonical": "tests/test_cuopt_lp_smoke.py",
+      "before_blob": "1dc3288f704b9c3569dda25bae093292df9b1777",
+      "after_blob": "1dc3288f704b9c3569dda25bae093292df9b1777",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "test_cupdlpx_backend.py",
+      "canonical": "tests/test_cupdlpx_backend.py",
+      "before_blob": "f319cd564adcac137609d6e65bfaf499821fb214",
+      "after_blob": "69f954528b8beeb68640281ce1236ac6bdabe2f2",
+      "same_blob": false,
+      "allowed_change": "repository-root-relative test path only"
+    },
+    {
+      "original": "test_cupdlpx_lp_compare.py",
+      "canonical": "tests/test_cupdlpx_lp_compare.py",
+      "before_blob": "99d631e761420b588672e7c0cd62c63fa25c90a3",
+      "after_blob": "99d631e761420b588672e7c0cd62c63fa25c90a3",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "test_cupdlpx_lp_smoke.py",
+      "canonical": "tests/test_cupdlpx_lp_smoke.py",
+      "before_blob": "95b57342a9d5a00bf6fde4bbbeeb4d7904b81fe0",
+      "after_blob": "95b57342a9d5a00bf6fde4bbbeeb4d7904b81fe0",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "test_dynamic_bench.py",
+      "canonical": "tests/test_dynamic_bench.py",
+      "before_blob": "43e2c45457e18e17625082d92b2b8e6c29614533",
+      "after_blob": "43e2c45457e18e17625082d92b2b8e6c29614533",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "test_gpu_lp_solver_benchmark.py",
+      "canonical": "tests/test_gpu_lp_solver_benchmark.py",
+      "before_blob": "229543af27ef0ea23cf45def2d20f70d230515f7",
+      "after_blob": "229543af27ef0ea23cf45def2d20f70d230515f7",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "test_gpu_lp_solver_probe.py",
+      "canonical": "tests/test_gpu_lp_solver_probe.py",
+      "before_blob": "a01ee494a0293da2ee816ba4f43a191766147fa6",
+      "after_blob": "a01ee494a0293da2ee816ba4f43a191766147fa6",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "test_gpu_resident_feasibility.py",
+      "canonical": "tests/test_gpu_resident_feasibility.py",
+      "before_blob": "18aabbd314543b489a44e81e0eb77444db797096",
+      "after_blob": "18aabbd314543b489a44e81e0eb77444db797096",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "test_m0_oracle.py",
+      "canonical": "tests/test_m0_oracle.py",
+      "before_blob": "d9bf3ac8c8bf8b7e8996c3c36aee3d67f1eb3bf5",
+      "after_blob": "d9bf3ac8c8bf8b7e8996c3c36aee3d67f1eb3bf5",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "test_m10_shift.py",
+      "canonical": "tests/test_m10_shift.py",
+      "before_blob": "75ef67f6de2d8b55e975591a0738e7ba1823f1d8",
+      "after_blob": "75ef67f6de2d8b55e975591a0738e7ba1823f1d8",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "test_m2_proxy_ablation.py",
+      "canonical": "tests/test_m2_proxy_ablation.py",
+      "before_blob": "54286e37382ab93d4782b075dfe468ad550ccaef",
+      "after_blob": "54286e37382ab93d4782b075dfe468ad550ccaef",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "test_m4_proxy.py",
+      "canonical": "tests/test_m4_proxy.py",
+      "before_blob": "fe6285e2a71c4ba2b2abb5cc3d44c77d6c81cbef",
+      "after_blob": "fe6285e2a71c4ba2b2abb5cc3d44c77d6c81cbef",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "test_m5_proxy.py",
+      "canonical": "tests/test_m5_proxy.py",
+      "before_blob": "1d1bac5b838f2ec34f0cc088f9dca1ec6a2c36b1",
+      "after_blob": "1d1bac5b838f2ec34f0cc088f9dca1ec6a2c36b1",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "test_m6_hybrid.py",
+      "canonical": "tests/test_m6_hybrid.py",
+      "before_blob": "f36f9f43edf7f878a98fe427c5ec73801f4c3b49",
+      "after_blob": "f36f9f43edf7f878a98fe427c5ec73801f4c3b49",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "test_m7_distribution.py",
+      "canonical": "tests/test_m7_distribution.py",
+      "before_blob": "cca317c35d54c234f6c051d9dc74ea19b0521391",
+      "after_blob": "cca317c35d54c234f6c051d9dc74ea19b0521391",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "test_m8_robust.py",
+      "canonical": "tests/test_m8_robust.py",
+      "before_blob": "61b2267edbfddfd85fe18886b0c26a562bcd6b1e",
+      "after_blob": "61b2267edbfddfd85fe18886b0c26a562bcd6b1e",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "test_m9_stress.py",
+      "canonical": "tests/test_m9_stress.py",
+      "before_blob": "911d96f40afb075cd6d73304be92fb70e3fc9fa0",
+      "after_blob": "911d96f40afb075cd6d73304be92fb70e3fc9fa0",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "test_mip_status.py",
+      "canonical": "tests/test_mip_status.py",
+      "before_blob": "f48e077dbb5946004a99044fc27061aa1df690d5",
+      "after_blob": "f48e077dbb5946004a99044fc27061aa1df690d5",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "test_pgfp_conflict_batch.py",
+      "canonical": "tests/test_pgfp_conflict_batch.py",
+      "before_blob": "936fd97f6df7637d52874e007abb62a39d59d21a",
+      "after_blob": "936fd97f6df7637d52874e007abb62a39d59d21a",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "test_pgfp_dual_selection.py",
+      "canonical": "tests/test_pgfp_dual_selection.py",
+      "before_blob": "0b3d522047973a041f59b2217638b7ccd833dd68",
+      "after_blob": "0b3d522047973a041f59b2217638b7ccd833dd68",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "test_pgfp_dual_stability.py",
+      "canonical": "tests/test_pgfp_dual_stability.py",
+      "before_blob": "e09a84580236094e618ce20382bbf786ce7b8508",
+      "after_blob": "e09a84580236094e618ce20382bbf786ce7b8508",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "test_pgfp_gpu_resident.py",
+      "canonical": "tests/test_pgfp_gpu_resident.py",
+      "before_blob": "5bb95af79c451f1d96cb335a0ecec1eab7a0a257",
+      "after_blob": "5bb95af79c451f1d96cb335a0ecec1eab7a0a257",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "test_pgfp_gpu_scoring.py",
+      "canonical": "tests/test_pgfp_gpu_scoring.py",
+      "before_blob": "0216e9b62e8de42d44b35bf74213868266fdb32d",
+      "after_blob": "0216e9b62e8de42d44b35bf74213868266fdb32d",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "test_pgfp_p1.py",
+      "canonical": "tests/test_pgfp_p1.py",
+      "before_blob": "a2f5fc5647a3fe02635182258aa4bcb442950f21",
+      "after_blob": "a2f5fc5647a3fe02635182258aa4bcb442950f21",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "test_pgfp_physical_profile.py",
+      "canonical": "tests/test_pgfp_physical_profile.py",
+      "before_blob": "82f59b68bc8ef217bbfcf5cada737605c9f05b31",
+      "after_blob": "82f59b68bc8ef217bbfcf5cada737605c9f05b31",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "test_pgfp_shadow_integration.py",
+      "canonical": "tests/test_pgfp_shadow_integration.py",
+      "before_blob": "5e891823e23c05cf55bd3a972f89a321bb327db0",
+      "after_blob": "5e891823e23c05cf55bd3a972f89a321bb327db0",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "test_pgfp_tensor_probe.py",
+      "canonical": "tests/test_pgfp_tensor_probe.py",
+      "before_blob": "4f961ec0b9ac64a6518297c2a688acd1ed546db5",
+      "after_blob": "4f961ec0b9ac64a6518297c2a688acd1ed546db5",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "test_planner_input.py",
+      "canonical": "tests/test_planner_input.py",
+      "before_blob": "fb9a7d42ac7aec5023d59f00f7ddd42ef4d3a195",
+      "after_blob": "34583a217a2f03919dd1e5f8aab38a42c9705840",
+      "same_blob": false,
+      "allowed_change": "repository-root-relative test path only"
+    },
+    {
+      "original": "test_portfolio_value_benchmark.py",
+      "canonical": "tests/test_portfolio_value_benchmark.py",
+      "before_blob": "62d074856d71819670e2e17b6e8d595a568bbfc2",
+      "after_blob": "62d074856d71819670e2e17b6e8d595a568bbfc2",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "test_queue_compare.py",
+      "canonical": "tests/test_queue_compare.py",
+      "before_blob": "5d82440a0b8482b7340b0127f23c1275445fbe95",
+      "after_blob": "51562c703123b34913d0ee70f7b304f5f81f2b39",
+      "same_blob": false,
+      "allowed_change": "test fallback JSON representation only; assertions unchanged"
+    },
+    {
+      "original": "test_queueing.py",
+      "canonical": "tests/test_queueing.py",
+      "before_blob": "d6477e3bf588fc2b66b73abdd19855b99b3db325",
+      "after_blob": "d6477e3bf588fc2b66b73abdd19855b99b3db325",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "test_release_readiness.py",
+      "canonical": "tests/test_release_readiness.py",
+      "before_blob": "6b5e8c6178a6dc1749143ab7caa6e4ea5c7aa566",
+      "after_blob": "c7fd9165c48ebadaf1e40d60f27c8558532896df",
+      "same_blob": false,
+      "allowed_change": "repository-root-relative test path only"
+    },
+    {
+      "original": "test_rolling.py",
+      "canonical": "tests/test_rolling.py",
+      "before_blob": "243e6d5a8e44f55cbecb14b13eaf1d380d2efc5b",
+      "after_blob": "243e6d5a8e44f55cbecb14b13eaf1d380d2efc5b",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "test_shape_lp_backend_probe.py",
+      "canonical": "tests/test_shape_lp_backend_probe.py",
+      "before_blob": "f25f4d6f307cd25fee2995cf70b0a8f1e624c8a6",
+      "after_blob": "f25f4d6f307cd25fee2995cf70b0a8f1e624c8a6",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "test_shape_lp_gpu_convergence.py",
+      "canonical": "tests/test_shape_lp_gpu_convergence.py",
+      "before_blob": "db43f8be6d637a57eb2432c2ced0487a6c82356e",
+      "after_blob": "db43f8be6d637a57eb2432c2ced0487a6c82356e",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "test_shape_lp_gpu_numerics.py",
+      "canonical": "tests/test_shape_lp_gpu_numerics.py",
+      "before_blob": "7f24a0c42842f6c90cc8c8633509e32c6c6cb2c0",
+      "after_blob": "7f24a0c42842f6c90cc8c8633509e32c6c6cb2c0",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "test_shape_lp_gpu_reproducibility.py",
+      "canonical": "tests/test_shape_lp_gpu_reproducibility.py",
+      "before_blob": "2b153020391ee94048a0b44ddba7108da89b722e",
+      "after_blob": "2b153020391ee94048a0b44ddba7108da89b722e",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "test_shape_lp_gpu_scale.py",
+      "canonical": "tests/test_shape_lp_gpu_scale.py",
+      "before_blob": "359c8842c9c06c0dede674808b5b0920c8e332bd",
+      "after_blob": "359c8842c9c06c0dede674808b5b0920c8e332bd",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "test_solver_portfolio.py",
+      "canonical": "tests/test_solver_portfolio.py",
+      "before_blob": "d701378fa2058008e2e10d0ee4de438b457a9c78",
+      "after_blob": "d701378fa2058008e2e10d0ee4de438b457a9c78",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "test_time_window_capacity.py",
+      "canonical": "tests/test_time_window_capacity.py",
+      "before_blob": "30bbbe392af048171963337d3164fbfe74353d13",
+      "after_blob": "30bbbe392af048171963337d3164fbfe74353d13",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "test_workload.py",
+      "canonical": "tests/test_workload.py",
+      "before_blob": "fe341f615d9f242dc8ef0ce57c608d70d4949d5a",
+      "after_blob": "fe341f615d9f242dc8ef0ce57c608d70d4949d5a",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "tools/source_deposit.py",
+      "canonical": "tools/source_deposit.py",
+      "before_blob": "867fcdffe7acc9a372347589c7859997f673276b",
+      "after_blob": "867fcdffe7acc9a372347589c7859997f673276b",
+      "same_blob": true,
+      "allowed_change": null
+    },
+    {
+      "original": "workload.py",
+      "canonical": "workload.py",
+      "before_blob": "bdc50cfeae9d6f8e2700b0c676808fe5b1e22440",
+      "after_blob": "bdc50cfeae9d6f8e2700b0c676808fe5b1e22440",
+      "same_blob": true,
+      "allowed_change": null
+    }
+  ],
+  "old_collection": 623,
+  "old_nodes_preserved": true,
+  "new_collection": 627,
+  "new_test_nodes": [
+    "test_repository_layout.py::test_inventory_covers_aliases_relative_edges_paths_and_packaging",
+    "test_repository_layout.py::test_legacy_test_and_historical_function_identity",
+    "test_repository_layout.py::test_repository_inventory_and_installed_scope_stay_explicit",
+    "test_repository_layout.py::test_revision_requires_immutable_commit"
+  ],
+  "pure_move_commit": "cb603f5a9ff61c81e876d291bad761b75908e7c9",
+  "inventory_snapshot": "12ee92a; final follow-up commits change only generated nonexecutable evidence"
+}
