@@ -1021,5 +1021,6 @@
     "test_repository_layout.py::test_revision_requires_immutable_commit"
   ],
   "pure_move_commit": "cb603f5a9ff61c81e876d291bad761b75908e7c9",
-  "inventory_snapshot": "12ee92a; final follow-up commits change only generated nonexecutable evidence"
+  "inventory_snapshot": "Executable Python source snapshot12ee92a; final follow-ups add cache-ignore/docs/generated evidence only; no Python source changes",
+  "final_inventory_revision": "3725bc64b2de85b9edf96f668c5e7d587ebeea8d"
 }
