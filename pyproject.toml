@@ -12,4 +12,4 @@ license = "MIT"
 
 [tool.setuptools]
 py-modules = ["accelsched", "m0_oracle", "scipy_backend", "workload", "rolling",
-              "lp_contract", "lp_certify", "lp_backends", "certified_pgfp"]
+              "lp_contract", "lp_certify", "lp_backends", "certified_pgfp", "solver_portfolio"]
