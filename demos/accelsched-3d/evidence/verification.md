@@ -5,7 +5,8 @@ Date: 2026-10-30 (Europe/Zurich). Isolated branch:
 `9dc0c263d2aefeb151d565166b6b950e2ac9f6a5`.
 Delivery commit is recorded in the Draft PR. Export source revision and dirty flag
 are embedded in `public/data/replay.json`; the final export was regenerated from
-a clean implementation commit, so the provenance includes the exporter itself.
+a clean implementation commit, so the provenance includes the exporter itself:
+`98df0a0b81fad53048b666753589f0daa5a3dd51`, `source_dirty=false`.
 
 | Gate | Result | Evidence |
 | --- | --- | --- |
@@ -15,7 +16,7 @@ a clean implementation commit, so the provenance includes the exporter itself.
 | Negative checker / solver-error paths | PASS | Corrupted ledger rejected; test-only injected engine solver failures stay errors, never rejections/running |
 | Python tests | PASS | `python -m pytest -q tests/test_3d_replay.py tests/test_rolling.py`: **56 passed** |
 | Build | PASS | `npm run build`: TypeScript + Vite static production build |
-| Browser | PASS | `npm test`: **4 passed**, installed headless Microsoft Edge |
+| Browser | PASS | `npm test`: **4 passed in 11.5 s**, installed headless Microsoft Edge; final run against production `vite preview`, not the dev server |
 | Desktop + mobile layout | PASS | 1440×1080 and 390×844; screenshots inspected; no horizontal overflow |
 | Interaction | PASS | Method switching, scrub both ways, node button and raycast selection, orbit/zoom, speed, pause/reset, touch taps, final release |
 | Errors / network | PASS | No console errors, page errors or external runtime requests on both primary viewport runs |
@@ -60,6 +61,14 @@ desktop, **not rendered GPU FPS or physical-phone performance**. Low-power mode
 deliberately limits scene rendering to 30 Hz independently of these callbacks.
 Interactions were responsive in the tested browser; real-phone smoothness remains
 an Architect/Scientist follow-up check.
+
+Final production-preview callback sample: desktop median **16.7 ms**, p95
+**17.1 ms**; phone-width median **16.7 ms**, p95 **17.1 ms** (60 intervals each,
+nearest-rank p95). These are observations of this brief local run only. Clean
+`npm ci` installed 27 packages and reported zero vulnerabilities; the environment
+blocked esbuild's install script, but its platform package and production build
+worked without overriding that policy. Raw final outputs: [Python](python-tests.txt),
+[build](build.txt), [browser](browser-tests.txt).
 
 ## Visual review
 
