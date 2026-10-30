@@ -4,12 +4,13 @@ import { mkdirSync, writeFileSync } from 'node:fs';
 for (const viewport of [{width:1440,height:1080},{width:390,height:844}]) {
  test(`replay interaction ${viewport.width}`,async({page})=>{
   await page.setViewportSize(viewport);
-  const errors:string[]=[],requests:string[]=[];
+  const errors:string[]=[],requests:string[]=[],models:string[]=[];
   page.on('pageerror',e=>errors.push(e.message));
   page.on('console',m=>{if(m.type()==='error')errors.push(m.text());});
-  page.on('request',r=>{if(!r.url().startsWith('http://127.0.0.1:5174/')&&!r.url().startsWith('data:'))requests.push(r.url());});
+  page.on('request',r=>{if(r.url().endsWith('server-rack-light.glb'))models.push(r.url());if(!r.url().startsWith('http://127.0.0.1:5174/')&&!r.url().startsWith('blob:http://127.0.0.1:5174/')&&!r.url().startsWith('data:'))requests.push(r.url());});
   await page.goto('/');await expect(page.locator('#accepted')).toHaveText('22');
   await expect(page.locator('canvas')).toBeVisible();await expect(page.locator('#scene-error')).toBeHidden();
+  await expect(page.locator('#scene')).toHaveAttribute('data-asset','grab3d-light');
   mkdirSync('evidence',{recursive:true});
   await expect(page.locator('.rack-tag')).toHaveCount(8);
   await page.waitForTimeout(300);
@@ -22,7 +23,7 @@ for (const viewport of [{width:1440,height:1080},{width:390,height:844}]) {
    expect(previousRight).toBeLessThanOrEqual(viewport.width);
    const sceneBounds=(await page.locator('#scene canvas').boundingBox())!;
    // Every actual rack can be picked in the default view, without orbiting.
-   await page.mouse.click(bounds.x+bounds.width/2,sceneBounds.y+sceneBounds.height*.53);
+   await page.mouse.click(bounds.x+bounds.width/2,sceneBounds.y+sceneBounds.height*(viewport.width===390?.38:1)*.53);
    await expect(page.locator('#node-title')).toContainText(`N0${i+1}`);
   }
   if(viewport.width===1440)await page.screenshot({path:'evidence/selected.png',fullPage:true});
@@ -41,7 +42,7 @@ for (const viewport of [{width:1440,height:1080},{width:390,height:844}]) {
   const canvas=page.locator('#scene canvas'), rect=(await canvas.boundingBox())!;
   let picked=false;
   for(const [x,y] of [[0.5,0.53],[0.65,0.53],[0.4,0.53],[0.6,0.53]]){
-   await canvas.click({position:{x:rect.width*x,y:rect.height*y}});
+   await canvas.click({position:{x:rect.width*x,y:rect.height*y*(viewport.width===390?.38:1)}});
    if(!(await page.locator('#node-title').textContent())?.startsWith('N04')){picked=true;break;}
   }
   expect(picked).toBe(true);
@@ -57,7 +58,7 @@ for (const viewport of [{width:1440,height:1080},{width:390,height:844}]) {
   const intervals=await page.evaluate(()=>new Promise<number[]>(resolve=>{const a:number[]=[];let last=performance.now();function tick(t:number){a.push(t-last);last=t;if(a.length<61)requestAnimationFrame(tick);else resolve(a.slice(1));}requestAnimationFrame(tick);}));
   await page.locator('#play').click();
   writeFileSync(`evidence/browser-${viewport.width}.json`,JSON.stringify({viewport,errors,externalRequests:requests,frameIntervalsMs:intervals,note:'requestAnimationFrame cadence during playback in headless desktop Edge; not rendered GPU FPS or physical phone performance.'},null,2));
-  expect(errors).toEqual([]);expect(requests).toEqual([]);
+  expect(errors).toEqual([]);expect(requests).toEqual([]);expect(models).toHaveLength(1);
  });
 }
 
@@ -76,4 +77,12 @@ test('touch controls and end of replay',async({browser})=>{
  await expect(page.locator('#occupied')).toHaveText('0');await expect(page.locator('#jobs')).toHaveText('No jobs placed on this node');
  await page.locator('#reset').tap();await expect(page.locator('#time')).toContainText('0.0 /');
  await context.close();
+});
+
+test('model unavailable keeps replay usable',async({page})=>{
+ await page.route('**/server-rack-light.glb',route=>route.abort());
+ await page.goto('/');await expect(page.locator('#scene')).toHaveAttribute('data-asset','fallback');
+ await expect(page.locator('#asset-note')).toContainText('Simple rack view');
+ await page.getByRole('button',{name:'N03',exact:true}).click();await expect(page.locator('#node-title')).toContainText('N03');
+ await page.selectOption('#method','pgfp');await expect(page.locator('#accepted')).toHaveText('21');
 });

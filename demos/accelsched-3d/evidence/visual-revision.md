@@ -1,5 +1,8 @@
 # Architect visual revision
 
+Historical R1 presentation. The latest design is [R2](design-r2.md); shared
+screenshot filenames below now show that current design.
+
 Revision of existing Draft PR #119, after delivery `70e583ea420b2b6f9921d320b634f477a1683a20`.
 
 - Replaced the occluding two-row arrangement with one evenly spaced horizontal row.

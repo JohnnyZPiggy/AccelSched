@@ -1,13 +1,14 @@
 npm notice run accelsched-3d@0.0.0 test
 npm notice run playwright test
 
-Running 4 tests using 1 worker
+Running 5 tests using 1 worker
 
-(node:28956) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(node:26264) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
 (Use `node --trace-warnings ...` to show where the warning was created)
-  ok 1 tests\browser.spec.ts:5:2 › replay interaction 1440 (5.1s)
-  ok 2 tests\browser.spec.ts:5:2 › replay interaction 390 (4.1s)
-  ok 3 tests\browser.spec.ts:64:1 › reduced motion and WebGL fallback (673ms)
-  ok 4 tests\browser.spec.ts:70:1 › touch controls and end of replay (789ms)
+  ok 1 tests\browser.spec.ts:5:2 › replay interaction 1440 (5.5s)
+  ok 2 tests\browser.spec.ts:5:2 › replay interaction 390 (4.2s)
+  ok 3 tests\browser.spec.ts:65:1 › reduced motion and WebGL fallback (752ms)
+  ok 4 tests\browser.spec.ts:71:1 › touch controls and end of replay (861ms)
+  ok 5 tests\browser.spec.ts:82:1 › model unavailable keeps replay usable (583ms)
 
-  4 passed (12.1s)
+  5 passed (13.3s)

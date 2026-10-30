@@ -5,11 +5,11 @@ synthetic fixture**. This is not a physical digital twin, trace, hardware perfor
 model or benchmark. No GPU, Python server, cloud account or external runtime assets
 are required in the browser. Production scheduling code is unchanged.
 
-The current presentation uses a bright white-green theme with silver racks in one
-front-facing row. All eight nodes and their clickable ID labels fit the default
-view, including phone width. Home view clears orbit momentum and restores that
-composition; resizing refits the row. The short heading keeps the cluster central.
-See [visual revision evidence](evidence/visual-revision.md) for current screenshots.
+The R2 presentation uses warm-white studio surfaces, graphite type and restrained
+green allocation accents. A locally stored CC0 Grab3D rack is loaded once and
+shared across eight nodes. Phones show an overview plus a larger selected-rack
+view in the same canvas. Home clears orbit momentum; resize refits the overview.
+See [R2 evidence](evidence/design-r2.md) and [asset credits](public/ASSET_CREDITS.md).
 
 ## Reproduce
 
@@ -94,10 +94,10 @@ Example source event (abridged; full report remains in the JSON):
 The inspector uses the last event with `time <= playhead`; it never interpolates
 resource allocations. Completion releases happen **before** arrivals at the same
 timestamp. Rejection is permanent, distinct from `solver_error`. Heuristics never
-gain an optimality certificate; batch status is shown in Source & solver status.
+gain an optimality certificate; batch status is shown in About this replay.
 Full-horizon counts are labeled separately from current GPU occupancy.
 
-Geometry is cosmetic: each rack represents one node. Eight light strips show
+Geometry is cosmetic: each rack represents one node. Eight external light segments show
 `ceil(8 * max(used / capacity))` over nonzero resource dimensions, **not eight
 physical GPUs or measured utilization**. A CPU-only job can light a GPU-capable
 rack while occupying zero GPUs. The numeric inspector is authoritative. New-start
@@ -115,7 +115,9 @@ the camera. Reduced-motion starts paused, disables orbit damping and light fades
 and enables low-power mode. Low power caps pixel ratio at 1 and rendering at 30 Hz;
 normal mode caps pixel ratio at 1.5. Hidden tabs stop rendering/playback advancement.
 Without WebGL, the real-data inspector and transport remain usable with a visible
-explanation. Runtime assets, fonts and geometry are all local/procedural.
+explanation. Runtime assets are local; fonts use the system stack. A small procedural
+rack fallback keeps the replay usable if the GLB cannot load. Soft contact-shadow
+planes are visual aids, not ray-traced lighting. No asset CDN or external decoder.
 
 ## Reuse for another project
 
@@ -129,8 +131,10 @@ every possible solver error; an injected-error Python test checks that path.
 
 ## Attribution / evidence
 
-Project source and procedural geometry: repository MIT license. Three.js: MIT;
+Project code and fallback geometry: repository MIT license. Rack artwork: Grab3D
+CC0, original license/manifest included; see [credits](public/ASSET_CREDITS.md).
+Three.js: MIT;
 Vite: MIT; TypeScript: Apache-2.0; Playwright: Apache-2.0; dependency notices remain
-with installed packages. System fonts only; no downloaded hardware assets or NVIDIA
-artwork. See [evidence/verification.md](evidence/verification.md) and screenshots
-for the actual check matrix, limitations and measured browser observations.
+with installed packages. System fonts only; no Apple/NVIDIA artwork or logos in
+the app. See [R2 evidence](evidence/design-r2.md) and the original
+[verification](evidence/verification.md) for checks and limitations.

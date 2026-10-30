@@ -1,0 +1,11 @@
+{
+  "source": "https://huggingface.co/datasets/nvidia/simready-assets",
+  "asset": "rack_large_empty_a02",
+  "license": "CC-BY-4.0 (per-asset LICENSE and packaging verified)",
+  "inspected": "Publisher thumbnail; warehouse shelving, not server cabinet",
+  "geometryAndPrimaryTexturesBytes": 25473140.0,
+  "conversion": "NOT_RUN; unnecessary for chosen browser-ready GLB",
+  "packDownload": "NOT_RUN",
+  "licenseSHA256": "9BA9550AD48438D0836DDAB3DA480B3B69FFA0AAC7B7878B5A0039E7AB429411",
+  "previewSHA256": "4BA9A74962D6C26AE5FDE8940F5437583EBAD465EE594E8D92E751DE2ED6B572"
+}
