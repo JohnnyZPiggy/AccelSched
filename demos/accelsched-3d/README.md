@@ -25,9 +25,27 @@ npm run dev
 ```
 
 Open **http://127.0.0.1:5174/**. Both dev and preview use strict port 5174; a busy
-port fails instead of silently taking another port. Port 5173 and Tailscale routes
-are untouched. The server binds only to loopback. A phone preview route is a later
-Scientist choice; no network routing or publication is configured here.
+port fails instead of silently taking another port. The server binds only to
+loopback. The existing port 443 → 5173 route remains intact.
+
+Private mobile preview (iPhone must be connected to the same Tailscale tailnet):
+**https://laptop-dv0lktef.tail9ceb46.ts.net:8443/**.
+The existing Windows Tailscale installation proxies this separate HTTPS listener
+to `127.0.0.1:5174`; this is Serve, not public Funnel. Vite allows only the exact
+tailnet hostname in addition to its default localhost/IP hosts, never all hosts.
+
+```powershell
+& 'C:\Program Files\Tailscale\tailscale.exe' serve --bg --https=8443 5174
+& 'C:\Program Files\Tailscale\tailscale.exe' serve status
+```
+
+The Vite process must remain running (`npm run dev`); Tailscale Serve's background
+listener does not start Vite after a reboot. Interactive-demo handoffs must include
+the working local URL and, when configured, a freshly verified mobile HTTPS URL.
+See [HTTPS verification](evidence/mobile-https.json) and
+[route status](evidence/tailscale-status.txt). The endpoint and real 3D controls were
+tested through HTTPS with certificate validation enabled using Edge touch emulation;
+physical iPhone Safari remains untested.
 
 ```powershell
 npm run build

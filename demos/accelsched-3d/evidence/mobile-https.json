@@ -1,0 +1,24 @@
+{
+  "url": "https://laptop-dv0lktef.tail9ceb46.ts.net:8443/",
+  "httpStatus": 200,
+  "certificateValidation": "enabled; no ignoreHTTPSErrors",
+  "browser": "156.0.4314.50",
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "checks": [
+    "3D canvas loaded",
+    "8 node labels",
+    "tap selection N06",
+    "method switching",
+    "play/pause",
+    "timeline scrub",
+    "JSON via HTTPS",
+    "exact allowed Host 200",
+    "untrusted Host 403"
+  ],
+  "errors": [],
+  "failed": [],
+  "physicalIPhoneSafari": "NOT_RUN; Edge touch emulation on Windows"
+}
