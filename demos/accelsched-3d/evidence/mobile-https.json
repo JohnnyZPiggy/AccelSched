@@ -1,0 +1,27 @@
+{
+  "url": "https://laptop-dv0lktef.tail9ceb46.ts.net:8443/",
+  "httpStatus": 200,
+  "certificateValidation": "enabled; no ignoreHTTPSErrors",
+  "browser": "156.0.4314.50",
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "assetBytes": 977100,
+  "assetSHA256": "246602b854778930ea71fd612e91de6b71b809f8d31de9d261c44a94223c2139",
+  "modelFetchCount": 1,
+  "checks": [
+    "real GLB loaded",
+    "eight node labels",
+    "touch selection and focus N06",
+    "method switch",
+    "play/pause",
+    "scrub",
+    "JSON via HTTPS",
+    "exact Host 200",
+    "untrusted Host 403"
+  ],
+  "errors": [],
+  "failed": [],
+  "physicalIPhoneSafari": "NOT_RUN; Edge touch emulation on Windows"
+}

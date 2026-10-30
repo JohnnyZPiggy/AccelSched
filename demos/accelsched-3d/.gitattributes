@@ -1,0 +1,6 @@
+# Preserve downloaded provenance files byte-for-byte across Windows checkouts.
+public/assets/server-rack/*.glb binary
+public/assets/server-rack/LICENSE.txt -text whitespace=cr-at-eol,-blank-at-eof
+public/assets/server-rack/manifest.json -text
+evidence/assets/nvidia-LICENSE.txt -text whitespace=cr-at-eol,-blank-at-eof
+evidence/assets/nvidia-packaging.json -text

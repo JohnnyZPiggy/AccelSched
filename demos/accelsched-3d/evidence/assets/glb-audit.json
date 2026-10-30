@@ -1,0 +1,144 @@
+[
+  {
+    "variant": "light",
+    "bytes": 977100,
+    "sha256": "246602b854778930ea71fd612e91de6b71b809f8d31de9d261c44a94223c2139",
+    "triangles": 14851,
+    "images": 4,
+    "textures": 4,
+    "materials": 6,
+    "bounds": [
+      0.5988283753395081,
+      2.0006003379821777,
+      1.065269112586975
+    ],
+    "meshes": [
+      {
+        "name": "server-rack_body",
+        "material": "server-rack_body_pbr"
+      },
+      {
+        "name": "server-rack_door",
+        "material": "server-rack_door_pbr"
+      },
+      {
+        "name": "server-rack_door_glass",
+        "material": "server-rack_door_glass_x"
+      },
+      {
+        "name": "server-rack_led_glow_1",
+        "material": "server-rack_led_mint_x"
+      },
+      {
+        "name": "server-rack_led_glow_2",
+        "material": "server-rack_led_sky_x"
+      },
+      {
+        "name": "server-rack_led_glow_3",
+        "material": "server-rack_led_butter_x"
+      }
+    ],
+    "textureDimensions": [
+      {
+        "width": 1024,
+        "height": 1024
+      },
+      {
+        "width": 1024,
+        "height": 1024
+      },
+      {
+        "width": 1024,
+        "height": 1024
+      },
+      {
+        "width": 1024,
+        "height": 1024
+      }
+    ],
+    "estimatedRGBAWithMipBytes": 22369621.333333332,
+    "geometryAttributeBytes": 708498,
+    "render": {
+      "frame": 1,
+      "calls": 7,
+      "triangles": 14975,
+      "points": 0,
+      "lines": 0
+    }
+  },
+  {
+    "variant": "full",
+    "bytes": 1965504,
+    "sha256": "b35456e95b82a245d4dc332d422a3af20f04ba784e9aa97b73a5e68dc8b74076",
+    "triangles": 27252,
+    "images": 6,
+    "textures": 6,
+    "materials": 6,
+    "bounds": [
+      0.6000000238418579,
+      2.0006000995635986,
+      1.065269112586975
+    ],
+    "meshes": [
+      {
+        "name": "server-rack_body",
+        "material": "server-rack_body_pbr"
+      },
+      {
+        "name": "server-rack_door",
+        "material": "server-rack_door_pbr"
+      },
+      {
+        "name": "server-rack_door_glass",
+        "material": "server-rack_door_glass_x"
+      },
+      {
+        "name": "server-rack_led_glow_1",
+        "material": "server-rack_led_mint_x"
+      },
+      {
+        "name": "server-rack_led_glow_2",
+        "material": "server-rack_led_sky_x"
+      },
+      {
+        "name": "server-rack_led_glow_3",
+        "material": "server-rack_led_butter_x"
+      }
+    ],
+    "textureDimensions": [
+      {
+        "width": 2048,
+        "height": 2048
+      },
+      {
+        "width": 2048,
+        "height": 2048
+      },
+      {
+        "width": 2048,
+        "height": 2048
+      },
+      {
+        "width": 2048,
+        "height": 2048
+      },
+      {
+        "width": 2048,
+        "height": 2048
+      },
+      {
+        "width": 2048,
+        "height": 2048
+      }
+    ],
+    "estimatedRGBAWithMipBytes": 134217727.99999999,
+    "geometryAttributeBytes": 1082488,
+    "render": {
+      "frame": 1,
+      "calls": 7,
+      "triangles": 27376,
+      "points": 0,
+      "lines": 0
+    }
+  }
+]

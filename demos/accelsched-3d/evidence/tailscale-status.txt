@@ -1,0 +1,6 @@
+https://laptop-dv0lktef.tail9ceb46.ts.net (tailnet only)
+|-- / proxy http://127.0.0.1:5173
+
+https://laptop-dv0lktef.tail9ceb46.ts.net:8443 (tailnet only)
+|-- / proxy http://127.0.0.1:5174
+
