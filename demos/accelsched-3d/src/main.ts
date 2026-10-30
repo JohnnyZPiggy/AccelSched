@@ -8,7 +8,7 @@ app.innerHTML = `
 <header><a class="brand" href="https://github.com/JohnnyZPiggy/AccelSched">A<span>▰</span> ACCELSCHED</a><span class="edition">CLUSTER OBSERVATORY / 01</span><span class="badge">● SYNTHETIC REPLAY</span></header>
 <main>
  <section class="stage" aria-label="Interactive 3D cluster">
-  <div class="intro"><div class="eyebrow">HETEROGENEOUS COMPUTE · REAL DECISIONS</div><h1>Placement,<br><em>in motion.</em></h1><p>Explore the decisions behind the cluster.<br>Eight nodes. Three schedulers. One shared workload.</p></div>
+  <div class="intro"><div class="eyebrow">CLUSTER REPLAY</div><h1>Eight nodes. One workload.</h1><p>Compare real scheduling decisions on a synthetic cluster.</p></div>
   <div id="scene" aria-label="Orbit with drag, zoom with scroll or pinch, tap a rack to inspect"></div>
   <div id="scene-error" role="alert" hidden></div>
   <div id="event-tray" aria-label="Most recent scheduling event"></div>
@@ -49,37 +49,45 @@ async function start() {
  let renderer: THREE.WebGLRenderer | undefined;
  try { renderer = new THREE.WebGLRenderer({antialias: true, powerPreference: 'low-power'}); }
  catch { el('scene-error').hidden = false; el('scene-error').textContent = '3D is unavailable on this device. The replay controls and node inspector remain available.'; }
- const scene = new THREE.Scene(); scene.background = new THREE.Color('#080e13'); scene.fog = new THREE.FogExp2('#080e13', 0.022);
- const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 100);
- function home() { camera.position.set(...(innerWidth<650?[22,17,26]:[15,12,18]) as [number,number,number]); controls?.target.set(0, 1.6, 0); controls?.update(); }
+ const scene = new THREE.Scene(); scene.background = new THREE.Color('#f3f7f2');
+ const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 250);
+ function home() {
+  const distance = Math.max(12, 27 / (2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * camera.aspect));
+  // Clear orbit momentum before restoring the readable, front-facing row.
+  if (controls) controls.enableDamping = false;
+  controls?.update();
+  controls?.target.set(0, 2.2, 0);
+  camera.position.set(0, 2.2 + distance * 0.28, distance);
+  controls?.update();
+  if (controls) controls.enableDamping = !reduced.matches;
+ }
  let controls: OrbitControls | undefined;
  const reduced = matchMedia('(prefers-reduced-motion: reduce)');
  el<HTMLInputElement>('quality').checked = reduced.matches || innerWidth < 700;
  if (renderer) {
   renderer.setPixelRatio(Math.min(devicePixelRatio, el<HTMLInputElement>('quality').checked ? 1 : 1.5));
-  renderer.outputColorSpace = THREE.SRGBColorSpace; renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.3;
+  renderer.outputColorSpace = THREE.SRGBColorSpace; renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.1;
   container.append(renderer.domElement);
-  controls = new OrbitControls(camera, renderer.domElement); controls.enableDamping = !reduced.matches; controls.dampingFactor = 0.07; controls.minDistance = 9; controls.maxDistance = 45; controls.maxPolarAngle = Math.PI * 0.48;
+  controls = new OrbitControls(camera, renderer.domElement); controls.enableDamping = !reduced.matches; controls.dampingFactor = 0.07; controls.minDistance = 9; controls.maxDistance = 130; controls.maxPolarAngle = Math.PI * 0.48;
  }
  home();
- scene.add(new THREE.HemisphereLight(0xc0deeb, 0x182721, 2.5));
- const key = new THREE.DirectionalLight(0xcce8ff, 4); key.position.set(5, 12, 8); scene.add(key);
- const rim = new THREE.DirectionalLight(0x56fbd0, 3); rim.position.set(-8, 5, -7); scene.add(rim);
- const metal = new THREE.MeshStandardMaterial({color: 0x303c46, metalness: 0.8, roughness: 0.32});
- const dark = new THREE.MeshStandardMaterial({color: 0x0c151c, metalness: 0.65, roughness: 0.5});
- const trim = new THREE.MeshStandardMaterial({color: 0x60727d, metalness: 0.9, roughness: 0.3});
+ scene.add(new THREE.HemisphereLight(0xffffff, 0xc8d6c9, 3));
+ const key = new THREE.DirectionalLight(0xffffff, 2.4); key.position.set(5, 12, 8); scene.add(key);
+ const rim = new THREE.DirectionalLight(0xd4efdc, 1.5); rim.position.set(-8, 5, -7); scene.add(rim);
+ const metal = new THREE.MeshStandardMaterial({color: 0xcbd4cf, metalness: 0.28, roughness: 0.38});
+ const dark = new THREE.MeshStandardMaterial({color: 0x73867b, metalness: 0.18, roughness: 0.6});
+ const trim = new THREE.MeshStandardMaterial({color: 0xeaf0ec, metalness: 0.3, roughness: 0.3});
  function box(parent: THREE.Object3D, x: number, y: number, z: number, w: number, h: number, d: number, material: THREE.Material) {
   const mesh = new THREE.Mesh(new THREE.BoxGeometry(w,h,d), material); mesh.position.set(x,y,z); parent.add(mesh); return mesh;
  }
- box(scene,0,-0.23,0,16,0.4,12,metal);
- box(scene,0,-0.48,0,16.4,0.12,12.4,dark);
- const floor = new THREE.Mesh(new THREE.PlaneGeometry(200,200),new THREE.MeshStandardMaterial({color:0x080e13, metalness:0.4,roughness:0.5})); floor.rotation.x=-Math.PI/2; floor.position.y=-0.56; scene.add(floor);
- const grid = new THREE.GridHelper(16,16,0x354c52,0x1c2b33); grid.position.y=-0.015; scene.add(grid);
- const cyan = new THREE.MeshBasicMaterial({color:0x54ddda});
- for(const z of [-5.5,5.5]) box(scene,0,0.01,z,14,0.025,0.035,cyan);
+ box(scene,0,-0.23,0,27,0.4,5,trim);
+ box(scene,0,-0.48,0,27.2,0.12,5.2,metal);
+ const floor = new THREE.Mesh(new THREE.PlaneGeometry(400,400),new THREE.MeshBasicMaterial({color:0xf3f7f2,toneMapped:false})); floor.rotation.x=-Math.PI/2; floor.position.y=-0.56; scene.add(floor);
+ const green = new THREE.MeshBasicMaterial({color:0x6aaf85});
+ for(const z of [-2.35,2.35]) box(scene,0,0.01,z,26,0.025,0.025,green);
  // Procedural racks are visual layout only; resource quantities come exclusively from reports.
  const racks = data.nodes.map((node,i) => {
-  const group = new THREE.Group(); group.position.set((i%4-1.5)*3.35,0,(Math.floor(i/4)-0.5)*5); scene.add(group);
+  const group = new THREE.Group(); group.position.set((i-3.5)*3.2,0,0); scene.add(group);
   box(group,0,0.15,0,2.3,0.3,2.4,dark); box(group,0,2.55,0,2.1,4.8,2.1,metal);
   box(group,0,2.55,1.07,1.88,4.5,0.07,dark);
   for(const x of [-0.98,0.98]) box(group,x,2.55,1.14,0.08,4.7,0.08,trim);
@@ -88,16 +96,17 @@ async function start() {
    const y=0.65+slot*0.49;
    box(group,0,y,1.15,1.72,0.41,0.12,metal);
    for(let v=0;v<6;v++) box(group,-0.46+v*0.18,y,1.225,0.055,0.24,0.02,dark);
-   const led = new THREE.MeshStandardMaterial({color:0x284747,emissive:0x284747,emissiveIntensity:0.4}); lights.push(led);
+   const led = new THREE.MeshStandardMaterial({color:0xb5c9bc,emissive:0xb5c9bc,emissiveIntensity:0}); lights.push(led);
    box(group,0.72,y,1.23,0.075,0.2,0.04,led);
   }
   const labelCanvas = document.createElement('canvas'); labelCanvas.width=512;labelCanvas.height=128;
-  const ctx=labelCanvas.getContext('2d')!; ctx.fillStyle='#101b23';ctx.fillRect(0,0,512,128);ctx.fillStyle='#dbebee';ctx.font='bold 52px monospace';ctx.fillText(node.id,24,63);ctx.fillStyle='#74c7bf';ctx.font='24px monospace';ctx.fillText(`FAMILY ${node.family} / ${node.capacity[0]} GPU`,24,104);
+  const ctx=labelCanvas.getContext('2d')!; ctx.fillStyle='#f4f8f4';ctx.fillRect(0,0,512,128);ctx.fillStyle='#1c5138';ctx.font='bold 52px monospace';ctx.fillText(node.id,24,63);ctx.fillStyle='#446854';ctx.font='24px monospace';ctx.fillText(`FAMILY ${node.family} / ${node.capacity[0]} GPU`,24,104);
   const texture=new THREE.CanvasTexture(labelCanvas);texture.colorSpace=THREE.SRGBColorSpace;
   const label=new THREE.Mesh(new THREE.PlaneGeometry(1.8,0.45),new THREE.MeshBasicMaterial({map:texture}));label.position.set(0,4.7,1.12);group.add(label);
-  const outline = new THREE.BoxHelper(group,0xa5ffd1); outline.visible=false; scene.add(outline);
+  const outline = new THREE.BoxHelper(group,0x16854c); outline.visible=false; scene.add(outline);
+  const tag=document.createElement('button');tag.className='rack-tag';tag.textContent=node.id;tag.setAttribute('aria-label',`Inspect ${node.id}`);tag.addEventListener('click',()=>{selected=i;update();});container.append(tag);
   group.traverse(o => { o.userData.node=i; });
-  return {group,lights,outline};
+  return {group,lights,outline,tag};
  });
  const ray = new THREE.Raycaster(); let down = {x:0,y:0};
  renderer?.domElement.addEventListener('pointerdown',e => {down={x:e.clientX,y:e.clientY};});
@@ -131,8 +140,8 @@ async function start() {
    const accepted=recent && event.accepted.some(j=>event.running.some(r=>r.job_id===j&&r.node===i));
    const completed=recent && event.completed.some(j=>report.decisions.find(d=>d.job_id===j)?.node===i);
    const utilization=Math.max(...load[i].map((v,k)=>data.nodes[i].capacity[k]?v/data.nodes[i].capacity[k]:0));
-   rack.lights.forEach((led,s)=>{const on=s<Math.ceil(utilization*8);led.userData.target=new THREE.Color(on?(accepted?'#bdff88':'#4ce0cb'):(completed?'#6a99da':'#284747'));led.emissiveIntensity=on?2:0.3;});
-   rack.outline.visible=i===selected;buttons[i].setAttribute('aria-pressed',String(i===selected));
+   rack.lights.forEach((led,s)=>{const on=s<Math.ceil(utilization*8);led.userData.target=new THREE.Color(on?(accepted?'#65b92e':'#16854c'):(completed?'#398a9c':'#b5c9bc'));led.emissiveIntensity=on?0.35:0;});
+   rack.outline.visible=i===selected;buttons[i].setAttribute('aria-pressed',String(i===selected));rack.tag.setAttribute('aria-pressed',String(i===selected));
   });
  }
  function setPlaying(value:boolean){playing=value;el('play').textContent=playing?'Ⅱ Pause':'▶ Play';el('play').setAttribute('aria-label',playing?'Pause replay':'Play replay');}
@@ -142,13 +151,14 @@ async function start() {
  el('method').addEventListener('change',()=>{method=el<HTMLSelectElement>('method').value;update();});
  el('home').addEventListener('click',home);
  el('quality').addEventListener('change',()=>{renderer?.setPixelRatio(Math.min(devicePixelRatio,el<HTMLInputElement>('quality').checked?1:1.5));resize();});
- function resize(){const {width,height}=container.getBoundingClientRect();camera.aspect=width/height;camera.updateProjectionMatrix();renderer?.setSize(width,height);}
+ function resize(){const {width,height}=container.getBoundingClientRect();camera.aspect=width/height;camera.updateProjectionMatrix();renderer?.setSize(width,height);home();}
  new ResizeObserver(resize).observe(container);resize();update();
  let last=performance.now(), lastPaint=0;
  function frame(now:number){
   const dt=Math.min((now-last)/1000,0.1);last=now;
   if(playing&&!document.hidden){time=Math.min(maxTime,time+dt*Number(el<HTMLSelectElement>('speed').value)*3);if(time===maxTime)setPlaying(false);update();}
-  if(!document.hidden && now-lastPaint>(el<HTMLInputElement>('quality').checked?1000/30:0)){racks.forEach(r=>r.lights.forEach(led=>{led.color.lerp(led.userData.target,reduced.matches?1:1-Math.exp(-(now-lastPaint)/140));led.emissive.copy(led.color);}));controls?.update();renderer?.render(scene,camera);lastPaint=now;}
+  if(!document.hidden && now-lastPaint>(el<HTMLInputElement>('quality').checked?1000/30:0)){racks.forEach(r=>r.lights.forEach(led=>{led.color.lerp(led.userData.target,reduced.matches?1:1-Math.exp(-(now-lastPaint)/140));led.emissive.copy(led.color);}));controls?.update();renderer?.render(scene,camera);
+   racks.forEach(r=>{const p=new THREE.Vector3(r.group.position.x,5.5,0).project(camera);r.tag.style.left=`${(p.x+1)*container.clientWidth/2}px`;r.tag.style.top=`${(1-p.y)*container.clientHeight/2}px`;r.tag.hidden=!renderer||Math.abs(p.x)>1||Math.abs(p.y)>1||p.z>1;});lastPaint=now;}
   requestAnimationFrame(frame);
  }
  requestAnimationFrame(frame);

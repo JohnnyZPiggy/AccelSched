@@ -1,5 +1,9 @@
 # Issue #118 verification
 
+The implementation measurements below describe the initial delivery. For the
+current bright-theme layout and latest browser/build evidence, see
+[Architect visual revision](visual-revision.md). Replay source/data are unchanged.
+
 Date: 2026-10-30 (Europe/Zurich). Isolated branch:
 `sae/issue-118-3d-cluster-replay`. Refreshed base main:
 `9dc0c263d2aefeb151d565166b6b950e2ac9f6a5`.
@@ -72,12 +76,12 @@ worked without overriding that policy. Raw final outputs: [Python](python-tests.
 
 ## Visual review
 
-Reviewed both screenshots after fixing the initial mobile camera crop and text
-overlap. Dark metallic rack fronts, restrained cyan/lime status LEDs, teal rim
-lighting, floor seams, explicit node labels, event tray and numeric allocation
-inspector are visible. Phone layout fits the full cluster and places controls
-between the scene and inspector. Source/status caveats are expandable. All rack
-geometry is procedural and cosmetic; CPU-only jobs do not imply GPU use.
+The initial dark presentation has since been replaced by the Architect's bright
+white-green revision. The screenshots below now show that current row layout;
+see [visual revision evidence](visual-revision.md) for its full review and checks.
+The event tray, numeric allocation inspector and expandable source/status caveats
+remain. All rack geometry is procedural and cosmetic; CPU-only jobs do not imply
+GPU use.
 
 ![Desktop](desktop.png)
 ![Phone width](mobile.png)

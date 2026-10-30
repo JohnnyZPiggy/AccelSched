@@ -5,6 +5,12 @@ synthetic fixture**. This is not a physical digital twin, trace, hardware perfor
 model or benchmark. No GPU, Python server, cloud account or external runtime assets
 are required in the browser. Production scheduling code is unchanged.
 
+The current presentation uses a bright white-green theme with silver racks in one
+front-facing row. All eight nodes and their clickable ID labels fit the default
+view, including phone width. Home view clears orbit momentum and restores that
+composition; resizing refits the row. The short heading keeps the cluster central.
+See [visual revision evidence](evidence/visual-revision.md) for current screenshots.
+
 ## Reproduce
 
 Python 3.10+ with the repository's existing NumPy/SciPy dependencies; Node 20.19+
